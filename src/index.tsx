@@ -20,3 +20,7 @@ const PassageReactNative = NativeModules.PassageReactNative
 export function multiply(a: number, b: number): Promise<number> {
   return PassageReactNative.multiply(a, b);
 }
+
+export function registerWithPasskey(identifier: string): Promise<any> {
+  return PassageReactNative.registerWithPasskey(identifier);
+}

@@ -11,4 +11,6 @@ RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
   return NO;
 }
 
+RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject);
+
 @end

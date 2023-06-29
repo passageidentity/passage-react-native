@@ -4,6 +4,10 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
+import id.passage.android.Passage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -17,6 +21,23 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun multiply(a: Double, b: Double, promise: Promise) {
     promise.resolve(a * b)
+  }
+
+  @ReactMethod
+  fun registerWithPasskey(identifier: String, promise: Promise) {
+    val activity = currentActivity ?: return
+    val passage = Passage(activity)
+    activity.runOnUiThread {
+      CoroutineScope(Dispatchers.Main).launch {
+        try {
+          val authResult = passage.registerWithPasskey(identifier)
+          promise.resolve(authResult)
+        } catch (e: Exception) {
+          promise.reject(e)
+        }
+      }
+    }
+
   }
 
   companion object {

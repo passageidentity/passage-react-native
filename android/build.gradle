@@ -74,6 +74,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation "id.passage.android:passage:1.0.0"
 }
 
 if (isNewArchitectureEnabled()) {

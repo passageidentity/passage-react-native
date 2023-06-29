@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.passagereactnativeexample"
+    namespace "id.passage.example_reactnative"
     defaultConfig {
-        applicationId "com.passagereactnativeexample"
+        applicationId "id.passage.example_reactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

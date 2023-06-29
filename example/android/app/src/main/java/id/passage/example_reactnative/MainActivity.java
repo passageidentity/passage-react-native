@@ -1,4 +1,4 @@
-package com.passagereactnativeexample;
+package id.passage.example_reactnative;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
