@@ -1,26 +1,20 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { multiply, registerWithPasskey } from 'passage-react-native';
+import { Passage } from 'passage-react-native';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [result, setResult] = React.useState<string | undefined>();
 
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-    
-  }, []);
-
-  const onPress = () => {
-    registerWithPasskey("ricky.padilla+rn5@passage.id").then((authResult) => {
-      console.log(authResult)
-    });
-  }
+  const onPress = async () => {
+    const authResult = await Passage.registerWithPasskey('identifier');
+    const { authToken } = authResult;
+    setResult(authToken);
+  };
 
   return (
     <View style={styles.container}>
-      <Text onPress={onPress}
-      >Result: {result}</Text>
+      <Text onPress={onPress}>Result: {result}</Text>
     </View>
   );
 }

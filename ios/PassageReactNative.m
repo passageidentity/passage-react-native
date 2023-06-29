@@ -11,6 +11,42 @@ RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
   return NO;
 }
 
-RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject);
+// MARK: - Passkey Methods
+RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(loginWithPasskey:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+// MARK: - OTP Methods
+RCT_EXTERN_METHOD(newRegisterOneTimePasscode:(NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(newLoginOneTimePasscode:(NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(oneTimePasscodeActivate:(NSString *)otp
+                  withOtpId:(NSString *)otpId
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+// MARK: - Magic Link Methods
+RCT_EXTERN_METHOD(newRegisterMagicLink:(NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(newLoginMagicLink:(NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+
+RCT_EXTERN_METHOD(magicLinkActivate:(NSString *)userMagicLink
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+
 
 @end
