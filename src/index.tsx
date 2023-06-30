@@ -24,9 +24,32 @@ export type AuthResult = {
   refreshTokenExpiration: number | null;
 };
 
-export type PasskeyCredential = {
-  id: string | null;
-  friendlyName: string | null;
+export type PassageUser = {
+  id: string;
+  status: string | null;
+  email: string | null;
+  emailVerified: boolean;
+  phone: string | null;
+  phoneVerified: boolean;
+  createdAt: string;
+  updatedAt: string | null;
+  lastLoginAt: string | null;
+  loginCount: number;
+  userMetadata: any;
+  webauthn: boolean;
+  webauthnDevices: Array<DevicePasskey>;
+  webauthnTypes: Array<string>;
+};
+
+export type DevicePasskey = {
+  id: string;
+  friendlyName: string;
+  createdAt: string;
+  credId: string;
+  lastLoginAt: string;
+  updatedAt: string | null;
+  userId: string;
+  usageCount: number | null;
 };
 
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
@@ -34,8 +57,16 @@ type LoginWithPasskey = () => Promise<AuthResult>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
-// type AddDevicePasskey = () => Promise<PasskeyCredential>; // TODO: iOS SDK does not return anything, need to fix later.
-type AddDevicePasskey = () => Promise<void>;
+type AddDevicePasskey = () => Promise<DevicePasskey>;
+type DeleteDevicePasskey = (passkeyId: string) => Promise<DevicePasskey>;
+type EditDevicePasskey = (
+  passkeyId: string,
+  newPasskeyName: string
+) => Promise<DevicePasskey>;
+type VoidMethod = () => Promise<void>;
+type ChangeEmail = (newEmail: string) => Promise<string>;
+type ChangePhone = (newPhone: string) => Promise<string>;
+type GetCurrentUser = () => Promise<PassageUser | null>;
 
 interface Passage {
   registerWithPasskey: RegisterWithPasskey;
@@ -46,7 +77,13 @@ interface Passage {
   newRegisterMagicLink: AuthWithoutPasskey;
   newLoginMagicLink: AuthWithoutPasskey;
   magicLinkActivate: MagicLinkActivate;
+  getCurrentUser: GetCurrentUser;
+  signOut: VoidMethod;
   addDevicePasskey: AddDevicePasskey;
+  deleteDevicePasskey: DeleteDevicePasskey;
+  editDevicePasskeyName: EditDevicePasskey;
+  changeEmail: ChangeEmail;
+  changePhone: ChangePhone;
 }
 
 const registerWithPasskey: RegisterWithPasskey = async (identifier) => {
@@ -89,10 +126,49 @@ const magicLinkActivate: MagicLinkActivate = async (magicLink) => {
   return parsedResult;
 };
 
+const getCurrentUser: GetCurrentUser = async () => {
+  const result = await PassageReactNative.getCurrentUser();
+  const parsedResult = JSON.parse(result);
+  return parsedResult;
+};
+
+const signOut: VoidMethod = async () => {
+  await PassageReactNative.signOut();
+  return;
+};
+
 const addDevicePasskey: AddDevicePasskey = async () => {
   const result = await PassageReactNative.addDevicePasskey();
   const parsedResult = JSON.parse(result);
   return parsedResult;
+};
+
+const deleteDevicePasskey: DeleteDevicePasskey = async (passkeyId) => {
+  const result = await PassageReactNative.deleteDevicePasskey(passkeyId);
+  const parsedResult = JSON.parse(result);
+  return parsedResult;
+};
+
+const editDevicePasskeyName: EditDevicePasskey = async (
+  passkeyId,
+  newPasskeyName
+) => {
+  const result = await PassageReactNative.editDevicePasskeyName(
+    passkeyId,
+    newPasskeyName
+  );
+  const parsedResult = JSON.parse(result);
+  return parsedResult;
+};
+
+const changeEmail: ChangeEmail = async (newEmail) => {
+  const result = await PassageReactNative.changeEmail(newEmail);
+  return result;
+};
+
+const changePhone: ChangePhone = async (newPhone) => {
+  const result = await PassageReactNative.changePhone(newPhone);
+  return result;
 };
 
 const PassageMethods: Passage = {
@@ -104,7 +180,13 @@ const PassageMethods: Passage = {
   newRegisterMagicLink,
   newLoginMagicLink,
   magicLinkActivate,
+  getCurrentUser,
+  signOut,
   addDevicePasskey,
+  deleteDevicePasskey,
+  editDevicePasskeyName,
+  changeEmail,
+  changePhone,
 };
 
 export default PassageMethods;

@@ -149,6 +149,32 @@ class PassageReactNative: NSObject {
     
     // MARK: - User Methods
     
+    @objc(getCurrentUser:withRejecter:)
+    func getCurrentUser(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            let user = try? passage.getCurrentUser()
+            resolve(user)
+        }
+    }
+    
+    @objc(signOut:withRejecter:)
+    func signOut(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                await passage.signOut()
+                resolve(nil)
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
+    }
+    
     @objc(addDevicePasskey:withRejecter:)
     func addDevicePasskey(
         resolve: @escaping RCTPromiseResolveBlock,
@@ -157,11 +183,70 @@ class PassageReactNative: NSObject {
         Task {
             do {
                 try await passage.addDevice()
+                // TODO: PassageAuth method should return Device Info, but does not.
+                resolve("")
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
+    }
+    
+    @objc(deleteDevicePasskey:withResolver:withRejecter:)
+    func deleteDevicePasskey(
+        deviceId: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                try await passage.revokeDevice(deviceId: deviceId)
                 resolve(nil)
             } catch {
                 reject("0", "\(error)", nil)
             }
         }
+    }
+    
+    @objc(editDevicePasskeyName:withNewDevicePasskeyName:withResolver:withRejecter:)
+    func editDevicePasskeyName(
+        deviceId: String,
+        newDevicePasskeyName: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                guard let deviceInfo = try await passage
+                    .editDevice(deviceId: deviceId, friendlyName: newDevicePasskeyName)
+                else {
+                    reject("0", "Error editing passkey name.", nil)
+                    return
+                }
+                resolve(deviceInfo.toJsonString())
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
+    }
+    
+    @objc(changeEmail:withResolver:withRejecter:)
+    func changeEmail(
+        newEmail: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        // TODO: PassageAuth method is private, need to make public
+        reject("0", "Method not available", nil)
+    }
+    
+    @objc(changePhone:withResolver:withRejecter:)
+    func changePhone(
+        newPhone: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        // TODO: PassageAuth method is private, need to make public
+        reject("0", "Method not available", nil)
     }
     
 }

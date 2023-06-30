@@ -19,3 +19,27 @@ internal extension AuthResult {
     }
     
  }
+
+internal extension DeviceInfo {
+    
+    func toDictionary() -> [String: Any] {
+        var authResultDict: [String : Any] = [
+            "createdAt": createdAt,
+            "credId": credId,
+            "friendlyName": friendlyName,
+            "id": id,
+            "lastLoginAt": lastLoginAt,
+            "updatedAt": updatedAt,
+            "usageCount": usageCount,
+            "userId": userId
+        ]
+        return authResultDict
+    }
+   
+   func toJsonString() -> String {
+       let jsonData = try! JSONSerialization.data(withJSONObject: toDictionary(), options: [])
+       let jsonString = String(data: jsonData, encoding: .utf8)!
+       return jsonString
+   }
+    
+}

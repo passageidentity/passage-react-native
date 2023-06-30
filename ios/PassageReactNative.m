@@ -33,12 +33,35 @@ RCT_EXTERN_METHOD(newLoginMagicLink:(NSString *)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-
 RCT_EXTERN_METHOD(magicLinkActivate:(NSString *)userMagicLink
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+// MARK: - User Methods
+RCT_EXTERN_METHOD(getCurrentUser:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(signOut:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 RCT_EXTERN_METHOD(addDevicePasskey:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(deleteDevicePasskey:(NSString *)deviceId
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(editDevicePasskeyName:(NSString *)deviceId
+                  withNewDevicePasskeyName:(NSString *)newDevicePasskeyName
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(changeEmail:(NSString *)newEmail
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(changePhone:(NSString *)newPhone
+                  withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 + (BOOL)requiresMainQueueSetup
