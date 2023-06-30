@@ -20,6 +20,8 @@ const PassageReactNative = NativeModules.PassageReactNative
 export type AuthResult = {
   authToken: string;
   redirectUrl: string;
+  refreshToken: string | null;
+  refreshTokenExpiration: number | null;
 };
 
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
@@ -27,6 +29,17 @@ type LoginWithPasskey = () => Promise<AuthResult>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
+
+interface Passage {
+  registerWithPasskey: RegisterWithPasskey;
+  loginWithPasskey: LoginWithPasskey;
+  newRegisterOneTimePasscode: AuthWithoutPasskey;
+  newLoginOneTimePasscode: AuthWithoutPasskey;
+  oneTimePasscodeActivate: OTPActivate;
+  newRegisterMagicLink: AuthWithoutPasskey;
+  newLoginMagicLink: AuthWithoutPasskey;
+  magicLinkActivate: MagicLinkActivate;
+}
 
 const registerWithPasskey: RegisterWithPasskey = async (identifier) => {
   const result = await PassageReactNative.registerWithPasskey(identifier);
@@ -68,7 +81,7 @@ const magicLinkActivate: MagicLinkActivate = async (magicLink) => {
   return parsedResult;
 };
 
-export const Passage = {
+const PassageMethods: Passage = {
   registerWithPasskey,
   loginWithPasskey,
   newRegisterOneTimePasscode,
@@ -78,3 +91,5 @@ export const Passage = {
   newLoginMagicLink,
   magicLinkActivate,
 };
+
+export default PassageMethods;
