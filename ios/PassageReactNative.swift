@@ -20,7 +20,7 @@ class PassageReactNative: NSObject {
         Task {
             do {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
-                resolve(toJsonString(authResult))
+                resolve(authResult.toJsonString())
             } catch {
                 reject("0", "\(error)", nil)
             }
@@ -38,8 +38,8 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                let result = try await passage.loginWithPasskey()
-                resolve(toJsonString(result))
+                let authResult = try await passage.loginWithPasskey()
+                resolve(authResult.toJsonString())
             } catch {
                 reject("0", "\(error)", nil)
             }
@@ -90,7 +90,7 @@ class PassageReactNative: NSObject {
         Task {
             do {
                 let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
-                resolve(toJsonString(authResult))
+                resolve(authResult.toJsonString())
             } catch {
                 reject("0", "\(error)", nil)
             }
@@ -140,18 +140,28 @@ class PassageReactNative: NSObject {
         Task {
             do {
                 let authResult = try await passage.magicLinkActivate(userMagicLink: userMagicLink)
-                resolve(toJsonString(authResult))
+                resolve(authResult.toJsonString())
             } catch {
                 reject("0", "\(error)", nil)
             }
         }
     }
     
-    // MARK: - Helper Methods
-    private func toJsonString(_ input: Any) -> String {
-        let encodedData = try JSONEncoder().encode(input)
-        let jsonString = String(data: encodedData, encoding: .utf8)
-        return jsonString
+    // MARK: - User Methods
+    
+    @objc(addDevicePasskey:withRejecter:)
+    func addDevicePasskey(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                try await passage.addDevice()
+                resolve(nil)
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
     }
     
 }

@@ -138,4 +138,22 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   // endregion
 
+  // region USER METHODS
+
+  @ReactMethod
+  fun addDevicePasskey(promise: Promise) {
+    CoroutineScope((Dispatchers.IO)).launch {
+      try {
+        val user = passage.getCurrentUser() ?: throw Exception("Could not get current user.")
+        val credential = user.addDevicePasskey(currentActivity!!)
+        val jsonString = Gson().toJson(credential)
+        promise.resolve(jsonString)
+      } catch (e: Exception) {
+        promise.reject(e)
+      }
+    }
+  }
+
+  // endregion
+
 }

@@ -24,11 +24,18 @@ export type AuthResult = {
   refreshTokenExpiration: number | null;
 };
 
+export type PasskeyCredential = {
+  id: string | null;
+  friendlyName: string | null;
+};
+
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
 type LoginWithPasskey = () => Promise<AuthResult>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
+// type AddDevicePasskey = () => Promise<PasskeyCredential>; // TODO: iOS SDK does not return anything, need to fix later.
+type AddDevicePasskey = () => Promise<void>;
 
 interface Passage {
   registerWithPasskey: RegisterWithPasskey;
@@ -39,6 +46,7 @@ interface Passage {
   newRegisterMagicLink: AuthWithoutPasskey;
   newLoginMagicLink: AuthWithoutPasskey;
   magicLinkActivate: MagicLinkActivate;
+  addDevicePasskey: AddDevicePasskey;
 }
 
 const registerWithPasskey: RegisterWithPasskey = async (identifier) => {
@@ -81,6 +89,12 @@ const magicLinkActivate: MagicLinkActivate = async (magicLink) => {
   return parsedResult;
 };
 
+const addDevicePasskey: AddDevicePasskey = async () => {
+  const result = await PassageReactNative.addDevicePasskey();
+  const parsedResult = JSON.parse(result);
+  return parsedResult;
+};
+
 const PassageMethods: Passage = {
   registerWithPasskey,
   loginWithPasskey,
@@ -90,6 +104,7 @@ const PassageMethods: Passage = {
   newRegisterMagicLink,
   newLoginMagicLink,
   magicLinkActivate,
+  addDevicePasskey,
 };
 
 export default PassageMethods;

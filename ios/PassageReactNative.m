@@ -38,4 +38,12 @@ RCT_EXTERN_METHOD(magicLinkActivate:(NSString *)userMagicLink
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(addDevicePasskey:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
++ (BOOL)requiresMainQueueSetup
+ {
+   return NO;
+ }
+
 @end
