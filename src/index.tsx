@@ -57,6 +57,9 @@ type LoginWithPasskey = () => Promise<AuthResult>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
+type GetAuthToken = () => Promise<string | null>;
+type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
+type RefreshAuthToken = () => Promise<string | null>;
 type AddDevicePasskey = () => Promise<DevicePasskey>;
 type DeleteDevicePasskey = (passkeyId: string) => Promise<DevicePasskey>;
 type EditDevicePasskey = (
@@ -77,6 +80,9 @@ interface Passage {
   newRegisterMagicLink: AuthWithoutPasskey;
   newLoginMagicLink: AuthWithoutPasskey;
   magicLinkActivate: MagicLinkActivate;
+  getAuthToken: GetAuthToken;
+  isAuthTokenValid: IsAuthTokenValid;
+  refreshAuthToken: RefreshAuthToken;
   getCurrentUser: GetCurrentUser;
   signOut: VoidMethod;
   addDevicePasskey: AddDevicePasskey;
@@ -85,6 +91,8 @@ interface Passage {
   changeEmail: ChangeEmail;
   changePhone: ChangePhone;
 }
+
+// PASSKEY METHODS
 
 const registerWithPasskey: RegisterWithPasskey = async (identifier) => {
   const result = await PassageReactNative.registerWithPasskey(identifier);
@@ -97,6 +105,8 @@ const loginWithPasskey: LoginWithPasskey = async () => {
   const parsedResult = JSON.parse(result);
   return parsedResult;
 };
+
+// OTP METHODS
 
 const newRegisterOneTimePasscode: AuthWithoutPasskey = async (identifier) => {
   return await PassageReactNative.newRegisterOneTimePasscode(identifier);
@@ -112,6 +122,8 @@ const oneTimePasscodeActivate: OTPActivate = async (otp, otpId) => {
   return parsedResult;
 };
 
+// MAGIC LINK METHODS
+
 const newRegisterMagicLink: AuthWithoutPasskey = async (identifier) => {
   return await PassageReactNative.newRegisterMagicLink(identifier);
 };
@@ -125,6 +137,25 @@ const magicLinkActivate: MagicLinkActivate = async (magicLink) => {
   const parsedResult = JSON.parse(result);
   return parsedResult;
 };
+
+// TOKEN METHODS
+
+const getAuthToken: GetAuthToken = async () => {
+  const authToken = await PassageReactNative.getAuthToken();
+  return authToken;
+};
+
+const isAuthTokenValid: IsAuthTokenValid = async (token) => {
+  const isValid = await PassageReactNative.isAuthTokenValid(token);
+  return isValid || false;
+};
+
+const refreshAuthToken: RefreshAuthToken = async () => {
+  const newAuthToken = await PassageReactNative.refreshAuthToken();
+  return newAuthToken;
+};
+
+// USER METHODS
 
 const getCurrentUser: GetCurrentUser = async () => {
   const result = await PassageReactNative.getCurrentUser();
@@ -180,6 +211,9 @@ const PassageMethods: Passage = {
   newRegisterMagicLink,
   newLoginMagicLink,
   magicLinkActivate,
+  getAuthToken,
+  isAuthTokenValid,
+  refreshAuthToken,
   getCurrentUser,
   signOut,
   addDevicePasskey,

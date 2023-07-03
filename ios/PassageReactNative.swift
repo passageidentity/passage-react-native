@@ -147,6 +147,42 @@ class PassageReactNative: NSObject {
         }
     }
     
+    // MARK: - Token Methods
+    
+    @objc(getAuthToken:withRejecter:)
+    func getAuthToken(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let token = passage.tokenStore.authToken
+        resolve(token)
+    }
+    
+    @objc(isAuthTokenValid:withResolver:withRejecter:)
+    func isAuthTokenValid(
+        authToken: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let isValid = PassageTokenUtils.isTokenExpired(token: authToken)
+        resolve(isValid)
+    }
+    
+    @objc(refreshAuthToken:withRejecter:)
+    func refreshAuthToken(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                let authResult = try await passage.refresh()
+                resolve(authResult.authToken)
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
+    }
+    
     // MARK: - User Methods
     
     @objc(getCurrentUser:withRejecter:)

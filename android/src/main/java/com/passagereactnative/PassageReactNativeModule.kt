@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.google.gson.Gson
 import id.passage.android.Passage
+import id.passage.android.PassageToken
 
 @Suppress("unused")
 class PassageReactNativeModule(reactContext: ReactApplicationContext) :
@@ -137,6 +138,31 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   // endregion
+
+  // region TOKEN METHODS
+  @ReactMethod
+  fun getAuthToken(promise: Promise) {
+    val token = passage.tokenStore.authToken
+    promise.resolve(token)
+  }
+
+  @ReactMethod
+  fun isAuthTokenValid(authToken: String, promise: Promise) {
+    val isValid = PassageToken.isAuthTokenValid(authToken)
+    promise.resolve(isValid)
+  }
+
+  @ReactMethod
+  fun refreshAuthToken(promise: Promise) {
+    CoroutineScope((Dispatchers.IO)).launch {
+      try {
+        val newToken = passage.tokenStore.getValidAuthToken()
+        promise.resolve(newToken)
+      } catch (e: Exception) {
+        promise.resolve(null)
+      }
+    }
+  }
 
   // region USER METHODS
 

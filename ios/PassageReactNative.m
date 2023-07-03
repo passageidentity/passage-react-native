@@ -37,6 +37,18 @@ RCT_EXTERN_METHOD(magicLinkActivate:(NSString *)userMagicLink
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+// MARK: - Token Methods
+RCT_EXTERN_METHOD(getAuthToken:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(isAuthTokenValid:(NSString *)authToken
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(refreshAuthToken:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+
 // MARK: - User Methods
 RCT_EXTERN_METHOD(getCurrentUser:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
