@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">PassageReactNativeExample</string>
+    <!-- Required Passage app settings -->
+    <string name="passage_app_id">KZ520QJSiFRLvbBvraaAgYuf</string>
+    <string name="passage_auth_origin">try.passage.id</string>
+    <string name="asset_statements">
+      [{
+        \"include\": \"https://@string/passage_auth_origin/.well-known/assetlinks.json\"
+      }]
+    </string>
+
+    <!-- Optional Passage app settings -->
+    <string name="passage_language">en</string><!-- defaults to en -->
+    <string name="use_passage_store">true</string><!-- defaults to true -->
+
 </resources>
