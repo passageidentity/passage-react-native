@@ -54,6 +54,7 @@ export type DevicePasskey = {
 
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
 type LoginWithPasskey = () => Promise<AuthResult>;
+type DeviceSupportsPasskeys = () => Promise<boolean>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
@@ -74,6 +75,7 @@ type GetCurrentUser = () => Promise<PassageUser | null>;
 interface Passage {
   registerWithPasskey: RegisterWithPasskey;
   loginWithPasskey: LoginWithPasskey;
+  deviceSupportsPasskeys: DeviceSupportsPasskeys;
   newRegisterOneTimePasscode: AuthWithoutPasskey;
   newLoginOneTimePasscode: AuthWithoutPasskey;
   oneTimePasscodeActivate: OTPActivate;
@@ -104,6 +106,11 @@ const loginWithPasskey: LoginWithPasskey = async () => {
   const result = await PassageReactNative.loginWithPasskey();
   const parsedResult = JSON.parse(result);
   return parsedResult;
+};
+
+const deviceSupportsPasskeys: DeviceSupportsPasskeys = async () => {
+  const result = await PassageReactNative.deviceSupportsPasskeys();
+  return result || false;
 };
 
 // OTP METHODS
@@ -205,6 +212,7 @@ const changePhone: ChangePhone = async (newPhone) => {
 const PassageMethods: Passage = {
   registerWithPasskey,
   loginWithPasskey,
+  deviceSupportsPasskeys,
   newRegisterOneTimePasscode,
   newLoginOneTimePasscode,
   oneTimePasscodeActivate,

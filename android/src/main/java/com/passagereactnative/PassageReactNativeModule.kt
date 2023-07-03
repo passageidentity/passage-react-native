@@ -1,5 +1,6 @@
 package com.passagereactnative
 
+import android.os.Build
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -53,6 +54,12 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         promise.reject(e)
       }
     }
+  }
+
+  @ReactMethod
+  fun deviceSupportsPasskey(promise: Promise) {
+    val supportsPasskeys = Build.VERSION.SDK_INT > 27
+    promise.resolve(supportsPasskeys)
   }
 
   // endregion

@@ -10,6 +10,10 @@ RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier
 RCT_EXTERN_METHOD(loginWithPasskey:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+
+RCT_EXTERN_METHOD(devivceSupportsPasskeys:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 // MARK: - OTP Methods
 RCT_EXTERN_METHOD(newRegisterOneTimePasscode:(NSString *)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve

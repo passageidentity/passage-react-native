@@ -46,6 +46,18 @@ class PassageReactNative: NSObject {
         }
     }
     
+    @objc(devivceSupportsPasskeys:withRejecter:)
+    func devivceSupportsPasskeys(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        if #available(iOS 16.0, *) {
+            resolve(true)
+        } else {
+            resolve(false)
+        }
+    }
+    
     // MARK: - OTP Methods
     
     @objc(newRegisterOneTimePasscode:withResolver:withRejecter:)
