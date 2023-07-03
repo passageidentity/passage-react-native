@@ -52,6 +52,10 @@ RCT_EXTERN_METHOD(isAuthTokenValid:(NSString *)authToken
 RCT_EXTERN_METHOD(refreshAuthToken:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+// MARK: - App Methods
+RCT_EXTERN_METHOD(getAppInfo:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 
 // MARK: - User Methods
 RCT_EXTERN_METHOD(getCurrentUser:(RCTPromiseResolveBlock)resolve
