@@ -1,5 +1,11 @@
 import Passage
 
+internal func dictToJsonString(_ dict: [String: Any]) -> String {
+    let jsonData = try! JSONSerialization.data(withJSONObject: dict, options: [])
+    let jsonString = String(data: jsonData, encoding: .utf8)!
+    return jsonString
+}
+
 internal extension AuthResult {
     
      func toDictionary() -> [String: Any] {
@@ -13,9 +19,7 @@ internal extension AuthResult {
      }
     
     func toJsonString() -> String {
-        let jsonData = try! JSONSerialization.data(withJSONObject: toDictionary(), options: [])
-        let jsonString = String(data: jsonData, encoding: .utf8)!
-        return jsonString
+        return dictToJsonString(toDictionary())
     }
     
  }
@@ -36,10 +40,35 @@ internal extension DeviceInfo {
         return authResultDict
     }
    
-   func toJsonString() -> String {
-       let jsonData = try! JSONSerialization.data(withJSONObject: toDictionary(), options: [])
-       let jsonString = String(data: jsonData, encoding: .utf8)!
-       return jsonString
-   }
+    func toJsonString() -> String {
+        return dictToJsonString(toDictionary())
+    }
+    
+}
+
+internal extension AppInfo {
+    
+    func toDictionary() -> [String: Any] {
+        var appInfoDict: [String : Any] = [
+            "allowedIdentifier": allowedIdentifier,
+            "authFallbackMethod": authFallbackMethod?.rawValue,
+            "authOrigin": authOrigin,
+            "ephemeral": ephemeral,
+            "id": id,
+            "loginURL": loginURL,
+            "name": name,
+            "publicSignup": publicSignup,
+            "redirectURL": redirectURL,
+            "requiredIdentifier": requiredIdentifier,
+            "requireEmailVerification": requireEmailVerification,
+            "requireIdentifierVerification": requireIdentifierVerification,
+            "sessionTimeoutLength": sessionTimeoutLength
+        ]
+        return appInfoDict
+    }
+    
+    func toJsonString() -> String {
+        return dictToJsonString(toDictionary())
+    }
     
 }

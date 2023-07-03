@@ -52,6 +52,38 @@ export type DevicePasskey = {
   usageCount: number | null;
 };
 
+export enum AllowedFallbackAuth {
+  LoginCode = 'otp',
+  MagicLink = 'magic_link',
+  None = 'none',
+}
+
+export enum Identifier {
+  email = 'email',
+  phone = 'phone',
+  both = 'both',
+}
+
+export enum RequiredIdentifier {
+  Phone = 'phone',
+  Email = 'email',
+  Both = 'both',
+  Either = 'either',
+}
+
+export type PassageAppInfo = {
+  allowedIdentifier: Identifier;
+  authFallbackMethod: AllowedFallbackAuth;
+  authOrigin: string;
+  id: string;
+  name: string;
+  publicSignup: boolean;
+  redirectUrl: string;
+  requiredIdentifier: RequiredIdentifier;
+  requireIdentifierVerification: boolean;
+  sessionTimeoutLength: number;
+};
+
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
 type LoginWithPasskey = () => Promise<AuthResult>;
 type DeviceSupportsPasskeys = () => Promise<boolean>;
@@ -61,6 +93,7 @@ type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
 type GetAuthToken = () => Promise<string | null>;
 type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
 type RefreshAuthToken = () => Promise<string | null>;
+type GetAppInfo = () => Promise<PassageAppInfo>;
 type AddDevicePasskey = () => Promise<DevicePasskey>;
 type DeleteDevicePasskey = (passkeyId: string) => Promise<DevicePasskey>;
 type EditDevicePasskey = (
@@ -85,6 +118,7 @@ interface Passage {
   getAuthToken: GetAuthToken;
   isAuthTokenValid: IsAuthTokenValid;
   refreshAuthToken: RefreshAuthToken;
+  getAppInfo: GetAppInfo;
   getCurrentUser: GetCurrentUser;
   signOut: VoidMethod;
   addDevicePasskey: AddDevicePasskey;
@@ -162,6 +196,14 @@ const refreshAuthToken: RefreshAuthToken = async () => {
   return newAuthToken;
 };
 
+// APP METHODS
+
+const getAppInfo: GetAppInfo = async () => {
+  const result = await PassageReactNative.getAppInfo();
+  const parsedResult = JSON.parse(result);
+  return parsedResult;
+};
+
 // USER METHODS
 
 const getCurrentUser: GetCurrentUser = async () => {
@@ -222,6 +264,7 @@ const PassageMethods: Passage = {
   getAuthToken,
   isAuthTokenValid,
   refreshAuthToken,
+  getAppInfo,
   getCurrentUser,
   signOut,
   addDevicePasskey,

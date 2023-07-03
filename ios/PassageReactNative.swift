@@ -195,6 +195,26 @@ class PassageReactNative: NSObject {
         }
     }
     
+    // MARK: - App Methods
+    
+    @objc(getAppInfo:withRejecter:)
+    func getAppInfo(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                guard let appInfo = try await PassageAuth.appInfo() else {
+                    reject("0", "Error getting app info.", nil)
+                    return
+                }
+                resolve(appInfo.toJsonString())
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
+    }
+    
     // MARK: - User Methods
     
     @objc(getCurrentUser:withRejecter:)
@@ -203,7 +223,7 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
-            let user = try? passage.getCurrentUser()
+            let user = try? await passage.getCurrentUser()
             resolve(user)
         }
     }
@@ -214,12 +234,8 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
-            do {
-                await passage.signOut()
-                resolve(nil)
-            } catch {
-                reject("0", "\(error)", nil)
-            }
+            try? await passage.signOut()
+            resolve(nil)
         }
     }
     

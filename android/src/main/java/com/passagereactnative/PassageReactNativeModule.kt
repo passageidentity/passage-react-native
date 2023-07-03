@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageToken
+import id.passage.android.exceptions.AppInfoException
 
 @Suppress("unused")
 class PassageReactNativeModule(reactContext: ReactApplicationContext) :
@@ -170,6 +171,22 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
       }
     }
   }
+
+  // region APP METHODS
+
+  fun getAppInfo(promise: Promise) {
+    CoroutineScope((Dispatchers.IO)).launch {
+      try {
+        val appInfo = passage.appInfo() ?: throw AppInfoException("Exception getting app info")
+        val jsonString = Gson().toJson(appInfo)
+        promise.resolve(jsonString)
+      } catch (e: Exception) {
+        promise.reject(e)
+      }
+    }
+  }
+
+  // endregion
 
   // region USER METHODS
 
