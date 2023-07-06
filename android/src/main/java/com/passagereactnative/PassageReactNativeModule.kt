@@ -134,9 +134,22 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun magicLinkActivate(magicLink: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val authResult = passage.magicLinkActivate(magicLink)
+        val jsonString = Gson().toJson(authResult)
+        promise.resolve(jsonString)
+      } catch (e: Exception) {
+        promise.reject(e)
+      }
+    }
+  }
+
+  @ReactMethod
+  fun getMagicLinkStatus(magicLinkId: String, promise: Promise) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val authResult = passage.getMagicLinkStatus(magicLinkId)
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
       } catch (e: Exception) {

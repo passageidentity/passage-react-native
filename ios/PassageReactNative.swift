@@ -159,6 +159,22 @@ class PassageReactNative: NSObject {
         }
     }
     
+    @objc(getMagicLinkStatus:withResolver:withRejecter:)
+    func getMagicLinkStatus(
+        magicLinkId: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                let authResult = try await passage.getMagicLinkStatus(id: magicLinkId)
+                resolve(authResult.toJsonString())
+            } catch {
+                reject("0", "\(error)", nil)
+            }
+        }
+    }
+    
     // MARK: - Token Methods
     
     @objc(getAuthToken:withRejecter:)
