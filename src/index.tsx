@@ -90,6 +90,7 @@ type DeviceSupportsPasskeys = () => Promise<boolean>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
+type GetMagicLinkStatus = (magicLinkId: string) => Promise<AuthResult | null>;
 type GetAuthToken = () => Promise<string | null>;
 type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
 type RefreshAuthToken = () => Promise<string | null>;
@@ -105,7 +106,7 @@ type ChangeEmail = (newEmail: string) => Promise<string>;
 type ChangePhone = (newPhone: string) => Promise<string>;
 type GetCurrentUser = () => Promise<PassageUser | null>;
 
-interface Passage {
+export interface Passage {
   registerWithPasskey: RegisterWithPasskey;
   loginWithPasskey: LoginWithPasskey;
   deviceSupportsPasskeys: DeviceSupportsPasskeys;
@@ -115,6 +116,7 @@ interface Passage {
   newRegisterMagicLink: AuthWithoutPasskey;
   newLoginMagicLink: AuthWithoutPasskey;
   magicLinkActivate: MagicLinkActivate;
+  getMagicLinkStatus: GetMagicLinkStatus;
   getAuthToken: GetAuthToken;
   isAuthTokenValid: IsAuthTokenValid;
   refreshAuthToken: RefreshAuthToken;
@@ -175,6 +177,13 @@ const newLoginMagicLink: AuthWithoutPasskey = async (identifier) => {
 
 const magicLinkActivate: MagicLinkActivate = async (magicLink) => {
   const result = await PassageReactNative.magicLinkActivate(magicLink);
+  const parsedResult = JSON.parse(result);
+  return parsedResult;
+};
+
+const getMagicLinkStatus: GetMagicLinkStatus = async (magicLinkId) => {
+  const result = await PassageReactNative.getMagicLinkStatus(magicLinkId);
+  if (!result) return null;
   const parsedResult = JSON.parse(result);
   return parsedResult;
 };
@@ -261,6 +270,7 @@ const PassageMethods: Passage = {
   newRegisterMagicLink,
   newLoginMagicLink,
   magicLinkActivate,
+  getMagicLinkStatus,
   getAuthToken,
   isAuthTokenValid,
   refreshAuthToken,
