@@ -240,7 +240,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             let user = try? await passage.getCurrentUser()
-            resolve(user)
+            resolve(user?.toJsonString())
         }
     }
     

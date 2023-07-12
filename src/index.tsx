@@ -37,8 +37,13 @@ export type PassageUser = {
   loginCount: number;
   userMetadata: any;
   webauthn: boolean;
-  webauthnDevices: Array<DevicePasskey>;
+  // TODO: iOS SDK only returns device passkey id, not entire device object.
+  webauthnDevices: Array<DevicePasskeyId>;
   webauthnTypes: Array<string>;
+};
+
+export type DevicePasskeyId = {
+  id: string;
 };
 
 export type DevicePasskey = {
@@ -210,6 +215,12 @@ const refreshAuthToken: RefreshAuthToken = async () => {
 const getAppInfo: GetAppInfo = async () => {
   const result = await PassageReactNative.getAppInfo();
   const parsedResult = JSON.parse(result);
+  if (
+    parsedResult.authFallbackMethod &&
+    parsedResult.authFallbackMethod === 'magicLink'
+  ) {
+    parsedResult.authFallbackMethod = 'magic_link';
+  }
   return parsedResult;
 };
 

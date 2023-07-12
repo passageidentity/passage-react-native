@@ -1,6 +1,7 @@
 package com.passagereactnative
 
 import android.os.Build
+import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -93,7 +94,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun oneTimePasscodeActivate(otp: String, otpId: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val authResult = passage.oneTimePasscodeActivate(otp, otpId)
         val jsonString = Gson().toJson(authResult)
@@ -175,7 +176,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun refreshAuthToken(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val newToken = passage.tokenStore.getValidAuthToken()
         promise.resolve(newToken)
@@ -187,8 +188,9 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   // region APP METHODS
 
+  @ReactMethod
   fun getAppInfo(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val appInfo = passage.appInfo() ?: throw AppInfoException("Exception getting app info")
         val jsonString = Gson().toJson(appInfo)
@@ -205,10 +207,11 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun getCurrentUser(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser()
-        promise.resolve(user)
+        val jsonString = Gson().toJson(user)
+        promise.resolve(jsonString)
       } catch (e: Exception) {
         promise.resolve(null)
       }
@@ -217,7 +220,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun signOut(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         passage.signOutCurrentUser()
         promise.resolve(null)
@@ -229,7 +232,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun addDevicePasskey(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw Exception("User not authenticated.")
         val credential = user.addDevicePasskey(currentActivity!!)
@@ -243,7 +246,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun deleteDevicePasskey(deviceId: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw Exception("User not authenticated.")
         user.deleteDevicePasskey(deviceId)
@@ -256,7 +259,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun editDevicePasskeyName(deviceId: String, newDevicePasskeyName: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw Exception("User not authenticated.")
         val credential = user.editDevicePasskeyName(deviceId, newDevicePasskeyName)
@@ -269,7 +272,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun changeEmail(newEmail: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw Exception("User not authenticated.")
         val magicLinkId = user.changeEmail(newEmail)?.id
@@ -282,7 +285,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun changePhone(newPhone: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw Exception("User not authenticated.")
         val magicLinkId = user.changePhone(newPhone)?.id
