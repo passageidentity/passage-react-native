@@ -14,7 +14,7 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         guard #available(iOS 16.0, *) else {
-            reject("0", "Only available in iOS 16+", nil)
+            reject("PASSKEYS_NOT_SUPPORTED", "Passkeys only supported in iOS 16+", nil)
             return
         }
         Task {
@@ -22,7 +22,11 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
                 resolve(authResult.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                var errorCode = "REGISTER_WITH_PASSKEY_ERROR"
+                if error = PassageASAuthorizationError.canceled {
+                    errorCode = "USER_CANCELLED"
+                }
+                reject(errorCode, "\(error)", nil)
             }
         }
     }
@@ -33,7 +37,7 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         guard #available(iOS 16.0, *) else {
-            reject("0", "Only available in iOS 16+", nil)
+            reject("PASSKEYS_NOT_SUPPORTED", "Passkeys only supported in iOS 16+", nil)
             return
         }
         Task {
@@ -41,7 +45,11 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.loginWithPasskey()
                 resolve(authResult.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                var errorCode = "REGISTER_WITH_PASSKEY_ERROR"
+                if error = PassageASAuthorizationError.canceled {
+                    errorCode = "USER_CANCELLED"
+                }
+                reject(errorCode, "\(error)", nil)
             }
         }
     }
@@ -260,11 +268,15 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
+        guard #available(iOS 16.0, *) else {
+            reject("PASSKEYS_NOT_SUPPORTED", "Passkeys only supported in iOS 16+", nil)
+            return
+        }
         Task {
             do {
                 try await passage.addDevice()
                 // TODO: PassageAuth method should return Device Info, but does not.
-                resolve("")
+                resolve(nil)
             } catch {
                 reject("0", "\(error)", nil)
             }

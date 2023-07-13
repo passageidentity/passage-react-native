@@ -12,6 +12,8 @@ import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.LoginWithPasskeyCancellationException
+import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 
 @Suppress("unused")
 class PassageReactNativeModule(reactContext: ReactApplicationContext) :
@@ -39,7 +41,13 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
       } catch (e: Exception) {
-        promise.reject(e)
+        var errorCode = "REGISTER_WITH_PASSKEY_ERROR"
+        when (e) {
+          is RegisterWithPasskeyCancellationException -> {
+            errorCode = "USER_CANCELLED"
+          }
+        }
+        promise.reject(errorCode, e.message, e)
       }
     }
   }
@@ -52,7 +60,13 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
       } catch (e: Exception) {
-        promise.reject(e)
+        var errorCode = "LOGIN_WITH_PASSKEY_ERROR"
+        when (e) {
+          is LoginWithPasskeyCancellationException -> {
+            errorCode = "USER_CANCELLED"
+          }
+        }
+        promise.reject(errorCode, e.message, e)
       }
     }
   }
