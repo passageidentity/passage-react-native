@@ -19,6 +19,7 @@ const PassageReactNative = NativeModules.PassageReactNative
 
 export enum PassageErrorCode {
   PasskeyError = 'PASSKEY_ERROR',
+  PasskeysNotSupported = 'PASSKEYS_NOT_SUPPORTED',
   UserCancelled = 'USER_CANCELLED',
   UserUnauthorized = 'USER_UNAUTHORIZED',
   ChangeEmailError = 'CHANGE_EMAIL_ERROR',

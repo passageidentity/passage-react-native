@@ -172,11 +172,12 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         promise.resolve(jsonString)
       } catch (e: Exception) {
         var errorCode = "MAGIC_LINK_ERROR"
-        when (e) {
-          is GetMagicLinkStatusInvalidException -> {
-            errorCode = "MAGIC_LINK_INVALID"
-          }
-        }
+        // TODO: Once we "invalid" error on iOS, we can uncomment this:
+//        when (e) {
+//          is GetMagicLinkStatusInvalidException -> {
+//            errorCode = "MAGIC_LINK_INVALID"
+//          }
+//        }
         promise.reject(errorCode, e.message, e)
       }
     }
@@ -214,7 +215,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   fun getAppInfo(promise: Promise) {
     CoroutineScope((Dispatchers.IO)).launch {
       try {
-        val appInfo = passage.appInfo() ?: throw AppInfoException("Exception getting app info")
+        val appInfo = passage.appInfo() ?: throw AppInfoException("Error getting app info")
         val jsonString = Gson().toJson(appInfo)
         promise.resolve(jsonString)
       } catch (e: Exception) {
