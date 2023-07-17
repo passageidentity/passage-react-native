@@ -21,12 +21,10 @@ class PassageReactNative: NSObject {
             do {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
                 resolve(authResult.toJsonString())
+            } catch PassageASAuthorizationError.canceled {
+                reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
-                var errorCode = "PASSKEY_ERROR"
-                if error == PassageASAuthorizationError.canceled {
-                    errorCode = "USER_CANCELLED"
-                }
-                reject(errorCode, "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
@@ -44,18 +42,16 @@ class PassageReactNative: NSObject {
             do {
                 let authResult = try await passage.loginWithPasskey()
                 resolve(authResult.toJsonString())
+            } catch PassageASAuthorizationError.canceled {
+                reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
-                var errorCode = "PASSKEY_ERROR"
-                if error == PassageASAuthorizationError.canceled {
-                    errorCode = "USER_CANCELLED"
-                }
-                reject(errorCode, "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
     
-    @objc(devivceSupportsPasskeys:withRejecter:)
-    func devivceSupportsPasskeys(
+    @objc(deviceSupportsPasskeys:withRejecter:)
+    func deviceSupportsPasskeys(
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -247,8 +243,12 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
-            let user = try? await passage.getCurrentUser()
-            resolve(user)
+            do {
+                let user = try await passage.getCurrentUser()
+                resolve(user?.toJsonString())
+            } catch {
+                resolve(nil)
+            }
         }
     }
     
@@ -274,9 +274,8 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                try await passage.addDevice()
-                // TODO: PassageAuth method should return Device Info, but does not.
-                resolve(nil)
+                let device = try await passage.addDevice()
+                resolve(device.toJsonString())
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
             }
@@ -327,8 +326,16 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        // TODO: PassageAuth method is private, need to make public
-        reject("CHANGE_EMAIL_ERROR", "Method not available", nil)
+        Task {
+            do {
+                let magicLink = try await passage.changeEmail(newEmail: newEmail)
+                resolve(magicLink?.id)
+            } catch PassageAPIError.unauthorized(let unauthorizedError) {
+                reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
+            } catch {
+                reject("CHANGE_EMAIL_ERROR", "\(error)", nil)
+            }
+        }
     }
     
     @objc(changePhone:withResolver:withRejecter:)
@@ -337,8 +344,16 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        // TODO: PassageAuth method is private, need to make public
-        reject("CHANGE_PHONE_ERROR", "Method not available", nil)
+        Task {
+            do {
+                let magicLink = try await passage.changePhone(newPhone: newPhone)
+                resolve(magicLink?.id)
+            } catch PassageAPIError.unauthorized(let unauthorizedError) {
+                reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
+            } catch {
+                reject("CHANGE_PHONE_ERROR", "\(error)", nil)
+            }
+        }
     }
     
 }

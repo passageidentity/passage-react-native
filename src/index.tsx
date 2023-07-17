@@ -277,15 +277,19 @@ const refreshAuthToken: RefreshAuthToken = async () => {
 // APP METHODS
 
 const getAppInfo: GetAppInfo = async () => {
-  const result = await PassageReactNative.getAppInfo();
-  const parsedResult = JSON.parse(result);
-  if (
-    parsedResult.authFallbackMethod &&
-    parsedResult.authFallbackMethod === 'magicLink'
-  ) {
-    parsedResult.authFallbackMethod = 'magic_link';
+  try {
+    const result = await PassageReactNative.getAppInfo();
+    const parsedResult = JSON.parse(result);
+    if (
+      parsedResult.authFallbackMethod &&
+      parsedResult.authFallbackMethod === 'magicLink'
+    ) {
+      parsedResult.authFallbackMethod = 'magic_link';
+    }
+    return parsedResult;
+  } catch (error: any) {
+    throw new PassageError(error.code, error.message);
   }
-  return parsedResult;
 };
 
 // USER METHODS

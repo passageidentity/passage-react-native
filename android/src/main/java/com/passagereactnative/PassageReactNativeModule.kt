@@ -111,7 +111,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun oneTimePasscodeActivate(otp: String, otpId: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val authResult = passage.oneTimePasscodeActivate(otp, otpId)
         val jsonString = Gson().toJson(authResult)
@@ -211,9 +211,9 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   // region APP METHODS
-
+  @ReactMethod
   fun getAppInfo(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val appInfo = passage.appInfo() ?: throw AppInfoException("Error getting app info")
         val jsonString = Gson().toJson(appInfo)
@@ -230,10 +230,11 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun getCurrentUser(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser()
-        promise.resolve(user)
+        val jsonString = Gson().toJson(user)
+        promise.resolve(jsonString)
       } catch (e: Exception) {
         promise.resolve(null)
       }
@@ -242,7 +243,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun signOut(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         passage.signOutCurrentUser()
         promise.resolve(null)
@@ -254,7 +255,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun addDevicePasskey(promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
         val credential = user.addDevicePasskey(currentActivity!!)
@@ -277,7 +278,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun deleteDevicePasskey(deviceId: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
         user.deleteDevicePasskey(deviceId)
@@ -296,7 +297,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun editDevicePasskeyName(deviceId: String, newDevicePasskeyName: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
         val credential = user.editDevicePasskeyName(deviceId, newDevicePasskeyName)
@@ -315,7 +316,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun changeEmail(newEmail: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
         val magicLinkId = user.changeEmail(newEmail)?.id
@@ -334,7 +335,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun changePhone(newPhone: String, promise: Promise) {
-    CoroutineScope((Dispatchers.IO)).launch {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
         val magicLinkId = user.changePhone(newPhone)?.id
