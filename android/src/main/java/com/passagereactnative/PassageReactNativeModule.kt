@@ -76,7 +76,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun deviceSupportsPasskey(promise: Promise) {
+  fun deviceSupportsPasskeys(promise: Promise) {
     val supportsPasskeys = Build.VERSION.SDK_INT > 27
     promise.resolve(supportsPasskeys)
   }
