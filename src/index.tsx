@@ -360,7 +360,13 @@ const isAuthTokenValid: IsAuthTokenValid = async (token) => {
   return isValid || false;
 };
 
-const refreshAuthToken: RefreshAuthToken = async () => {
+/**
+ * Refreshes, gets, and saves a new authToken for the currently authenticated user using their refresh token
+ *
+ * @return {Promise<string>} Returns the new auth token.
+ * @throws {PassageError}
+ */
+const refreshAuthToken: RefreshAuthToken = async (): Promise<string> => {
   try {
     const newAuthToken = await PassageReactNative.refreshAuthToken();
     return newAuthToken;
@@ -371,7 +377,13 @@ const refreshAuthToken: RefreshAuthToken = async () => {
 
 // APP METHODS
 
-const getAppInfo: GetAppInfo = async () => {
+/**
+ * Get information about an app.
+ *
+ * @return {Promise<PassageAppInfo>} A data object containing app information, authentication policy, etc.
+ * @throws {PassageError}
+ */
+const getAppInfo: GetAppInfo = async (): Promise<PassageAppInfo> => {
   try {
     const result = await PassageReactNative.getAppInfo();
     const parsedResult = JSON.parse(result);
