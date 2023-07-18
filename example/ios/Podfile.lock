@@ -78,10 +78,10 @@ PODS:
   - hermes-engine/Pre-built (0.71.10)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - Passage (1.1.2):
+  - Passage (1.1.3):
     - SwiftKeychainWrapper
   - passage-react-native (0.1.0):
-    - Passage
+    - Passage (= 1.1.3)
     - React-Core
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -418,7 +418,7 @@ PODS:
     - React-jsi (= 0.71.10)
     - React-logger (= 0.71.10)
     - React-perflogger (= 0.71.10)
-  - SocketRocket (0.6.0)
+  - SocketRocket (0.6.1)
   - SwiftKeychainWrapper (4.0.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -598,8 +598,8 @@ SPEC CHECKSUMS:
   hermes-engine: d27603b55a48402501ad1928c05411dae9cd6b85
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Passage: 6e3b423295b6bb9e3fd84889bdde19450fb16af7
-  passage-react-native: 6af0204a7cc842be6a318a7f73ea4bb7874eb421
+  Passage: a4f0c4dde0a7296d475ba609f593c691df02dc25
+  passage-react-native: 870034cad5a3c6d16e7156c6b7992b501bf7de5f
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 8ef706f91e2b643cd32c26a57700b5f24fab0585
   RCTTypeSafety: 5fbddd8eb9242b91ac0d901c01da3673f358b1b7
@@ -627,7 +627,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: d13cc2d63286c633393d3a7f6f607cc2a09ec011
   React-runtimeexecutor: a9a1cd79996c9a0846e3232ecb25c64e1cc0172e
   ReactCommon: 65718685d4095d06b4b1af8042e12f1df2925c31
-  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
   Yoga: e7ea9e590e27460d28911403b894722354d73479
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

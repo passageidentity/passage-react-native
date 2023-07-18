@@ -46,6 +46,33 @@ internal extension DeviceInfo {
     
 }
 
+internal extension PassageUserInfo {
+    
+     func toDictionary() -> [String: Any] {
+         var userDict: [String : Any] = [
+            "createdAt": createdAt,
+            "email": email,
+            "emailVerified": emailVerified,
+            "id": id,
+            "lastLoginAt": lastLoginAt,
+            "loginCount": loginCount,
+            "phone": phone,
+            "phoneVerified": phoneVerified,
+            "status": status,
+            "updatedAt": updatedAt,
+            "webauthn": webauthn,
+            "webauthnDevices": webauthnDevices?.map { $0.toDictionary() },
+            "webauthnTypes": webauthnTypes
+         ]
+         return userDict
+     }
+    
+    func toJsonString() -> String {
+        return dictToJsonString(toDictionary())
+    }
+    
+ }
+
 internal extension AppInfo {
     
     func toDictionary() -> [String: Any] {

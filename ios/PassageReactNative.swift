@@ -14,15 +14,17 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         guard #available(iOS 16.0, *) else {
-            reject("0", "Only available in iOS 16+", nil)
+            reject("PASSKEYS_NOT_SUPPORTED", "Passkeys only supported in iOS 16+", nil)
             return
         }
         Task {
             do {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
                 resolve(authResult.toJsonString())
+            } catch PassageASAuthorizationError.canceled {
+                reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
@@ -33,21 +35,23 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         guard #available(iOS 16.0, *) else {
-            reject("0", "Only available in iOS 16+", nil)
+            reject("PASSKEYS_NOT_SUPPORTED", "Passkeys only supported in iOS 16+", nil)
             return
         }
         Task {
             do {
                 let authResult = try await passage.loginWithPasskey()
                 resolve(authResult.toJsonString())
+            } catch PassageASAuthorizationError.canceled {
+                reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
     
-    @objc(devivceSupportsPasskeys:withRejecter:)
-    func devivceSupportsPasskeys(
+    @objc(deviceSupportsPasskeys:withRejecter:)
+    func deviceSupportsPasskeys(
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -71,7 +75,7 @@ class PassageReactNative: NSObject {
                 let otpId = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifer).id
                 resolve(otpId)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("OTP_ERROR", "\(error)", nil)
             }
         }
     }
@@ -87,7 +91,7 @@ class PassageReactNative: NSObject {
                 let otpId = try await PassageAuth.newLoginOneTimePasscode(identifier: identifer).id
                 resolve(otpId)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("OTP_ERROR", "\(error)", nil)
             }
         }
     }
@@ -104,7 +108,7 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
                 resolve(authResult.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                reject("OTP_ERROR", "\(error)", nil)
             }
         }
     }
@@ -122,7 +126,7 @@ class PassageReactNative: NSObject {
                 let magicLinkId = try await PassageAuth.newRegisterMagicLink(identifier: identifer).id
                 resolve(magicLinkId)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("MAGIC_LINK_ERROR", "\(error)", nil)
             }
         }
     }
@@ -138,7 +142,7 @@ class PassageReactNative: NSObject {
                 let magicLinkId = try await PassageAuth.newLoginMagicLink(identifier: identifer).id
                 resolve(magicLinkId)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("MAGIC_LINK_ERROR", "\(error)", nil)
             }
         }
     }
@@ -154,7 +158,7 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.magicLinkActivate(userMagicLink: userMagicLink)
                 resolve(authResult.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                reject("MAGIC_LINK_ERROR", "\(error)", nil)
             }
         }
     }
@@ -170,7 +174,7 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.getMagicLinkStatus(id: magicLinkId)
                 resolve(authResult.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                reject("MAGIC_LINK_ERROR", "\(error)", nil)
             }
         }
     }
@@ -206,7 +210,7 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.refresh()
                 resolve(authResult.authToken)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("TOKEN_ERROR", "\(error)", nil)
             }
         }
     }
@@ -221,12 +225,12 @@ class PassageReactNative: NSObject {
         Task {
             do {
                 guard let appInfo = try await PassageAuth.appInfo() else {
-                    reject("0", "Error getting app info.", nil)
+                    reject("APP_INFO_ERROR", "Error getting app info.", nil)
                     return
                 }
                 resolve(appInfo.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                reject("APP_INFO_ERROR", "\(error)", nil)
             }
         }
     }
@@ -239,8 +243,12 @@ class PassageReactNative: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
-            let user = try? await passage.getCurrentUser()
-            resolve(user)
+            do {
+                let user = try await passage.getCurrentUser()
+                resolve(user?.toJsonString())
+            } catch {
+                resolve(nil)
+            }
         }
     }
     
@@ -260,13 +268,16 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
+        guard #available(iOS 16.0, *) else {
+            reject("PASSKEYS_NOT_SUPPORTED", "Passkeys only supported in iOS 16+", nil)
+            return
+        }
         Task {
             do {
-                try await passage.addDevice()
-                // TODO: PassageAuth method should return Device Info, but does not.
-                resolve("")
+                let device = try await passage.addDevice()
+                resolve(device.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
@@ -282,7 +293,7 @@ class PassageReactNative: NSObject {
                 try await passage.revokeDevice(deviceId: deviceId)
                 resolve(nil)
             } catch {
-                reject("0", "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
@@ -299,12 +310,12 @@ class PassageReactNative: NSObject {
                 guard let deviceInfo = try await passage
                     .editDevice(deviceId: deviceId, friendlyName: newDevicePasskeyName)
                 else {
-                    reject("0", "Error editing passkey name.", nil)
+                    reject("PASSKEY_ERROR", "Error editing passkey name.", nil)
                     return
                 }
                 resolve(deviceInfo.toJsonString())
             } catch {
-                reject("0", "\(error)", nil)
+                reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
@@ -315,8 +326,16 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        // TODO: PassageAuth method is private, need to make public
-        reject("0", "Method not available", nil)
+        Task {
+            do {
+                let magicLink = try await passage.changeEmail(newEmail: newEmail)
+                resolve(magicLink?.id)
+            } catch PassageAPIError.unauthorized(let unauthorizedError) {
+                reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
+            } catch {
+                reject("CHANGE_EMAIL_ERROR", "\(error)", nil)
+            }
+        }
     }
     
     @objc(changePhone:withResolver:withRejecter:)
@@ -325,8 +344,16 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        // TODO: PassageAuth method is private, need to make public
-        reject("0", "Method not available", nil)
+        Task {
+            do {
+                let magicLink = try await passage.changePhone(newPhone: newPhone)
+                resolve(magicLink?.id)
+            } catch PassageAPIError.unauthorized(let unauthorizedError) {
+                reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
+            } catch {
+                reject("CHANGE_PHONE_ERROR", "\(error)", nil)
+            }
+        }
     }
     
 }
