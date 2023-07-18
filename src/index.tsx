@@ -60,11 +60,11 @@ export type PassageUser = {
   loginCount: number;
   userMetadata: any;
   webauthn: boolean;
-  webauthnDevices: Array<DevicePasskey>;
+  webauthnDevices: Array<Passkey>;
   webauthnTypes: Array<string>;
 };
 
-export type DevicePasskey = {
+export type Passkey = {
   id: string;
   friendlyName: string;
   createdAt: string;
@@ -118,12 +118,12 @@ type GetAuthToken = () => Promise<string | null>;
 type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
 type RefreshAuthToken = () => Promise<string | null>;
 type GetAppInfo = () => Promise<PassageAppInfo>;
-type AddDevicePasskey = () => Promise<DevicePasskey>;
-type DeleteDevicePasskey = (passkeyId: string) => Promise<void>;
-type EditDevicePasskey = (
+type AddPasskey = () => Promise<Passkey>;
+type DeletePasskey = (passkeyId: string) => Promise<void>;
+type EditPasskeyName = (
   passkeyId: string,
   newPasskeyName: string
-) => Promise<DevicePasskey>;
+) => Promise<Passkey>;
 type VoidMethod = () => Promise<void>;
 type ChangeEmail = (newEmail: string) => Promise<string>;
 type ChangePhone = (newPhone: string) => Promise<string>;
@@ -146,9 +146,9 @@ export interface Passage {
   getAppInfo: GetAppInfo;
   getCurrentUser: GetCurrentUser;
   signOut: VoidMethod;
-  addDevicePasskey: AddDevicePasskey;
-  deleteDevicePasskey: DeleteDevicePasskey;
-  editDevicePasskeyName: EditDevicePasskey;
+  addPasskey: AddPasskey;
+  deletePasskey: DeletePasskey;
+  editPasskeyName: EditPasskeyName;
   changeEmail: ChangeEmail;
   changePhone: ChangePhone;
 }
@@ -427,7 +427,7 @@ const signOut: VoidMethod = async () => {
  * @return {Promise<DevicePasskey>} an object containing all of the data about the new passkey.
  * @throws {PassageError} When user cancels operation, app configuration was not done properly, etc.
  */
-const addDevicePasskey: AddDevicePasskey = async (): Promise<DevicePasskey> => {
+const addPasskey: AddPasskey = async (): Promise<Passkey> => {
   try {
     const result = await PassageReactNative.addDevicePasskey();
     const parsedResult = JSON.parse(result);
@@ -444,7 +444,7 @@ const addDevicePasskey: AddDevicePasskey = async (): Promise<DevicePasskey> => {
  * @param {string} passkeyId The id of the passkey to delete.
  * @throws {PassageError}
  */
-const deleteDevicePasskey: DeleteDevicePasskey = async (passkeyId: string) => {
+const deletePasskey: DeletePasskey = async (passkeyId: string) => {
   try {
     return await PassageReactNative.deleteDevicePasskey(passkeyId);
   } catch (error: any) {
@@ -460,10 +460,10 @@ const deleteDevicePasskey: DeleteDevicePasskey = async (passkeyId: string) => {
  * @return {Promise<DevicePasskey>} an object containing all of the data about the new passkey.
  * @throws {PassageError}
  */
-const editDevicePasskeyName: EditDevicePasskey = async (
+const editPasskeyName: EditPasskeyName = async (
   passkeyId: string,
   newPasskeyName: string
-): Promise<DevicePasskey> => {
+): Promise<Passkey> => {
   try {
     const result = await PassageReactNative.editDevicePasskeyName(
       passkeyId,
@@ -531,9 +531,9 @@ const PassageMethods: Passage = {
   getAppInfo,
   getCurrentUser,
   signOut,
-  addDevicePasskey,
-  deleteDevicePasskey,
-  editDevicePasskeyName,
+  addPasskey,
+  deletePasskey,
+  editPasskeyName,
   changeEmail,
   changePhone,
 };
