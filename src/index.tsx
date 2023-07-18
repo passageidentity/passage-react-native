@@ -355,7 +355,7 @@ const getAuthToken: GetAuthToken = async (): Promise<string | null> => {
  *
  * @return {Promise<boolean>} Returns true if the user has a valid auth token, false if not.
  */
-const isAuthTokenValid: IsAuthTokenValid = async (token) => {
+const isAuthTokenValid: IsAuthTokenValid = async (token): Promise<boolean> => {
   const isValid = await PassageReactNative.isAuthTokenValid(token);
   return isValid || false;
 };
@@ -406,12 +406,13 @@ const getAppInfo: GetAppInfo = async (): Promise<PassageAppInfo> => {
  *
  * @return {Promise<PassageUser | null>} The current Passage user's info, or null if the current Passage user's authentication token could not be validated.
  */
-const getCurrentUser: GetCurrentUser = async () => {
-  const result = await PassageReactNative.getCurrentUser();
-  if (!result) return null;
-  const parsedResult = JSON.parse(result);
-  return parsedResult;
-};
+const getCurrentUser: GetCurrentUser =
+  async (): Promise<PassageUser | null> => {
+    const result = await PassageReactNative.getCurrentUser();
+    if (!result) return null;
+    const parsedResult = JSON.parse(result);
+    return parsedResult;
+  };
 
 /**
  * Sign out a user by deleting their auth token and refresh token from device, and revoking their refresh token.

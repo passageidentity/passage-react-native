@@ -11,7 +11,7 @@ RCT_EXTERN_METHOD(loginWithPasskey:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 
-RCT_EXTERN_METHOD(devivceSupportsPasskeys:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(deviceSupportsPasskeys:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 // MARK: - OTP Methods
