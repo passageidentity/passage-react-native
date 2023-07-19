@@ -1,31 +1,34 @@
-# passage-react-native
+<img src="https://storage.googleapis.com/passage-docs/passage-logo-gradient.svg" alt="Passage logo" style="width:250px;"/>
 
-Native passkey authentication for your React Native app
+[![npm version](https://badge.fury.io/js/@passageidentity%2Fpassage-react-native.svg)](https://badge.fury.io/js/@passageidentity%2Fpassage-react-native)
+
+### Native passkey authentication for your React Native app
+## Welcome!
+Integrating passkey technology can be really hard. That's why we built the Passage React Native SDK - to make passkey authentication easy for you and your users, all in a native Android and iOS experience.
+
+<img width="1069" alt="Passage React Native" src="https://storage.googleapis.com/passage-docs/passage_react_native.png">
+
+<br>
 
 ## Installation
 
 ```sh
-npm install passage-react-native
+npm i @passageidentity/passage-react-native
 ```
+<br>
 
-## Usage
+## Example Usage
 
-```js
-import { multiply } from 'passage-react-native';
+```ts
+import Passage from '@passageidentity/passage-react-native';
 
-// ...
+// Register a new user with a passkey
+const { authToken } = await Passage.registerWithPasskey('name@email.com');
 
-const result = await multiply(3, 7);
+// Get authenticated user info
+const user = await Passage.getCurrentUser();
 ```
+<br>
 
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+## Documentation
+To get started using Passage in your React Native app, please visit our [Passage Docs](https://docs.passage.id/mobile/cross-platform/react-native).
