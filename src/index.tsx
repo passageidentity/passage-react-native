@@ -511,7 +511,7 @@ const changePhone: ChangePhone = async (newPhone: string): Promise<string> => {
  *
  * @example
  * ```
- * import Passage from 'passage-react-native';
+ * import Passage from '@passageidentity/passage-react-native';
  * ```
  */
 const PassageMethods: Passage = {
