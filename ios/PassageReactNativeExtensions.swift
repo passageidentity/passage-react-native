@@ -60,6 +60,7 @@ internal extension PassageUserInfo {
             "phoneVerified": phoneVerified,
             "status": status,
             "updatedAt": updatedAt,
+            "userMetadata": userMetadata,
             "webauthn": webauthn,
             "webauthnDevices": webauthnDevices?.map { $0.toDictionary() },
             "webauthnTypes": webauthnTypes
@@ -89,11 +90,32 @@ internal extension AppInfo {
             "requiredIdentifier": requiredIdentifier,
             "requireEmailVerification": requireEmailVerification,
             "requireIdentifierVerification": requireIdentifierVerification,
-            "sessionTimeoutLength": sessionTimeoutLength
+            "sessionTimeoutLength": sessionTimeoutLength,
+            "userMetadataSchema": userMetadataSchema?.map { $0.toDictionary() }
         ]
         return appInfoDict
     }
     
+    func toJsonString() -> String {
+        return dictToJsonString(toDictionary())
+    }
+    
+}
+
+internal extension UserMetadataSchema {
+    
+    func toDictionary() -> [String: Any] {
+        var dict: [String : Any] = [
+            "fieldName": fieldName,
+            "friendlyName": friendlyName,
+            "id": id,
+            "profile": profile,
+            "registration": registration,
+            "type": type
+        ]
+        return dict
+    }
+   
     func toJsonString() -> String {
         return dictToJsonString(toDictionary())
     }
