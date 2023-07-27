@@ -105,6 +105,16 @@ export type PassageAppInfo = {
   requiredIdentifier: RequiredIdentifier;
   requireIdentifierVerification: boolean;
   sessionTimeoutLength: number;
+  userMetadataSchema: Array<PassageAppUserMetadataSchema> | null;
+};
+
+export type PassageAppUserMetadataSchema = {
+  fieldName: string;
+  friendlyName: string;
+  id: string;
+  profile: boolean;
+  registration: boolean;
+  type: string;
 };
 
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
