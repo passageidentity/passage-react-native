@@ -196,7 +196,7 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        let isValid = PassageTokenUtils.isTokenExpired(token: authToken)
+        let isValid = !PassageTokenUtils.isTokenExpired(token: authToken)
         resolve(isValid)
     }
     
