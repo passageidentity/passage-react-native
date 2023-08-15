@@ -81,7 +81,6 @@ internal extension AppInfo {
             "allowedIdentifier": allowedIdentifier,
             "authFallbackMethod": authFallbackMethod?.rawValue,
             "authOrigin": authOrigin,
-            "ephemeral": ephemeral,
             "id": id,
             "loginURL": loginURL,
             "name": name,
