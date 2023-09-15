@@ -27,12 +27,20 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
     const val NAME = "PassageReactNative"
   }
 
+  private var appId: String? = null
+
   private val passage: Passage by lazy {
-    Passage(currentActivity!!)
+    Passage(currentActivity!!, appId)
   }
 
   override fun getName(): String {
     return NAME
+  }
+
+  @ReactMethod
+  fun initWithAppId(appId: String, promise: Promise) {
+    this.appId = appId
+    promise.resolve(null)
   }
 
   // region PASSKEY METHODS

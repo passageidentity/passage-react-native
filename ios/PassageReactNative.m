@@ -2,6 +2,10 @@
 
 @interface RCT_EXTERN_MODULE(PassageReactNative, NSObject)
 
+RCT_EXTERN_METHOD(initWithAppId:(NSString *)appId
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 // MARK: - Passkey Methods
 RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve
