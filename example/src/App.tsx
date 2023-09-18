@@ -4,10 +4,11 @@ import { StyleSheet, View, Text } from 'react-native';
 import Passage from 'passage-react-native';
 
 export default function App() {
+  const passage = new Passage('APP_ID');
   const [result, setResult] = React.useState<string | undefined>();
 
   const onPress = async () => {
-    const authResult = await Passage.loginWithPasskey();
+    const authResult = await passage.loginWithPasskey();
     const { authToken } = authResult;
     setResult(authToken);
   };

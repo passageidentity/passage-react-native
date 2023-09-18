@@ -3,7 +3,24 @@ import Passage
 @objc(PassageReactNative)
 class PassageReactNative: NSObject {
     
-    private let passage = PassageAuth()
+    private lazy var passage: PassageAuth = {
+        guard let appId else {
+            return PassageAuth()
+        }
+        return PassageAuth(appId: appId)
+    }()
+    
+    private var appId: String?
+    
+    @objc(initWithAppId:withResolver:withRejecter:)
+    func initWithAppId(
+        appId: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
+        self.appId = appId
+        resolve(())
+    }
     
     // MARK: - Passkey Methods
     

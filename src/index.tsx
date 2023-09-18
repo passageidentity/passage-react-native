@@ -139,413 +139,376 @@ type ChangeEmail = (newEmail: string) => Promise<string>;
 type ChangePhone = (newPhone: string) => Promise<string>;
 type GetCurrentUser = () => Promise<PassageUser | null>;
 
-export interface Passage {
-  registerWithPasskey: RegisterWithPasskey;
-  loginWithPasskey: LoginWithPasskey;
-  deviceSupportsPasskeys: DeviceSupportsPasskeys;
-  newRegisterOneTimePasscode: AuthWithoutPasskey;
-  newLoginOneTimePasscode: AuthWithoutPasskey;
-  oneTimePasscodeActivate: OTPActivate;
-  newRegisterMagicLink: AuthWithoutPasskey;
-  newLoginMagicLink: AuthWithoutPasskey;
-  magicLinkActivate: MagicLinkActivate;
-  getMagicLinkStatus: GetMagicLinkStatus;
-  getAuthToken: GetAuthToken;
-  isAuthTokenValid: IsAuthTokenValid;
-  refreshAuthToken: RefreshAuthToken;
-  getAppInfo: GetAppInfo;
-  getCurrentUser: GetCurrentUser;
-  signOut: VoidMethod;
-  addPasskey: AddPasskey;
-  deletePasskey: DeletePasskey;
-  editPasskeyName: EditPasskeyName;
-  changeEmail: ChangeEmail;
-  changePhone: ChangePhone;
-}
-
-// PASSKEY METHODS
-
 /**
- * Passage will attempt create and register a new user with a passkey.
+ * The Passage class is used to perform authentication and user operations.
  *
- * @param {string} identifier email address / phone for user
- * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
- * @throws {PassageError} When user cancels operation, user already exists, app configuration was not done properly, etc.
+ * @example
+ * ```
+ * import Passage from '@passageidentity/passage-react-native';
+ *
+ * const passage = new Passage('MY_APP_ID');
+ * ```
  */
-const registerWithPasskey: RegisterWithPasskey = async (
-  identifier: string
-): Promise<AuthResult> => {
-  try {
-    const result = await PassageReactNative.registerWithPasskey(identifier);
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
+class Passage {
+  constructor(appId: String | null = null) {
+    if (!appId) return;
+    PassageReactNative.initWithAppId(appId);
   }
-};
 
-/**
- * Passage will attempt login user with a passkey.
- *
- * NOTE: Both Android and iOS do NOT take a user identifier paramter when logging in with a passkey.
- * The operating systems both show all of the passkeys available for the user and your application.
- *
- * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
- * @throws {PassageError} When user cancels operation, user does not exist, app configuration was not done properly, etc.
- */
-const loginWithPasskey: LoginWithPasskey = async (): Promise<AuthResult> => {
-  try {
-    const result = await PassageReactNative.loginWithPasskey();
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  // PASSKEY METHODS
 
-/**
- * Uses information about the user's OS version to determine if passkey authentication is available.
- *
- * @return {Promise<boolean>} returns true if the device supports passkeys, false if not.
- */
-const deviceSupportsPasskeys: DeviceSupportsPasskeys =
-  async (): Promise<boolean> => {
-    const result = await PassageReactNative.deviceSupportsPasskeys();
-    return result || false;
+  /**
+   * Passage will attempt create and register a new user with a passkey.
+   *
+   * @param {string} identifier email address / phone for user
+   * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError} When user cancels operation, user already exists, app configuration was not done properly, etc.
+   */
+  registerWithPasskey: RegisterWithPasskey = async (
+    identifier: string
+  ): Promise<AuthResult> => {
+    try {
+      const result = await PassageReactNative.registerWithPasskey(identifier);
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
   };
 
-// OTP METHODS
-
-/**
- * Create and send a new one time passcode for registration
- *
- * @param {string} identifier The Passage User's identifier
- * @return {Promise<string>} Returns a one time passcode id used to activate the passcode in `oneTimePasscodeActivate`.
- * @throws {PassageError}
- */
-const newRegisterOneTimePasscode: AuthWithoutPasskey = async (
-  identifier: string
-): Promise<string> => {
-  try {
-    return await PassageReactNative.newRegisterOneTimePasscode(identifier);
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-/**
- * Create and send a new one time passcode for logging in
- *
- * @param {string} identifier The Passage User's identifier
- * @return {Promise<string>} Returns a one time passcode id used to activate the passcode in `oneTimePasscodeActivate`.
- * @throws {PassageError}
- */
-const newLoginOneTimePasscode: AuthWithoutPasskey = async (
-  identifier: string
-): Promise<string> => {
-  try {
-    return await PassageReactNative.newLoginOneTimePasscode(identifier);
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-/**
- * Activates a one time passcode when a user fills out the one time passcode input. This function handles login and registration one time passcodes.
- *
- * @param {string} otp The one time passcode.
- * @param {string} otpId The one time passcode id.
- * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
- * @throws {PassageError}
- */
-const oneTimePasscodeActivate: OTPActivate = async (
-  otp: string,
-  otpId: string
-): Promise<AuthResult> => {
-  try {
-    const result = await PassageReactNative.oneTimePasscodeActivate(otp, otpId);
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-// MAGIC LINK METHODS
-
-/**
- * Create and send a new magic link for registration
- *
- * @param {string} identifier The Passage User's identifier
- * @return {Promise<string>} Returns a magic link id used to check the status of the magic link with `getMagicLinkStatus`.
- * @throws {PassageError}
- */
-const newRegisterMagicLink: AuthWithoutPasskey = async (
-  identifier: string
-): Promise<string> => {
-  try {
-    return await PassageReactNative.newRegisterMagicLink(identifier);
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-/**
- * Create and send a new magic link for logging in
- *
- * @param {string} identifier The Passage User's identifier
- * @return {Promise<string>} Returns a magic link id used to check the status of the magic link with `getMagicLinkStatus`.
- * @throws {PassageError}
- */
-const newLoginMagicLink: AuthWithoutPasskey = async (
-  identifier: string
-): Promise<string> => {
-  try {
-    return await PassageReactNative.newLoginMagicLink(identifier);
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-/**
- * Activates a magic link. This function handles login and registration magic links.
- *
- * @param {string} magicLink The magic link from the url sent to the user.
- * @return {Promise<AuthResult>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
- * @throws {PassageError}
- */
-const magicLinkActivate: MagicLinkActivate = async (
-  magicLink: string
-): Promise<AuthResult> => {
-  try {
-    const result = await PassageReactNative.magicLinkActivate(magicLink);
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-/**
- * Look up a magic link by ID and check if it has been verified. This function is mostly commonly used to
- * iteratively check if a user has clicked a magic link to login. Once the link has been verified,
- * Passage will return authentication information via this function. This enables cross-device login.
- *
- * @param {string} magicLinkId The magic link id.
- * @return {Promise<AuthResult | null>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
- * @throws {PassageError}
- */
-const getMagicLinkStatus: GetMagicLinkStatus = async (
-  magicLinkId: string
-): Promise<AuthResult | null> => {
-  try {
-    const result = await PassageReactNative.getMagicLinkStatus(magicLinkId);
-    if (!result) return null;
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-// TOKEN METHODS
-
-/**
- * Returns the auth token for the currently authenticated user.
- *
- * @return {Promise<string | null>} The current Passage user's auth token, or null if no token has been stored.
- */
-const getAuthToken: GetAuthToken = async (): Promise<string | null> => {
-  const authToken = await PassageReactNative.getAuthToken();
-  return authToken;
-};
-
-/**
- * Checks if the auth token for the currently authenticated user is valid.
- *
- * @return {Promise<boolean>} Returns true if the user has a valid auth token, false if not.
- */
-const isAuthTokenValid: IsAuthTokenValid = async (token): Promise<boolean> => {
-  const isValid = await PassageReactNative.isAuthTokenValid(token);
-  return isValid || false;
-};
-
-/**
- * Refreshes, gets, and saves a new authToken for the currently authenticated user using their refresh token
- *
- * @return {Promise<string>} Returns the new auth token.
- * @throws {PassageError}
- */
-const refreshAuthToken: RefreshAuthToken = async (): Promise<string> => {
-  try {
-    const newAuthToken = await PassageReactNative.refreshAuthToken();
-    return newAuthToken;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
-
-// APP METHODS
-
-/**
- * Get information about an app.
- *
- * @return {Promise<PassageAppInfo>} A data object containing app information, authentication policy, etc.
- * @throws {PassageError}
- */
-const getAppInfo: GetAppInfo = async (): Promise<PassageAppInfo> => {
-  try {
-    const result = await PassageReactNative.getAppInfo();
-    const parsedResult = JSON.parse(result);
-    if (
-      parsedResult.authFallbackMethod &&
-      parsedResult.authFallbackMethod === 'magicLink'
-    ) {
-      parsedResult.authFallbackMethod = 'magic_link';
+  /**
+   * Passage will attempt login user with a passkey.
+   *
+   * NOTE: Both Android and iOS do NOT take a user identifier paramter when logging in with a passkey.
+   * The operating systems both show all of the passkeys available for the user and your application.
+   *
+   * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError} When user cancels operation, user does not exist, app configuration was not done properly, etc.
+   */
+  loginWithPasskey: LoginWithPasskey = async (): Promise<AuthResult> => {
+    try {
+      const result = await PassageReactNative.loginWithPasskey();
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
     }
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  };
 
-// USER METHODS
+  /**
+   * Uses information about the user's OS version to determine if passkey authentication is available.
+   *
+   * @return {Promise<boolean>} returns true if the device supports passkeys, false if not.
+   */
+  deviceSupportsPasskeys: DeviceSupportsPasskeys =
+    async (): Promise<boolean> => {
+      const result = await PassageReactNative.deviceSupportsPasskeys();
+      return result || false;
+    };
 
-/**
- * Returns the user information for the currently authenticated user.
- *
- * @return {Promise<PassageUser | null>} The current Passage user's info, or null if the current Passage user's authentication token could not be validated.
- */
-const getCurrentUser: GetCurrentUser =
-  async (): Promise<PassageUser | null> => {
+  // OTP METHODS
+
+  /**
+   * Create and send a new one time passcode for registration
+   *
+   * @param {string} identifier The Passage User's identifier
+   * @return {Promise<string>} Returns a one time passcode id used to activate the passcode in `oneTimePasscodeActivate`.
+   * @throws {PassageError}
+   */
+  newRegisterOneTimePasscode: AuthWithoutPasskey = async (
+    identifier: string
+  ): Promise<string> => {
+    try {
+      return await PassageReactNative.newRegisterOneTimePasscode(identifier);
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Create and send a new one time passcode for logging in
+   *
+   * @param {string} identifier The Passage User's identifier
+   * @return {Promise<string>} Returns a one time passcode id used to activate the passcode in `oneTimePasscodeActivate`.
+   * @throws {PassageError}
+   */
+  newLoginOneTimePasscode: AuthWithoutPasskey = async (
+    identifier: string
+  ): Promise<string> => {
+    try {
+      return await PassageReactNative.newLoginOneTimePasscode(identifier);
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Activates a one time passcode when a user fills out the one time passcode input. This function handles login and registration one time passcodes.
+   *
+   * @param {string} otp The one time passcode.
+   * @param {string} otpId The one time passcode id.
+   * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError}
+   */
+  oneTimePasscodeActivate: OTPActivate = async (
+    otp: string,
+    otpId: string
+  ): Promise<AuthResult> => {
+    try {
+      const result = await PassageReactNative.oneTimePasscodeActivate(
+        otp,
+        otpId
+      );
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  // MAGIC LINK METHODS
+
+  /**
+   * Create and send a new magic link for registration
+   *
+   * @param {string} identifier The Passage User's identifier
+   * @return {Promise<string>} Returns a magic link id used to check the status of the magic link with `getMagicLinkStatus`.
+   * @throws {PassageError}
+   */
+  newRegisterMagicLink: AuthWithoutPasskey = async (
+    identifier: string
+  ): Promise<string> => {
+    try {
+      return await PassageReactNative.newRegisterMagicLink(identifier);
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Create and send a new magic link for logging in
+   *
+   * @param {string} identifier The Passage User's identifier
+   * @return {Promise<string>} Returns a magic link id used to check the status of the magic link with `getMagicLinkStatus`.
+   * @throws {PassageError}
+   */
+  newLoginMagicLink: AuthWithoutPasskey = async (
+    identifier: string
+  ): Promise<string> => {
+    try {
+      return await PassageReactNative.newLoginMagicLink(identifier);
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Activates a magic link. This function handles login and registration magic links.
+   *
+   * @param {string} magicLink The magic link from the url sent to the user.
+   * @return {Promise<AuthResult>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError}
+   */
+  magicLinkActivate: MagicLinkActivate = async (
+    magicLink: string
+  ): Promise<AuthResult> => {
+    try {
+      const result = await PassageReactNative.magicLinkActivate(magicLink);
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Look up a magic link by ID and check if it has been verified. This function is mostly commonly used to
+   * iteratively check if a user has clicked a magic link to login. Once the link has been verified,
+   * Passage will return authentication information via this function. This enables cross-device login.
+   *
+   * @param {string} magicLinkId The magic link id.
+   * @return {Promise<AuthResult | null>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError}
+   */
+  getMagicLinkStatus: GetMagicLinkStatus = async (
+    magicLinkId: string
+  ): Promise<AuthResult | null> => {
+    try {
+      const result = await PassageReactNative.getMagicLinkStatus(magicLinkId);
+      if (!result) return null;
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  // TOKEN METHODS
+
+  /**
+   * Returns the auth token for the currently authenticated user.
+   *
+   * @return {Promise<string | null>} The current Passage user's auth token, or null if no token has been stored.
+   */
+  getAuthToken: GetAuthToken = async (): Promise<string | null> => {
+    const authToken = await PassageReactNative.getAuthToken();
+    return authToken;
+  };
+
+  /**
+   * Checks if the auth token for the currently authenticated user is valid.
+   *
+   * @return {Promise<boolean>} Returns true if the user has a valid auth token, false if not.
+   */
+  isAuthTokenValid: IsAuthTokenValid = async (token): Promise<boolean> => {
+    const isValid = await PassageReactNative.isAuthTokenValid(token);
+    return isValid || false;
+  };
+
+  /**
+   * Refreshes, gets, and saves a new authToken for the currently authenticated user using their refresh token
+   *
+   * @return {Promise<string>} Returns the new auth token.
+   * @throws {PassageError}
+   */
+  refreshAuthToken: RefreshAuthToken = async (): Promise<string> => {
+    try {
+      const newAuthToken = await PassageReactNative.refreshAuthToken();
+      return newAuthToken;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  // APP METHODS
+
+  /**
+   * Get information about an app.
+   *
+   * @return {Promise<PassageAppInfo>} A data object containing app information, authentication policy, etc.
+   * @throws {PassageError}
+   */
+  getAppInfo: GetAppInfo = async (): Promise<PassageAppInfo> => {
+    try {
+      const result = await PassageReactNative.getAppInfo();
+      const parsedResult = JSON.parse(result);
+      if (
+        parsedResult.authFallbackMethod &&
+        parsedResult.authFallbackMethod === 'magicLink'
+      ) {
+        parsedResult.authFallbackMethod = 'magic_link';
+      }
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  // USER METHODS
+
+  /**
+   * Returns the user information for the currently authenticated user.
+   *
+   * @return {Promise<PassageUser | null>} The current Passage user's info, or null if the current Passage user's authentication token could not be validated.
+   */
+  getCurrentUser: GetCurrentUser = async (): Promise<PassageUser | null> => {
     const result = await PassageReactNative.getCurrentUser();
     if (!result) return null;
     const parsedResult = JSON.parse(result);
     return parsedResult;
   };
 
-/**
- * Sign out a user by deleting their auth token and refresh token from device, and revoking their refresh token.
- */
-const signOut: VoidMethod = async () => {
-  return await PassageReactNative.signOut();
-};
+  /**
+   * Sign out a user by deleting their auth token and refresh token from device, and revoking their refresh token.
+   */
+  signOut: VoidMethod = async () => {
+    return await PassageReactNative.signOut();
+  };
 
-/**
- * Passage will attempt to create and register a new passkey for the authenticated user.
- *
- * @return {Promise<DevicePasskey>} an object containing all of the data about the new passkey.
- * @throws {PassageError} When user cancels operation, app configuration was not done properly, etc.
- */
-const addPasskey: AddPasskey = async (): Promise<Passkey> => {
-  try {
-    const result = await PassageReactNative.addDevicePasskey();
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  /**
+   * Passage will attempt to create and register a new passkey for the authenticated user.
+   *
+   * @return {Promise<DevicePasskey>} an object containing all of the data about the new passkey.
+   * @throws {PassageError} When user cancels operation, app configuration was not done properly, etc.
+   */
+  addPasskey: AddPasskey = async (): Promise<Passkey> => {
+    try {
+      const result = await PassageReactNative.addDevicePasskey();
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
 
-/**
- * Remove a passkey from a user's account.
- * NOTE: This does NOT remove the passkey from the user's device, but revokes that passkey so its no longer usable.
- *
- * @param {string} passkeyId The id of the passkey to delete.
- * @throws {PassageError}
- */
-const deletePasskey: DeletePasskey = async (passkeyId: string) => {
-  try {
-    return await PassageReactNative.deleteDevicePasskey(passkeyId);
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  /**
+   * Remove a passkey from a user's account.
+   * NOTE: This does NOT remove the passkey from the user's device, but revokes that passkey so its no longer usable.
+   *
+   * @param {string} passkeyId The id of the passkey to delete.
+   * @throws {PassageError}
+   */
+  deletePasskey: DeletePasskey = async (passkeyId: string) => {
+    try {
+      return await PassageReactNative.deleteDevicePasskey(passkeyId);
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
 
-/**
- * Edit the `friendlyName` of the authenticated user's device passkey.
- *
- * @param {string} passkeyId The id of the passkey to edit.
- * @param {string} newPasskeyName The passkey's new name.
- * @return {Promise<DevicePasskey>} an object containing all of the data about the new passkey.
- * @throws {PassageError}
- */
-const editPasskeyName: EditPasskeyName = async (
-  passkeyId: string,
-  newPasskeyName: string
-): Promise<Passkey> => {
-  try {
-    const result = await PassageReactNative.editDevicePasskeyName(
-      passkeyId,
-      newPasskeyName
-    );
-    const parsedResult = JSON.parse(result);
-    return parsedResult;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  /**
+   * Edit the `friendlyName` of the authenticated user's device passkey.
+   *
+   * @param {string} passkeyId The id of the passkey to edit.
+   * @param {string} newPasskeyName The passkey's new name.
+   * @return {Promise<DevicePasskey>} an object containing all of the data about the new passkey.
+   * @throws {PassageError}
+   */
+  editPasskeyName: EditPasskeyName = async (
+    passkeyId: string,
+    newPasskeyName: string
+  ): Promise<Passkey> => {
+    try {
+      const result = await PassageReactNative.editDevicePasskeyName(
+        passkeyId,
+        newPasskeyName
+      );
+      const parsedResult = JSON.parse(result);
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
 
-/**
- * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
- * @param {string} newEmail The user's new email.
- * @return {Promise<string>} The magic link id.
- * @throws {PassageError}
- */
-const changeEmail: ChangeEmail = async (newEmail: string): Promise<string> => {
-  try {
-    const result = await PassageReactNative.changeEmail(newEmail);
-    return result;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  /**
+   * Initiate an email change for the authenticated user. An email change requires verification, so an email will be sent to the user which they must verify before the email change takes effect.
+   * @param {string} newEmail The user's new email.
+   * @return {Promise<string>} The magic link id.
+   * @throws {PassageError}
+   */
+  changeEmail: ChangeEmail = async (newEmail: string): Promise<string> => {
+    try {
+      const result = await PassageReactNative.changeEmail(newEmail);
+      return result;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
 
-/**
- * Initiate a phone number change for the authenticated user. An phone change requires verification, so an email will be sent to the user which they must verify before the phone change takes effect.
- * @param {string} newPhone The user's new phone number.
- * @return {Promise<string>} The magic link id.
- * @throws {PassageError}
- */
-const changePhone: ChangePhone = async (newPhone: string): Promise<string> => {
-  try {
-    const result = await PassageReactNative.changePhone(newPhone);
-    return result;
-  } catch (error: any) {
-    throw new PassageError(error.code, error.message);
-  }
-};
+  /**
+   * Initiate a phone number change for the authenticated user. An phone change requires verification, so an email will be sent to the user which they must verify before the phone change takes effect.
+   * @param {string} newPhone The user's new phone number.
+   * @return {Promise<string>} The magic link id.
+   * @throws {PassageError}
+   */
+  changePhone: ChangePhone = async (newPhone: string): Promise<string> => {
+    try {
+      const result = await PassageReactNative.changePhone(newPhone);
+      return result;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+}
 
-/**
- * The Passage object is used to perform authentication and user operations.
- *
- * @example
- * ```
- * import Passage from '@passageidentity/passage-react-native';
- * ```
- */
-const PassageMethods: Passage = {
-  registerWithPasskey,
-  loginWithPasskey,
-  deviceSupportsPasskeys,
-  newRegisterOneTimePasscode,
-  newLoginOneTimePasscode,
-  oneTimePasscodeActivate,
-  newRegisterMagicLink,
-  newLoginMagicLink,
-  magicLinkActivate,
-  getMagicLinkStatus,
-  getAuthToken,
-  isAuthTokenValid,
-  refreshAuthToken,
-  getAppInfo,
-  getCurrentUser,
-  signOut,
-  addPasskey,
-  deletePasskey,
-  editPasskeyName,
-  changeEmail,
-  changePhone,
-};
-
-export default PassageMethods;
+export default Passage;
