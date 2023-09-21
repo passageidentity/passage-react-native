@@ -22,11 +22,13 @@ npm i @passageidentity/passage-react-native
 ```ts
 import Passage from '@passageidentity/passage-react-native';
 
+const passage = new Passage('APP_ID');
+
 // Register a new user with a passkey
-const { authToken } = await Passage.registerWithPasskey('name@email.com');
+const { authToken } = await passage.registerWithPasskey('name@email.com');
 
 // Get authenticated user info
-const user = await Passage.getCurrentUser();
+const user = await passage.getCurrentUser();
 ```
 <br>
 
