@@ -113,7 +113,7 @@ export type PassageAppInfo = {
     passkeys?: Record<string, never>;
     otp?: EmailAndSMSAuthMethod;
     magicLink?: EmailAndSMSAuthMethod;
-  }
+  };
 };
 
 export type PassageAppUserMetadataSchema = {
@@ -128,7 +128,7 @@ export type PassageAppUserMetadataSchema = {
 export type EmailAndSMSAuthMethod = {
   ttl: number;
   ttl_display_unit: DisplayUnit;
-}
+};
 
 export enum DisplayUnit {
   Seconds = 's',
