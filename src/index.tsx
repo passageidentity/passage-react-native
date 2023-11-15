@@ -96,6 +96,9 @@ export enum RequiredIdentifier {
 
 export type PassageAppInfo = {
   allowedIdentifier: Identifier;
+  /**
+   * @deprecated Check the allowedAuthMethods property for the full list of supported authentication methods and their configurations.
+   */
   authFallbackMethod: AllowedFallbackAuth;
   authOrigin: string;
   id: string;
@@ -106,6 +109,11 @@ export type PassageAppInfo = {
   requireIdentifierVerification: boolean;
   sessionTimeoutLength: number;
   userMetadataSchema: Array<PassageAppUserMetadataSchema> | null;
+  allowedAuthMethods: {
+    passkeys?: Record<string, never>;
+    otp?: EmailAndSMSAuthMethod;
+    magicLink?: EmailAndSMSAuthMethod;
+  }
 };
 
 export type PassageAppUserMetadataSchema = {
@@ -116,6 +124,18 @@ export type PassageAppUserMetadataSchema = {
   registration: boolean;
   type: string;
 };
+
+export type EmailAndSMSAuthMethod = {
+  ttl: number;
+  ttl_display_unit: DisplayUnit;
+}
+
+export enum DisplayUnit {
+  Seconds = 's',
+  Minutes = 'm',
+  Hours = 'h',
+  Days = 'd',
+}
 
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
 type LoginWithPasskey = () => Promise<AuthResult>;
