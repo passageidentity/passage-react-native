@@ -109,7 +109,7 @@ export type PassageAppInfo = {
   requireIdentifierVerification: boolean;
   sessionTimeoutLength: number;
   userMetadataSchema: Array<PassageAppUserMetadataSchema> | null;
-  allowedAuthMethods: {
+  authMethods: {
     passkeys?: Record<string, never>;
     otp?: EmailAndSMSAuthMethod;
     magicLink?: EmailAndSMSAuthMethod;
