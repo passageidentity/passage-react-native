@@ -97,7 +97,7 @@ export enum RequiredIdentifier {
 export type PassageAppInfo = {
   allowedIdentifier: Identifier;
   /**
-   * @deprecated Check the allowedAuthMethods property for the full list of supported authentication methods and their configurations.
+   * @deprecated Check the authMethods property for the full list of supported authentication methods and their configurations.
    */
   authFallbackMethod: AllowedFallbackAuth;
   authOrigin: string;
