@@ -125,7 +125,11 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
                 resolve(authResult.toJsonString())
             } catch {
-                reject("OTP_ERROR", "\(error)", nil)
+                var errorCode = "OTP_ERROR"
+                if case PassageOTPError.exceededAttempts = error {
+                    errorCode = "OTP_ACTIVATION_EXCEEDED_ATTEMPTS"
+                }
+                reject(errorCode, "\(error)", nil)
             }
         }
     }

@@ -13,6 +13,7 @@ import id.passage.android.Passage
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AddDevicePasskeyCancellationException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
+import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 
@@ -121,6 +122,8 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         val authResult = passage.oneTimePasscodeActivate(otp, otpId)
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
+      } catch (e: OneTimePasscodeActivateExceededAttemptsException) {
+        promise.reject("OTP_ACTIVATION_EXCEEDED_ATTEMPTS", e.message, e)
       } catch (e: Exception) {
         promise.reject("OTP_ERROR", e.message, e)
       }
