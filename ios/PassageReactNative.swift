@@ -252,6 +252,18 @@ class PassageReactNative: NSObject {
         }
     }
     
+    @objc(identifierExists:withResolver:withRejecter:)
+    internal func identifierExists(
+        identifier: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            let user = try? await PassageAuth.getUser(identifier: identifier)
+            resolve(user?.toJsonString())
+        }
+    }
+    
     // MARK: - User Methods
     
     @objc(getCurrentUser:withRejecter:)

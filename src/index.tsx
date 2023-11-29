@@ -148,6 +148,7 @@ type GetAuthToken = () => Promise<string | null>;
 type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
 type RefreshAuthToken = () => Promise<string | null>;
 type GetAppInfo = () => Promise<PassageAppInfo>;
+type IdentifierExists = (identifier: string) => Promise<PassageUser | null>;
 type AddPasskey = () => Promise<Passkey>;
 type DeletePasskey = (passkeyId: string) => Promise<void>;
 type EditPasskeyName = (
@@ -418,6 +419,25 @@ class Passage {
       ) {
         parsedResult.authFallbackMethod = 'magic_link';
       }
+      return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Check if a user with a given identifier exists. If so, this method will return user info.
+   *
+   * @return {Promise<PassageUser | null>} A data object containing user information.
+   * @throws {PassageError}
+   */
+  identifierExists: IdentifierExists = async (
+    identifier: string
+  ): Promise<PassageUser | null> => {
+    try {
+      const result = await PassageReactNative.identifierExists(identifier);
+      if (!result) return null;
+      const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {
       throw new PassageError(error.code, error.message);
