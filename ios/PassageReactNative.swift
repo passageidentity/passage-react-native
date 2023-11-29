@@ -125,7 +125,11 @@ class PassageReactNative: NSObject {
                 let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
                 resolve(authResult.toJsonString())
             } catch {
-                reject("OTP_ERROR", "\(error)", nil)
+                var errorCode = "OTP_ERROR"
+                if case PassageOTPError.exceededAttempts = error {
+                    errorCode = "OTP_ACTIVATION_EXCEEDED_ATTEMPTS"
+                }
+                reject(errorCode, "\(error)", nil)
             }
         }
     }
@@ -249,6 +253,18 @@ class PassageReactNative: NSObject {
             } catch {
                 reject("APP_INFO_ERROR", "\(error)", nil)
             }
+        }
+    }
+    
+    @objc(identifierExists:withResolver:withRejecter:)
+    internal func identifierExists(
+        identifier: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            let user = try? await PassageAuth.getUser(identifier: identifier)
+            resolve(user?.toJsonString())
         }
     }
     

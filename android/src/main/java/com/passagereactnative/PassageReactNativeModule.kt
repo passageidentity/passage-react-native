@@ -12,10 +12,8 @@ import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AddDevicePasskeyCancellationException
-import id.passage.android.exceptions.AppInfoException
-import id.passage.android.exceptions.GetMagicLinkStatusInvalidException
-import id.passage.android.exceptions.GetMagicLinkStatusNotFoundException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
+import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 
@@ -68,7 +66,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   fun loginWithPasskey(promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val authResult = passage.loginWithPasskey("")
+        val authResult = passage.loginWithPasskey()
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
       } catch (e: Exception) {
@@ -124,6 +122,8 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         val authResult = passage.oneTimePasscodeActivate(otp, otpId)
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
+      } catch (e: OneTimePasscodeActivateExceededAttemptsException) {
+        promise.reject("OTP_ACTIVATION_EXCEEDED_ATTEMPTS", e.message, e)
       } catch (e: Exception) {
         promise.reject("OTP_ERROR", e.message, e)
       }
@@ -223,11 +223,24 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   fun getAppInfo(promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val appInfo = passage.appInfo() ?: throw AppInfoException("Error getting app info")
+        val appInfo = passage.appInfo()
         val jsonString = Gson().toJson(appInfo)
         promise.resolve(jsonString)
       } catch (e: Exception) {
         promise.reject("APP_INFO_ERROR", e.message, e)
+      }
+    }
+  }
+
+  @ReactMethod
+  fun identifierExists(identifier: String, promise: Promise) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val user = passage.identifierExists(identifier)
+        val jsonString = if (user == null) null else Gson().toJson(user)
+        promise.resolve(jsonString)
+      } catch (e: Exception) {
+        promise.reject("IDENTIFIER_EXISTS_ERROR", e.message, e)
       }
     }
   }
@@ -327,7 +340,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
     CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-        val magicLinkId = user.changeEmail(newEmail)?.id
+        val magicLinkId = user.changeEmail(newEmail).id
         promise.resolve(magicLinkId)
       } catch (e: Exception) {
         var errorCode = "CHANGE_EMAIL_ERROR"
@@ -346,7 +359,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
     CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-        val magicLinkId = user.changePhone(newPhone)?.id
+        val magicLinkId = user.changePhone(newPhone).id
         promise.resolve(magicLinkId)
       } catch (e: Exception) {
         var errorCode = "CHANGE_PHONE_ERROR"
