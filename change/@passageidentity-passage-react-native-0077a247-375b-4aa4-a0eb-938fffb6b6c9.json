@@ -1,0 +1,7 @@
+{
+  "type": "minor",
+  "comment": "Updated appInfo type with new allowedAuthMethods property",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "kevin.flanagan@passage.id",
+  "dependentChangeType": "patch"
+}
