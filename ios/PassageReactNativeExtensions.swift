@@ -90,7 +90,8 @@ internal extension AppInfo {
             "requireEmailVerification": requireEmailVerification,
             "requireIdentifierVerification": requireIdentifierVerification,
             "sessionTimeoutLength": sessionTimeoutLength,
-            "userMetadataSchema": userMetadataSchema?.map { $0.toDictionary() }
+            "userMetadataSchema": userMetadataSchema?.map { $0.toDictionary() },
+            "authMethods": authMethods?.toDictionary(),
         ]
         return appInfoDict
     }
@@ -119,4 +120,19 @@ internal extension UserMetadataSchema {
         return dictToJsonString(toDictionary())
     }
     
+}
+
+internal extension AuthMethods {
+    func toDictionary() -> [String: Any] {
+        var dict: [String : Any] = [
+            "passkeys": passkeys == nil ? nil : [:] as [String: String],
+            "otp": otp == nil ? nil : ["ttl": otp?.ttl, "ttlDisplayUnit": otp?.ttlDisplayUnit?.rawValue],
+            "magicLink": magicLink == nil ? nil : ["ttl": magicLink?.ttl, "ttlDisplayUnit": magicLink?.ttlDisplayUnit?.rawValue],
+        ]
+        return dict
+    }
+   
+    func toJsonString() -> String {
+        return dictToJsonString(toDictionary())
+    }
 }

@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "Add `AppInfo.authMethods` mapping from iOS structs.",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "rickycpadilla@gmail.com",
+  "dependentChangeType": "patch"
+}
