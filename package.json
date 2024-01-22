@@ -1,6 +1,6 @@
 {
   "name": "@passageidentity/passage-react-native",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

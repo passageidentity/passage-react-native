@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "Bump to version 0.4.2",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "rickycpadilla@gmail.com",
+  "dependentChangeType": "patch"
+}
