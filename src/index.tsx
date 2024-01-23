@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { Linking, NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'passage-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -137,6 +137,12 @@ export enum DisplayUnit {
   Days = 'd',
 }
 
+export enum SocialConnection {
+  Apple = 'apple',
+  Github = 'github',
+  Google = 'google',
+}
+
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
 type LoginWithPasskey = () => Promise<AuthResult>;
 type DeviceSupportsPasskeys = () => Promise<boolean>;
@@ -144,6 +150,7 @@ type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
 type GetMagicLinkStatus = (magicLinkId: string) => Promise<AuthResult | null>;
+type AuthorizeWith = (connection: SocialConnection) => Promise<AuthResult>;
 type GetAuthToken = () => Promise<string | null>;
 type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
 type RefreshAuthToken = () => Promise<string | null>;
@@ -362,6 +369,46 @@ class Passage {
     } catch (error: any) {
       throw new PassageError(error.code, error.message);
     }
+  };
+
+  /**
+   * Authorizes user via a supported third-party social provider.
+   * @param {SocialConnection} connection The Social connection to use for authorization
+   * @returns {Promise<AuthResult | null>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError}
+   */
+  authorizeWith: AuthorizeWith = async (
+    connection: SocialConnection
+  ): Promise<AuthResult> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (Platform.OS === 'ios') {
+          // The iOS native "authorizeWith" method returns an AuthResult directly.
+          const result = await PassageReactNative.authorizeWith(connection);
+          const parsedResult = JSON.parse(result);
+          resolve(parsedResult);
+        } else {
+          // The Android native "authorizeWith" method opens a Chrome Tab and returns void.
+          // We need to listen for a Deep Link event, and attempt to extract the authCode
+          // from the redirect url to finish social authentication.
+          const deepLinkCallback = async ({ url }: { url: string }) => {
+            Linking.removeAllListeners('url');
+            const parsedUrl = new URL(url);
+            const queryParams = new URLSearchParams(parsedUrl.search);
+            const authCode = queryParams.get('authCode');
+            const result = await PassageReactNative.finishSocialAuthentication(
+              authCode
+            );
+            const parsedResult = JSON.parse(result);
+            resolve(parsedResult);
+          };
+          Linking.addEventListener('url', deepLinkCallback);
+          await PassageReactNative.authorizeWith(connection);
+        }
+      } catch (error: any) {
+        reject(new PassageError(error.code, error.message));
+      }
+    });
   };
 
   // TOKEN METHODS
