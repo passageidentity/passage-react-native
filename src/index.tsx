@@ -374,7 +374,7 @@ class Passage {
   /**
    * Authorizes user via a supported third-party social provider.
    * @param {SocialConnection} connection The Social connection to use for authorization
-   * @returns {Promise<AuthResult | null>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @returns {Promise<AuthResult>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
    * @throws {PassageError}
    */
   authorizeWith: AuthorizeWith = async (

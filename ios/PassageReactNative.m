@@ -49,6 +49,11 @@ RCT_EXTERN_METHOD(getMagicLinkStatus:(NSString *)magicLinkId
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+// MARK: - Social Auth Methods
+RCT_EXTERN_METHOD(aurhorizeWith:(NSString *)connection
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 // MARK: - Token Methods
 RCT_EXTERN_METHOD(getAuthToken:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
