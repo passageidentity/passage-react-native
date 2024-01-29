@@ -203,7 +203,7 @@ class PassageReactNative: NSObject {
     // MARK: - Social Methods
     
     @objc(aurhorizeWith:withResolver:withRejecter:)
-    func aurhorizeWith(
+    func authorizeWith(
         connection: String,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock

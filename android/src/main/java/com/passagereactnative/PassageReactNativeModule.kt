@@ -193,6 +193,31 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 
   // endregion
 
+  // region SOCIAL METHODS
+  @ReactMethod
+  fun authorizeWith(connection: String, promise: Promise) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+
+      } catch (e: Exception) {
+        promise.reject("SOCIAL_AUTH_ERROR", e.message, e)
+      }
+    }
+  }
+
+  @ReactMethod
+  fun finishSocialAuthentication(authCode: String, promise: Promise) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+
+      } catch (e: Exception) {
+        promise.reject("SOCIAL_AUTH_ERROR", e.message, e)
+      }
+    }
+  }
+
+  // endregion
+
   // region TOKEN METHODS
   @ReactMethod
   fun getAuthToken(promise: Promise) {

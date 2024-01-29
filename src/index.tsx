@@ -395,7 +395,7 @@ class Passage {
             Linking.removeAllListeners('url');
             const parsedUrl = new URL(url);
             const queryParams = new URLSearchParams(parsedUrl.search);
-            const authCode = queryParams.get('authCode');
+            const authCode = queryParams.get('code');
             const result = await PassageReactNative.finishSocialAuthentication(
               authCode
             );
