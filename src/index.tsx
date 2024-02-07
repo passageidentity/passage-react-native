@@ -1,4 +1,5 @@
-import { Linking, NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
+import { waitForDeepLinkQueryValue } from './utils/waitForDeepLinkQueryValue';
 
 const LINKING_ERROR =
   `The package 'passage-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -29,6 +30,7 @@ export enum PassageErrorCode {
   MagicLinkInvalid = 'MAGIC_LINK_INVALID',
   TokenError = 'TOKEN_ERROR',
   AppInfoError = 'APP_INFO_ERROR',
+  SocialAuthError = 'SOCIAL_AUTH_ERROR',
 }
 
 export class PassageError extends Error {
@@ -373,6 +375,7 @@ class Passage {
 
   /**
    * Authorizes user via a supported third-party social provider.
+   *
    * @param {SocialConnection} connection The Social connection to use for authorization
    * @returns {Promise<AuthResult>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
    * @throws {PassageError}
@@ -382,29 +385,21 @@ class Passage {
   ): Promise<AuthResult> => {
     return new Promise(async (resolve, reject) => {
       try {
+        let authResultJson: string;
         if (Platform.OS === 'ios') {
           // The iOS native "authorizeWith" method returns an AuthResult directly.
-          const result = await PassageReactNative.authorizeWith(connection);
-          const parsedResult = JSON.parse(result);
-          resolve(parsedResult);
+          authResultJson = await PassageReactNative.authorizeWith(connection);
         } else {
           // The Android native "authorizeWith" method opens a Chrome Tab and returns void.
-          // We need to listen for a Deep Link event, and attempt to extract the authCode
-          // from the redirect url to finish social authentication.
-          const deepLinkCallback = async ({ url }: { url: string }) => {
-            Linking.removeAllListeners('url');
-            const parsedUrl = new URL(url);
-            const queryParams = new URLSearchParams(parsedUrl.search);
-            const authCode = queryParams.get('code');
-            const result = await PassageReactNative.finishSocialAuthentication(
-              authCode
-            );
-            const parsedResult = JSON.parse(result);
-            resolve(parsedResult);
-          };
-          Linking.addEventListener('url', deepLinkCallback);
           await PassageReactNative.authorizeWith(connection);
+          // Wait for a redirect back into the app with the auth code.
+          const authCode = await waitForDeepLinkQueryValue('code');
+          authResultJson = await PassageReactNative.finishSocialAuthentication(
+            authCode
+          );
         }
+        const authResult = JSON.parse(authResultJson);
+        resolve(authResult);
       } catch (error: any) {
         reject(new PassageError(error.code, error.message));
       }
