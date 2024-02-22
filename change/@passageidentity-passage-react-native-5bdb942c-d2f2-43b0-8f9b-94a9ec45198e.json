@@ -1,0 +1,7 @@
+{
+  "type": "minor",
+  "comment": "Added Social Login functionality.",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "rickycpadilla@gmail.com",
+  "dependentChangeType": "patch"
+}
