@@ -202,7 +202,7 @@ class PassageReactNative: NSObject {
     
     // MARK: - Social Methods
     
-    @objc(aurhorizeWith:withResolver:withRejecter:)
+    @objc(authorizeWith:withResolver:withRejecter:)
     func authorizeWith(
         connection: String,
         resolve: @escaping RCTPromiseResolveBlock,
@@ -214,7 +214,7 @@ class PassageReactNative: NSObject {
                     reject("SOCIAL_AUTH_ERROR", "Invalid connection.", nil)
                     return
                 }
-                guard let window = UIApplication.shared.delegate?.window else {
+                guard let window = await UIApplication.shared.delegate?.window ?? nil else {
                     reject("SOCIAL_AUTH_ERROR", "Could not access app window.", nil)
                     return
                 }
