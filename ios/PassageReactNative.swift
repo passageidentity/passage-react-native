@@ -200,6 +200,32 @@ class PassageReactNative: NSObject {
         }
     }
     
+    // MARK: - Social Methods
+    
+    @objc(authorizeWith:withResolver:withRejecter:)
+    func authorizeWith(
+        connection: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                guard let safeConnection = PassageSocialConnection(rawValue: connection) else {
+                    reject("SOCIAL_AUTH_ERROR", "Invalid connection.", nil)
+                    return
+                }
+                guard let window = await UIApplication.shared.delegate?.window ?? nil else {
+                    reject("SOCIAL_AUTH_ERROR", "Could not access app window.", nil)
+                    return
+                }
+                let authResult = try await passage.authorize(with: safeConnection, in: window)
+                resolve(authResult.toJsonString())
+            } catch {
+                reject("SOCIAL_AUTH_ERROR", "\(error)", nil)
+            }
+        }
+    }
+    
     // MARK: - Token Methods
     
     @objc(getAuthToken:withRejecter:)

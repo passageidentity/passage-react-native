@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.google.gson.Gson
 import id.passage.android.Passage
+import id.passage.android.PassageSocialConnection
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AddDevicePasskeyCancellationException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
@@ -187,6 +188,31 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
 //          }
 //        }
         promise.reject(errorCode, e.message, e)
+      }
+    }
+  }
+
+  // endregion
+
+  // region SOCIAL METHODS
+  @ReactMethod
+  fun authorizeWith(connection: String, promise: Promise) {
+    val validConnection = PassageSocialConnection.values()
+      .firstOrNull { it.value == connection }
+        ?: return promise.reject("SOCIAL_AUTH_ERROR", "Invalid connection type")
+    passage.authorizeWith(validConnection)
+    promise.resolve(null)
+  }
+
+  @ReactMethod
+  fun finishSocialAuthentication(authCode: String, promise: Promise) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val authResult = passage.finishSocialAuthentication(authCode)
+        val jsonString = Gson().toJson(authResult)
+        promise.resolve(jsonString)
+      } catch (e: Exception) {
+        promise.reject("SOCIAL_AUTH_ERROR", e.message, e)
       }
     }
   }

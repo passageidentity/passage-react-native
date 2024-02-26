@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
+import { waitForDeepLinkQueryValue } from './utils/waitForDeepLinkQueryValue';
 
 const LINKING_ERROR =
   `The package 'passage-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -29,6 +30,7 @@ export enum PassageErrorCode {
   MagicLinkInvalid = 'MAGIC_LINK_INVALID',
   TokenError = 'TOKEN_ERROR',
   AppInfoError = 'APP_INFO_ERROR',
+  SocialAuthError = 'SOCIAL_AUTH_ERROR',
 }
 
 export class PassageError extends Error {
@@ -137,6 +139,12 @@ export enum DisplayUnit {
   Days = 'd',
 }
 
+export enum SocialConnection {
+  Apple = 'apple',
+  Github = 'github',
+  Google = 'google',
+}
+
 type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
 type LoginWithPasskey = () => Promise<AuthResult>;
 type DeviceSupportsPasskeys = () => Promise<boolean>;
@@ -144,6 +152,7 @@ type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
 type MagicLinkActivate = (magicLink: string) => Promise<AuthResult>;
 type GetMagicLinkStatus = (magicLinkId: string) => Promise<AuthResult | null>;
+type AuthorizeWith = (connection: SocialConnection) => Promise<AuthResult>;
 type GetAuthToken = () => Promise<string | null>;
 type IsAuthTokenValid = (authToken: string) => Promise<boolean>;
 type RefreshAuthToken = () => Promise<string | null>;
@@ -362,6 +371,39 @@ class Passage {
     } catch (error: any) {
       throw new PassageError(error.code, error.message);
     }
+  };
+
+  /**
+   * Authorizes user via a supported third-party social provider.
+   *
+   * @param {SocialConnection} connection The Social connection to use for authorization
+   * @returns {Promise<AuthResult>} A data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
+   * @throws {PassageError}
+   */
+  authorizeWith: AuthorizeWith = async (
+    connection: SocialConnection
+  ): Promise<AuthResult> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let authResultJson: string;
+        if (Platform.OS === 'ios') {
+          // The iOS native "authorizeWith" method returns an AuthResult directly.
+          authResultJson = await PassageReactNative.authorizeWith(connection);
+        } else {
+          // The Android native "authorizeWith" method opens a Chrome Tab and returns void.
+          await PassageReactNative.authorizeWith(connection);
+          // Wait for a redirect back into the app with the auth code.
+          const authCode = await waitForDeepLinkQueryValue('code');
+          authResultJson = await PassageReactNative.finishSocialAuthentication(
+            authCode
+          );
+        }
+        const authResult = JSON.parse(authResultJson);
+        resolve(authResult);
+      } catch (error: any) {
+        reject(new PassageError(error.code, error.message));
+      }
+    });
   };
 
   // TOKEN METHODS
