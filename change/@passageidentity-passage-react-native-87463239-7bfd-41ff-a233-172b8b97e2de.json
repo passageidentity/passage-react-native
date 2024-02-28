@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "Update Passage iOS dependency.",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "rickycpadilla@gmail.com",
+  "dependentChangeType": "patch"
+}
