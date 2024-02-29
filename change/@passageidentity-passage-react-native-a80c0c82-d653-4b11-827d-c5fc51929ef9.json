@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "chore: Update Passage Android dependency.",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "rickycpadilla@gmail.com",
+  "dependentChangeType": "patch"
+}
