@@ -64,10 +64,10 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun loginWithPasskey(promise: Promise) {
+  fun loginWithPasskey(identifier: String?, promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val authResult = passage.loginWithPasskey()
+        val authResult = passage.loginWithPasskey(identifier)
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
       } catch (e: Exception) {

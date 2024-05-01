@@ -46,8 +46,9 @@ class PassageReactNative: NSObject {
         }
     }
     
-    @objc(loginWithPasskey:withRejecter:)
+    @objc(loginWithPasskey:withResolver:withRejecter:)
     func loginWithPasskey(
+        identifier: String?,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
@@ -57,7 +58,7 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                let authResult = try await passage.loginWithPasskey()
+                let authResult = try await passage.loginWithPasskey(identifier: identifier)
                 resolve(authResult.toJsonString())
             } catch PassageASAuthorizationError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)

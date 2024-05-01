@@ -11,7 +11,8 @@ RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(loginWithPasskey:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(loginWithPasskey:(nullable NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 
