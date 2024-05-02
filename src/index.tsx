@@ -132,6 +132,16 @@ export type EmailAndSMSAuthMethod = {
   ttl_display_unit: DisplayUnit;
 };
 
+export enum AuthenticatorAttachment {
+  Platform = 'platform',
+  CrossPlatform = 'cross-platform',
+  Any = 'any',
+}
+
+export interface PasskeyCreationOptions {
+  authenticatorAttachment?: AuthenticatorAttachment;
+}
+
 export enum DisplayUnit {
   Seconds = 's',
   Minutes = 'm',
@@ -145,8 +155,11 @@ export enum SocialConnection {
   Google = 'google',
 }
 
-type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
-type LoginWithPasskey = () => Promise<AuthResult>;
+type RegisterWithPasskey = (
+  identifier: string,
+  options?: PasskeyCreationOptions
+) => Promise<AuthResult>;
+type LoginWithPasskey = (identifier?: string | null) => Promise<AuthResult>;
 type DeviceSupportsPasskeys = () => Promise<boolean>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
 type OTPActivate = (otp: string, otpId: string) => Promise<AuthResult>;
@@ -195,10 +208,14 @@ class Passage {
    * @throws {PassageError} When user cancels operation, user already exists, app configuration was not done properly, etc.
    */
   registerWithPasskey: RegisterWithPasskey = async (
-    identifier: string
+    identifier: string,
+    options?: PasskeyCreationOptions
   ): Promise<AuthResult> => {
     try {
-      const result = await PassageReactNative.registerWithPasskey(identifier);
+      const result = await PassageReactNative.registerWithPasskey(
+        identifier,
+        options || null
+      );
       const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {
@@ -212,12 +229,17 @@ class Passage {
    * NOTE: Both Android and iOS do NOT take a user identifier paramter when logging in with a passkey.
    * The operating systems both show all of the passkeys available for the user and your application.
    *
+   * @param {string | null} identifier email address / phone for user (optional)
    * @return {Promise<AuthResult>} a data object that includes a redirect URL and saves the authorization token and (optional) refresh token securely to device.
    * @throws {PassageError} When user cancels operation, user does not exist, app configuration was not done properly, etc.
    */
-  loginWithPasskey: LoginWithPasskey = async (): Promise<AuthResult> => {
+  loginWithPasskey: LoginWithPasskey = async (
+    identifier?: string | null
+  ): Promise<AuthResult> => {
     try {
-      const result = await PassageReactNative.loginWithPasskey();
+      const result = await PassageReactNative.loginWithPasskey(
+        identifier || null
+      );
       const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {

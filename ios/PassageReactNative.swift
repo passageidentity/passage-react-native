@@ -24,9 +24,10 @@ class PassageReactNative: NSObject {
     
     // MARK: - Passkey Methods
     
-    @objc(registerWithPasskey:withResolver:withRejecter:)
+    @objc(registerWithPasskey:withOptionsDictionary:withResolver:withRejecter:)
     func registerWithPasskey(
         identifier: String,
+        optionsDictionary: NSDictionary?,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
@@ -36,7 +37,13 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                let authResult = try await passage.registerWithPasskey(identifier: identifier)
+                var passkeyCreationOptions: PasskeyCreationOptions?
+                if let authenticatorAttachmentString = optionsDictionary?["authenticatorAttachment"] as? String,
+                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
+                {
+                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
+                }
+                let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
                 resolve(authResult.toJsonString())
             } catch PassageASAuthorizationError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)
@@ -46,8 +53,9 @@ class PassageReactNative: NSObject {
         }
     }
     
-    @objc(loginWithPasskey:withRejecter:)
+    @objc(loginWithPasskey:withResolver:withRejecter:)
     func loginWithPasskey(
+        identifier: String?,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
@@ -57,7 +65,7 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                let authResult = try await passage.loginWithPasskey()
+                let authResult = try await passage.loginWithPasskey(identifier: identifier)
                 resolve(authResult.toJsonString())
             } catch PassageASAuthorizationError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)
