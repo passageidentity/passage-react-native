@@ -4,6 +4,7 @@ import android.os.Build
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.Promise
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,11 +13,13 @@ import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageSocialConnection
 import id.passage.android.PassageToken
+import id.passage.android.PasskeyCreationOptions
 import id.passage.android.exceptions.AddDevicePasskeyCancellationException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
 import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
+import id.passage.android.model.AuthenticatorAttachment
 
 @Suppress("unused")
 class PassageReactNativeModule(reactContext: ReactApplicationContext) :
@@ -45,10 +48,16 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   // region PASSKEY METHODS
 
   @ReactMethod
-  fun registerWithPasskey(identifier: String, promise: Promise) {
+  fun registerWithPasskey(identifier: String, optionsMap: ReadableMap?, promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val authResult = passage.registerWithPasskey(identifier)
+        var options: PasskeyCreationOptions? = null
+        optionsMap?.getString("authenticatorAttachment")?.let {
+          AuthenticatorAttachment.decode(it)?.let {
+            options = PasskeyCreationOptions(it)
+          }
+        }
+        val authResult = passage.registerWithPasskey(identifier, options)
         val jsonString = Gson().toJson(authResult)
         promise.resolve(jsonString)
       } catch (e: Exception) {

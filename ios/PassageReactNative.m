@@ -8,6 +8,7 @@ RCT_EXTERN_METHOD(initWithAppId:(NSString *)appId
 
 // MARK: - Passkey Methods
 RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier
+                  withOptionsDictionary:( nullable NSDictionary *)optionsDictionary
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 

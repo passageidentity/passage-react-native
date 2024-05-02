@@ -132,6 +132,16 @@ export type EmailAndSMSAuthMethod = {
   ttl_display_unit: DisplayUnit;
 };
 
+export enum AuthenticatorAttachment {
+  Platform = 'platform',
+  CrossPlatform = 'cross-platform',
+  Any = 'any',
+}
+
+export interface PasskeyCreationOptions {
+  authenticatorAttachment?: AuthenticatorAttachment;
+}
+
 export enum DisplayUnit {
   Seconds = 's',
   Minutes = 'm',
@@ -145,7 +155,10 @@ export enum SocialConnection {
   Google = 'google',
 }
 
-type RegisterWithPasskey = (identifier: string) => Promise<AuthResult>;
+type RegisterWithPasskey = (
+  identifier: string,
+  options?: PasskeyCreationOptions
+) => Promise<AuthResult>;
 type LoginWithPasskey = (identifier?: string | null) => Promise<AuthResult>;
 type DeviceSupportsPasskeys = () => Promise<boolean>;
 type AuthWithoutPasskey = (identifier: string) => Promise<string>;
@@ -195,10 +208,14 @@ class Passage {
    * @throws {PassageError} When user cancels operation, user already exists, app configuration was not done properly, etc.
    */
   registerWithPasskey: RegisterWithPasskey = async (
-    identifier: string
+    identifier: string,
+    options?: PasskeyCreationOptions
   ): Promise<AuthResult> => {
     try {
-      const result = await PassageReactNative.registerWithPasskey(identifier);
+      const result = await PassageReactNative.registerWithPasskey(
+        identifier,
+        options || null
+      );
       const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {
@@ -220,7 +237,9 @@ class Passage {
     identifier?: string | null
   ): Promise<AuthResult> => {
     try {
-      const result = await PassageReactNative.loginWithPasskey(identifier || null);
+      const result = await PassageReactNative.loginWithPasskey(
+        identifier || null
+      );
       const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {
