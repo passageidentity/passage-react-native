@@ -1,6 +1,6 @@
 {
   "name": "@passageidentity/passage-react-native",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Native passkey authentication for your React Native app",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
