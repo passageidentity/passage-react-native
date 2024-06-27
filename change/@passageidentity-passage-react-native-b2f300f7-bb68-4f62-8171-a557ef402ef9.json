@@ -1,0 +1,7 @@
+{
+  "type": "none",
+  "comment": "chore: update deploy workflow",
+  "packageName": "@passageidentity/passage-react-native",
+  "email": "rickycpadilla@gmail.com",
+  "dependentChangeType": "none"
+}
