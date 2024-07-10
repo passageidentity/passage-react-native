@@ -409,5 +409,51 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   // endregion
+  
+  // Hosted Auth Region
+
+  @ReactMethod
+  fun hostedAuthStart(Promise promise) {
+      CoroutineScope(Dispatchers.IO).launch {
+          try {
+              passage.hostedAuthStart();
+              promise.resolve(null);
+          } catch (Exception e) {
+              var errorCode = "START_HOSTED_AUTH_ERROR"
+              promise.reject(errorCode, e.getMessage(), e);
+          }
+      }
+  }
+
+  @ReactMethod
+  fun hostedLogout(result: MethodChannel.Result) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            passage.hostedLogout()
+            result.success(null)
+        } catch (e: Exception) {
+            val error = "HOSTED_LOGOUT_ERROR"
+            result.error(error.name, e.message, e.toString())
+        }
+    }
+  }
+
+  @ReactMethod
+  fun hostedAuthFinish(call: MethodCall, result: MethodChannel.Result) {
+    val code = call.argument<String>("code") ?: return invalidArgumentError(result)
+    val clientSecret = call.argument<String>("clientSecret") ?: return invalidArgumentError(result)
+    val state = call.argument<String>("state") ?: return invalidArgumentError(result)
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val user = passage.hostedAuthFinish(code, clientSecret, state)
+            result.success(null)
+        } catch (e: Exception) {
+            val error = "FINISH_HOSTED_AUTH_ERROR"
+            result.error(error.name, e.message, e.toString())
+        }
+    }
+  }
+
+  // endregion
 
 }

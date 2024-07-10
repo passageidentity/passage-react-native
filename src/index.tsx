@@ -31,6 +31,9 @@ export enum PassageErrorCode {
   TokenError = 'TOKEN_ERROR',
   AppInfoError = 'APP_INFO_ERROR',
   SocialAuthError = 'SOCIAL_AUTH_ERROR',
+  StartHostedAuthError = 'START_HOSTED_AUTH_ERROR',
+  FinisHostedAuthError = 'FINISH_HOSTED_AUTH_ERROR',
+  LogoutHostedAuthError = 'LOGOUT_HOSTED_AUTH_ERROR'
 }
 
 export class PassageError extends Error {
@@ -181,6 +184,10 @@ type VoidMethod = () => Promise<void>;
 type ChangeEmail = (newEmail: string) => Promise<string>;
 type ChangePhone = (newPhone: string) => Promise<string>;
 type GetCurrentUser = () => Promise<PassageUser | null>;
+type HostedAuthStart = () => Promise<void>;
+type HostedAuthFinish = (code: string, clientSecret: string, state: string) => Promise<void>;
+type HostedLogout = () => Promise<void>;
+
 
 /**
  * The Passage class is used to perform authentication and user operations.
@@ -613,6 +620,35 @@ class Passage {
       throw new PassageError(error.code, error.message);
     }
   };
+
+  hostedAuthStart: HostedAuthStart = async (): Promise<void> => {
+    try {
+      await PassageReactNative.hostedAuthStart();
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+  
+  hostedAuthFinish: HostedAuthFinish = async (
+    code: string,
+    clientSecret: string,
+    state: string
+  ): Promise<void> => {
+    try {
+      await PassageReactNative.hostedAuthFinish(code, clientSecret, state);
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+  
+  hostedLogout: HostedLogout = async (): Promise<void> => {
+    try {
+      await PassageReactNative.hostedLogout();
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
 }
 
 export default Passage;

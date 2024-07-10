@@ -422,5 +422,56 @@ class PassageReactNative: NSObject {
             }
         }
     }
+
+    @objc(hostedAuthStart:withResolver:withRejecter:)
+    func hostedAuthStart(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                try await passage.hostedAuthStart()
+                resolve(nil)
+            } catch {
+                let errorCode = "START_HOSTED_AUTH_ERROR"
+                reject(errorCode, "\(error)", nil)
+            }
+        }
+    }
+
+    @objc(hostedAuthFinish:withClientSecret:withState:withResolver:withRejecter:)
+    func hostedAuthFinish(
+        code: String,
+        clientSecret: String,
+        state: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                let user = try await passage.hostedAuthFinish(code: code, clientSecret: clientSecret, state: state)
+                resolve(nil)
+            } catch {
+                let errorCode = "FINISH_HOSTED_AUTH_ERROR"
+                reject(errorCode, "\(error)", nil)
+            }
+        }
+    }
+
+    @objc(hostedLogout:withResolver:withRejecter:)
+    func hostedLogout(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                try await passage.hostedLogout()
+                resolve(nil)
+            } catch {
+                let errorCode = "LOGOUT_HOSTED_AUTH_ERROR"
+                reject(errorCode, "\(error)", nil)
+            }
+        }
+    }
     
 }
