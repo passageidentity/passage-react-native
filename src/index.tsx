@@ -639,7 +639,7 @@ class Passage {
         let idToken: string;
         if (Platform.OS === 'ios') {
           // The iOS native "hostedAuthStart" method returns an AuthResult directly.
-          [authResult, idToken] = await PassageReactNative.hostedAuthStart(clientSecret);
+          [authResult, idToken] = await PassageReactNative.hostedAuth(clientSecret);
         } else {
           // The Android native "hostedAuthStart" method opens a Chrome Tab and returns void.
           await PassageReactNative.hostedAuthStart();
