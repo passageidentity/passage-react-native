@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-import { waitForDeepLinkQueryValue } from './utils/waitForDeepLinkQueryValue';
+import { waitForDeepLinkQueryValues } from './utils/waitForDeepLinkQueryValues';
 
 const LINKING_ERROR =
   `The package 'passage-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -422,7 +422,8 @@ class Passage {
           // The Android native "authorizeWith" method opens a Chrome Tab and returns void.
           await PassageReactNative.authorizeWith(connection);
           // Wait for a redirect back into the app with the auth code.
-          const authCode = await waitForDeepLinkQueryValue('code');
+          const authCodeObj = await waitForDeepLinkQueryValues(['code']);
+          const authCode = authCodeObj['code'];
           authResultJson = await PassageReactNative.finishSocialAuthentication(
             authCode
           );
@@ -641,8 +642,7 @@ class Passage {
           // The Android native "hostedAuthStart" method opens a Chrome Tab and returns void.
           await PassageReactNative.hostedAuthStart();
           // Wait for a redirect back into the app with the auth code.
-          const authCode = await waitForDeepLinkQueryValue('code');
-          const state = await waitForDeepLinkQueryValue('state');
+          const { code: authCode, state } = await waitForDeepLinkQueryValues(['code', 'state']);
           let result = await PassageReactNative.hostedAuthFinish(authCode, state);
           return JSON.parse(result);;
         }

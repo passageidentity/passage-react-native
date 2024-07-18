@@ -20,23 +20,27 @@ const getUrlParamValue = (url: string, param: string): string | null => {
  *
  * Note that this function works best in a "singleTask" Android app.
  *
- * @param parameter The parameter of the value to return from Deep Link.
- * @returns string
+ * @param parameters Array of parameters to return from Deep Link.
+ * @returns object
  * @throws
  */
-export const waitForDeepLinkQueryValue = async (parameter: string) => {
+export const waitForDeepLinkQueryValues = async (parameters: string[]): Promise<{ [key: string]: string }> => {
   return new Promise(async (resolve, reject) => {
-    // We need to listen for a Deep Link url event, and attempt to extract the parameter
+    // We need to listen for a Deep Link url event, and attempt to extract the parameters
     // from the redirect url.
     const linkingListener = Linking.addEventListener('url', async (event) => {
       appStateListener.remove();
       linkingListener.remove();
       const { url } = event;
-      const value = getUrlParamValue(url, parameter);
-      if (!value) {
-        return reject(new Error('Missing query parameter in redirect url.'));
+      const result: { [key: string]: string } = {};
+      for (let parameter of parameters) {
+        const value = getUrlParamValue(url, parameter);
+        if (!value) {
+          return reject(new Error(`Missing query parameter ${parameter} in redirect url.`));
+        }
+        result[parameter] = value;
       }
-      resolve(value);
+      resolve(result);
     });
     // We need to listen for an AppState change event in the case that the user returns to
     // the app without having been redirected.
