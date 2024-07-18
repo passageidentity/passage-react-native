@@ -413,43 +413,41 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   // Hosted Auth Region
 
   @ReactMethod
-  fun hostedAuthStart(Promise promise) {
+  fun hostedAuthStart(promise: Promise) {
       CoroutineScope(Dispatchers.IO).launch {
           try {
-              passage.hostedAuthStart();
-              promise.resolve(null);
-          } catch (Exception e) {
-              var errorCode = "START_HOSTED_AUTH_ERROR"
-              promise.reject(errorCode, e.getMessage(), e);
+            passage.hostedAuthStart();
+            promise.resolve(null);
+          } catch (e: Exception) {
+            var errorCode = "START_HOSTED_AUTH_ERROR"
+            promise.reject(errorCode, e.message, e);
           }
       }
   }
 
   @ReactMethod
-  fun hostedLogout(result: MethodChannel.Result) {
+  fun hostedLogout(promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
         try {
             passage.hostedLogout()
-            result.success(null)
+            promise.resolve(null);
         } catch (e: Exception) {
-            val error = "HOSTED_LOGOUT_ERROR"
-            result.error(error.name, e.message, e.toString())
+          val error = "HOSTED_LOGOUT_ERROR"
+          promise.reject(error, e.message, e);
         }
     }
   }
 
   @ReactMethod
-  fun hostedAuthFinish(call: MethodCall, result: MethodChannel.Result) {
-    val code = call.argument<String>("code") ?: return invalidArgumentError(result)
-    val clientSecret = call.argument<String>("clientSecret") ?: return invalidArgumentError(result)
-    val state = call.argument<String>("state") ?: return invalidArgumentError(result)
+  fun hostedAuthFinish(code: String, state: String, promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
         try {
-            val user = passage.hostedAuthFinish(code, clientSecret, state)
-            result.success(null)
+          val authResultWithIdToken = passage.hostedAuthFinish(code, state)
+          val jsonString = Gson().toJson(authResultWithIdToken.first)
+          promise.resolve(jsonString)
         } catch (e: Exception) {
             val error = "FINISH_HOSTED_AUTH_ERROR"
-            result.error(error.name, e.message, e.toString())
+          promise.reject(error, e.message, e);
         }
     }
   }

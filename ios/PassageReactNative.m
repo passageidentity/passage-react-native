@@ -103,6 +103,13 @@ RCT_EXTERN_METHOD(changePhone:(NSString *)newPhone
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(hostedAuth:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+
+RCT_EXTERN_METHOD(hostedLogout:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 + (BOOL)requiresMainQueueSetup
  {
    return NO;
