@@ -11,7 +11,6 @@ internal extension AuthResult {
      func toDictionary() -> [String: Any] {
          var authResultDict: [String : Any] = [
              "authToken": authToken,
-             "redirectUrl": redirectURL,
              "refreshToken": refreshToken,
              "refreshTokenExpiration": refreshTokenExpiration
          ]
@@ -79,19 +78,14 @@ internal extension AppInfo {
     func toDictionary() -> [String: Any] {
         var appInfoDict: [String : Any] = [
             "allowedIdentifier": allowedIdentifier,
-            "authFallbackMethod": authFallbackMethod?.rawValue,
             "authOrigin": authOrigin,
             "id": id,
-            "loginURL": loginURL,
             "name": name,
             "publicSignup": publicSignup,
-            "redirectURL": redirectURL,
             "requiredIdentifier": requiredIdentifier,
             "requireEmailVerification": requireEmailVerification,
             "requireIdentifierVerification": requireIdentifierVerification,
-            "sessionTimeoutLength": sessionTimeoutLength,
-            "userMetadataSchema": userMetadataSchema?.map { $0.toDictionary() },
-            "authMethods": authMethods?.toDictionary(),
+            "sessionTimeoutLength": sessionTimeoutLength
         ]
         return appInfoDict
     }
@@ -102,25 +96,6 @@ internal extension AppInfo {
     
 }
 
-internal extension UserMetadataSchema {
-    
-    func toDictionary() -> [String: Any] {
-        var dict: [String : Any] = [
-            "fieldName": fieldName,
-            "friendlyName": friendlyName,
-            "id": id,
-            "profile": profile,
-            "registration": registration,
-            "type": type
-        ]
-        return dict
-    }
-   
-    func toJsonString() -> String {
-        return dictToJsonString(toDictionary())
-    }
-    
-}
 
 internal extension AuthMethods {
     func toDictionary() -> [String: Any] {

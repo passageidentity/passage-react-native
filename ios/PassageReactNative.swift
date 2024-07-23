@@ -45,7 +45,7 @@ class PassageReactNative: NSObject {
                 }
                 let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
                 resolve(authResult.toJsonString())
-            } catch PassageASAuthorizationError.canceled {
+            } catch RegisterWithPasskeyError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
@@ -67,7 +67,7 @@ class PassageReactNative: NSObject {
             do {
                 let authResult = try await passage.loginWithPasskey(identifier: identifier)
                 resolve(authResult.toJsonString())
-            } catch PassageASAuthorizationError.canceled {
+            } catch LoginWithPasskeyError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
@@ -134,7 +134,7 @@ class PassageReactNative: NSObject {
                 resolve(authResult.toJsonString())
             } catch {
                 var errorCode = "OTP_ERROR"
-                if case PassageOTPError.exceededAttempts = error {
+                if case OneTimePasscodeActivateError.exceededAttempts = error {
                     errorCode = "OTP_ACTIVATION_EXCEEDED_ATTEMPTS"
                 }
                 reject(errorCode, "\(error)", nil)
@@ -279,10 +279,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                guard let appInfo = try await PassageAuth.appInfo() else {
-                    reject("APP_INFO_ERROR", "Error getting app info.", nil)
-                    return
-                }
+                let appInfo = try await passage.appInfo()
                 resolve(appInfo.toJsonString())
             } catch {
                 reject("APP_INFO_ERROR", "\(error)", nil)
@@ -419,6 +416,38 @@ class PassageReactNative: NSObject {
                 reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
             } catch {
                 reject("CHANGE_PHONE_ERROR", "\(error)", nil)
+            }
+        }
+    }
+
+    @objc(hostedAuth:withRejecter:)
+    func hostedAuth(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
+        Task {
+            do {
+                let authResult = try await passage.hostedAuth()
+                resolve(authResult.toJsonString())
+            } catch {
+                let errorCode = "HOSTED_AUTH_ERROR"
+                reject(errorCode, "\(error)", nil)
+            }
+        }
+    }
+
+    @objc(hostedLogout:withRejecter:)
+    func hostedLogout(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                try await passage.hostedLogout()
+                resolve(nil)
+            } catch {
+                let errorCode = "LOGOUT_HOSTED_AUTH_ERROR"
+                reject(errorCode, "\(error)", nil)
             }
         }
     }

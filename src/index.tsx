@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-import { waitForDeepLinkQueryValue } from './utils/waitForDeepLinkQueryValue';
+import { waitForDeepLinkQueryValues } from './utils/waitForDeepLinkQueryValues';
 
 const LINKING_ERROR =
   `The package 'passage-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -31,6 +31,9 @@ export enum PassageErrorCode {
   TokenError = 'TOKEN_ERROR',
   AppInfoError = 'APP_INFO_ERROR',
   SocialAuthError = 'SOCIAL_AUTH_ERROR',
+  StartHostedAuthError = 'START_HOSTED_AUTH_ERROR',
+  FinisHostedAuthError = 'FINISH_HOSTED_AUTH_ERROR',
+  LogoutHostedAuthError = 'LOGOUT_HOSTED_AUTH_ERROR',
 }
 
 export class PassageError extends Error {
@@ -181,6 +184,8 @@ type VoidMethod = () => Promise<void>;
 type ChangeEmail = (newEmail: string) => Promise<string>;
 type ChangePhone = (newPhone: string) => Promise<string>;
 type GetCurrentUser = () => Promise<PassageUser | null>;
+type AuthorizeWithHostedLogin = () => Promise<AuthResult>;
+type HostedLogout = () => Promise<void>;
 
 /**
  * The Passage class is used to perform authentication and user operations.
@@ -415,7 +420,8 @@ class Passage {
           // The Android native "authorizeWith" method opens a Chrome Tab and returns void.
           await PassageReactNative.authorizeWith(connection);
           // Wait for a redirect back into the app with the auth code.
-          const authCode = await waitForDeepLinkQueryValue('code');
+          const authCodeObj = await waitForDeepLinkQueryValues(['code']);
+          const authCode = authCodeObj.code;
           authResultJson = await PassageReactNative.finishSocialAuthentication(
             authCode
           );
@@ -609,6 +615,54 @@ class Passage {
     try {
       const result = await PassageReactNative.changePhone(newPhone);
       return result;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  };
+
+  /**
+   * Authentication Method for Hosted Apps
+   * If your Passage app is Hosted, use this method to register and log in your user.
+   * This method will open up a Passage login experience
+   * @param {string} clientSecret You hosted app's client secret, found in Passage Console's OIDC Settings.n
+   * @returns {Promise<AuthResultWithIdToken>} A data object that includes AuthResult and idToken
+   * @throws {PassageError}
+   */
+  authorizeWithHostedLogin: AuthorizeWithHostedLogin =
+    async (): Promise<AuthResult> => {
+      try {
+        if (Platform.OS === 'ios') {
+          // The iOS native "hostedAuthStart" method returns an AuthResult directly.
+          const result = await PassageReactNative.hostedAuth();
+          return JSON.parse(result);
+        } else {
+          // The Android native "hostedAuthStart" method opens a Chrome Tab and returns void.
+          await PassageReactNative.hostedAuthStart();
+          // Wait for a redirect back into the app with the auth code.
+          const { code: authCode, state } = await waitForDeepLinkQueryValues([
+            'code',
+            'state',
+          ]);
+          let result = await PassageReactNative.hostedAuthFinish(
+            authCode,
+            state
+          );
+          return JSON.parse(result);
+        }
+      } catch (error: any) {
+        throw new PassageError(error.code, error.message);
+      }
+    };
+
+  /**
+   * Logout Method for Hosted Apps
+   *
+   * If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+   */
+
+  hostedLogout: HostedLogout = async (): Promise<void> => {
+    try {
+      await PassageReactNative.hostedLogout();
     } catch (error: any) {
       throw new PassageError(error.code, error.message);
     }
