@@ -24,7 +24,9 @@ const getUrlParamValue = (url: string, param: string): string | null => {
  * @returns object
  * @throws
  */
-export const waitForDeepLinkQueryValues = async (parameters: string[]): Promise<{ [key: string]: string }> => {
+export const waitForDeepLinkQueryValues = async (
+  parameters: string[]
+): Promise<{ [key: string]: string }> => {
   return new Promise(async (resolve, reject) => {
     // We need to listen for a Deep Link url event, and attempt to extract the parameters
     // from the redirect url.
@@ -36,7 +38,9 @@ export const waitForDeepLinkQueryValues = async (parameters: string[]): Promise<
       for (let parameter of parameters) {
         const value = getUrlParamValue(url, parameter);
         if (!value) {
-          return reject(new Error(`Missing query parameter ${parameter} in redirect url.`));
+          return reject(
+            new Error(`Missing query parameter ${parameter} in redirect url.`)
+          );
         }
         result[parameter] = value;
       }
