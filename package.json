@@ -1,6 +1,6 @@
 {
   "name": "@passageidentity/passage-react-native",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Native passkey authentication for your React Native app",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -147,5 +147,9 @@
         }
       ]
     ]
+  },
+  "overrides": {
+    "ip": "2.0.1",
+    "ws": "^6.2.3"
   }
 }
