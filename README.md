@@ -4,7 +4,7 @@
 
 ### Native passkey authentication for your React Native app
 ## Welcome!
-Integrating passkey technology can be really hard. That's why we built the Passage React Native SDK - to make passkey authentication easy for you and your users, all in a native Android and iOS experience.
+Integrating passkey technology can be really hard. That's why we built the Passage Complete React Native SDK - to make passkey authentication easy for you and your users, all in a native Android and iOS experience.
 
 <img width="1069" alt="Passage React Native" src="https://storage.googleapis.com/passage-docs/passage_react_native.png">
 
@@ -33,4 +33,4 @@ const user = await passage.getCurrentUser();
 <br>
 
 ## Documentation
-To get started using Passage in your React Native app, please visit our [Passage Docs](https://docs.passage.id/mobile/cross-platform/react-native).
+To get started using Passage Complete in your React Native app, please visit our [Passage Docs](https://docs.passage.id/complete/react-native/add-passage).
