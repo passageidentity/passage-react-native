@@ -3,8 +3,8 @@ import {
   AuthResult,
   PassageError,
   PassageReactNative,
-  PasskeyCreationOptions,
 } from '../shared';
+import { PasskeyCreationOptions } from './PasskeyCreationOptions';
 
 /**
  * PassagePasskey class contains functions that use passkeys for authentication.
@@ -16,7 +16,7 @@ export class PassagePasskey {
    * @param {PasskeyCreationOptions | undefined} options
    * @returns {AuthResult} The authentication token, redirect URL, and refresh token, if configured for the application.
    */
-  public async register(
+  async register(
     identifier: string,
     options?: PasskeyCreationOptions
   ): Promise<AuthResult> {
@@ -38,7 +38,7 @@ export class PassagePasskey {
    * @param {string} identifier
    * @returns {AuthResult} The authentication token, redirect URL, and refresh token, if configured for the application.
    */
-  public async login(identifier?: string): Promise<AuthResult> {
+  async login(identifier?: string): Promise<AuthResult> {
     try {
       const result = await PassageReactNative.passkeyLogin(identifier || null);
       const parsedResult = JSON.parse(result);
@@ -51,7 +51,7 @@ export class PassagePasskey {
   /**
    * Checks if the user's device supports passkeys.
    */
-  public isSupported(): boolean {
+  isSupported(): boolean {
     if (Platform.OS === 'ios') {
       const iosVersion = parseFloat(Platform.Version as string);
       return iosVersion >= 16;
