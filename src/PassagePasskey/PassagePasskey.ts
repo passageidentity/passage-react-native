@@ -1,9 +1,5 @@
 import { Platform } from 'react-native';
-import {
-  AuthResult,
-  PassageError,
-  PassageReactNative,
-} from '../shared';
+import { AuthResult, PassageError, PassageReactNative } from '../shared';
 import { PasskeyCreationOptions } from './PasskeyCreationOptions';
 
 /**
