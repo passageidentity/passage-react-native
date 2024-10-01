@@ -5,7 +5,7 @@ import {
   CurrentUser,
   Metadata,
   Passkey,
-  SocialConnectionType,
+  UserSocialConnectionType,
   UserSocialConnections,
 } from './';
 
@@ -153,7 +153,7 @@ export class PassageCurrentUser {
    * @return {boolean} true if the social connection has been deleted successfully.
    */
   async deleteSocialConnection(
-    socialConnectionType: SocialConnectionType
+    socialConnectionType: UserSocialConnectionType
   ): Promise<boolean> {
     try {
       await PassageReactNative.currentUserDeleteSocialConnection(

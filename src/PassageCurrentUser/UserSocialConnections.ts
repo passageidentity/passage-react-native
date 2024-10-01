@@ -1,10 +1,10 @@
-export enum SocialConnectionType {
+export enum UserSocialConnectionType {
   apple = 'apple',
   github = 'github',
   google = 'google',
 }
 
-export type SocialConnection = {
+export type UserSocialConnection = {
   providerId: string;
   createdAt: Date;
   lastLoginAt: Date;
@@ -12,7 +12,7 @@ export type SocialConnection = {
 };
 
 export interface UserSocialConnections {
-  apple?: SocialConnection;
-  github?: SocialConnection;
-  google?: SocialConnection;
+  apple?: UserSocialConnection;
+  github?: UserSocialConnection;
+  google?: UserSocialConnection;
 }
