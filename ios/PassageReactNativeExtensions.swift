@@ -1,6 +1,7 @@
+import AnyCodable
 import Passage
 
-internal func dictToJsonString(_ dict: [String: Any]) -> String {
+internal func dictToJsonString(_ dict: [String: Any?]) -> String {
     let jsonData = try! JSONSerialization.data(withJSONObject: dict, options: [])
     let jsonString = String(data: jsonData, encoding: .utf8)!
     return jsonString
@@ -8,8 +9,8 @@ internal func dictToJsonString(_ dict: [String: Any]) -> String {
 
 internal extension AuthResult {
     
-     func toDictionary() -> [String: Any] {
-         var authResultDict: [String : Any] = [
+     func toDictionary() -> [String: Any?] {
+         var authResultDict: [String : Any?] = [
              "authToken": authToken,
              "refreshToken": refreshToken,
              "refreshTokenExpiration": refreshTokenExpiration
@@ -23,7 +24,7 @@ internal extension AuthResult {
     
  }
 
-internal extension DeviceInfo {
+internal extension Passkey {
     
     func toDictionary() -> [String: Any] {
         var authResultDict: [String : Any] = [
@@ -45,10 +46,10 @@ internal extension DeviceInfo {
     
 }
 
-internal extension PassageUserInfo {
+internal extension CurrentUser {
     
-     func toDictionary() -> [String: Any] {
-         var userDict: [String : Any] = [
+     func toDictionary() -> [String: Any?] {
+         var userDict: [String : Any?] = [
             "createdAt": createdAt,
             "email": email,
             "emailVerified": emailVerified,
@@ -61,7 +62,7 @@ internal extension PassageUserInfo {
             "updatedAt": updatedAt,
             "userMetadata": userMetadata,
             "webauthn": webauthn,
-            "webauthnDevices": webauthnDevices?.map { $0.toDictionary() },
+            "webauthnDevices": webauthnDevices.map { $0.toDictionary() },
             "webauthnTypes": webauthnTypes
          ]
          return userDict
@@ -73,7 +74,30 @@ internal extension PassageUserInfo {
     
  }
 
-internal extension AppInfo {
+internal extension PublicUserInfo {
+  
+  func toDictionary() -> [String: Any?] {
+    var userDict: [String : Any?] = [
+      "email": email,
+      "emailVerified": emailVerified,
+      "id": id,
+      "phone": phone,
+      "phoneVerified": phoneVerified,
+      "status": status,
+      "userMetadata": userMetadata,
+      "webauthn": webauthn,
+      "webauthnTypes": webauthnTypes
+    ]
+    return userDict
+  }
+  
+  func toJsonString() -> String {
+    return dictToJsonString(toDictionary())
+  }
+  
+}
+
+internal extension PassageAppInfo {
     
     func toDictionary() -> [String: Any] {
         var appInfoDict: [String : Any] = [
@@ -110,4 +134,39 @@ internal extension AuthMethods {
     func toJsonString() -> String {
         return dictToJsonString(toDictionary())
     }
+}
+
+func convertNSDictionaryToAnyCodable(_ nsDictionary: NSDictionary?) -> AnyCodable? {
+  guard let dictionary = nsDictionary as? [String: Any] else {
+    return nil
+  }
+  
+  let anyCodableDictionary = dictionary.mapValues { value -> AnyCodable in
+    if let dict = value as? NSDictionary {
+      return convertNSDictionaryToAnyCodable(dict) ?? AnyCodable(nil)
+    } else if let array = value as? NSArray {
+      return AnyCodable(array.map { convertNSDictionaryToAnyCodable($0 as? NSDictionary) ?? AnyCodable($0) })
+    } else {
+      return AnyCodable(value)
+    }
+  }
+  
+  return AnyCodable(anyCodableDictionary)
+}
+
+extension AnyCodable {
+  func toJSONString(prettyPrinted: Bool = false) -> String? {
+    let encoder = JSONEncoder()
+    if prettyPrinted {
+      encoder.outputFormatting = .prettyPrinted
+    }
+    
+    do {
+      let jsonData = try encoder.encode(self)
+      return String(data: jsonData, encoding: .utf8)
+    } catch {
+      print("Failed to encode AnyCodable to JSON string: \(error)")
+      return nil
+    }
+  }
 }

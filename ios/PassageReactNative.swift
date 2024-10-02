@@ -3,11 +3,8 @@ import Passage
 @objc(PassageReactNative)
 class PassageReactNative: NSObject {
     
-    private lazy var passage: PassageAuth = {
-        guard let appId else {
-            return PassageAuth()
-        }
-        return PassageAuth(appId: appId)
+    private lazy var passage: Passage = {
+        return Passage(appId: appId ?? "")
     }()
     
     private var appId: String?
@@ -21,6 +18,53 @@ class PassageReactNative: NSObject {
         self.appId = appId
         resolve(())
     }
+  
+    // MARK: - App Methods
+    
+    @objc(appInfo:withRejecter:)
+    func appInfo(
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            do {
+                let appInfo = try await passage.app.info()
+                resolve(appInfo.toJsonString())
+            } catch {
+                reject("APP_INFO_ERROR", "\(error)", nil)
+            }
+        }
+    }
+    
+    @objc(appUserExists:withResolver:withRejecter:)
+    func appUserExists(
+        identifier: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        Task {
+            let user = try? await passage.app.userExists(identifier: identifier)
+            resolve(user?.toJsonString())
+        }
+    }
+  
+  @objc(appCreateUser:withUserMetadata:withResolver:withRejecter:)
+  func appCreateUser(
+    identifier: String,
+    userMetaData: NSDictionary?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    Task {
+      do {
+        let metadata = convertNSDictionaryToAnyCodable(userMetaData)
+        let user = try await passage.app.createUser(identifier: identifier, userMetadata: metadata)
+        resolve(user.toJsonString())
+      } catch {
+        reject("CREATE_USER_ERROR", "\(error)", nil)
+      }
+    }
+  }
     
     // MARK: - Passkey Methods
     
@@ -43,9 +87,9 @@ class PassageReactNative: NSObject {
                 {
                     passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
                 }
-                let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
+                let authResult = try await passage.passkey.register(identifier: identifier, options: passkeyCreationOptions)
                 resolve(authResult.toJsonString())
-            } catch RegisterWithPasskeyError.canceled {
+            } catch PassagePasskeyError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
@@ -65,9 +109,9 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                let authResult = try await passage.loginWithPasskey(identifier: identifier)
+                let authResult = try await passage.passkey.login(identifier: identifier)
                 resolve(authResult.toJsonString())
-            } catch LoginWithPasskeyError.canceled {
+            } catch PassagePasskeyError.canceled {
                 reject("USER_CANCELLED", "User cancelled interaction", nil)
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
@@ -97,7 +141,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let otpId = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifer).id
+                let otpId = try await passage.oneTimePasscode.register(identifier: identifer, language: nil).otpId
                 resolve(otpId)
             } catch {
                 reject("OTP_ERROR", "\(error)", nil)
@@ -113,7 +157,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let otpId = try await PassageAuth.newLoginOneTimePasscode(identifier: identifer).id
+                let otpId = try await passage.oneTimePasscode.login(identifier: identifer).otpId
                 resolve(otpId)
             } catch {
                 reject("OTP_ERROR", "\(error)", nil)
@@ -130,11 +174,11 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
+                let authResult = try await passage.oneTimePasscode.activate(otp: otp, id: otpId)
                 resolve(authResult.toJsonString())
             } catch {
                 var errorCode = "OTP_ERROR"
-                if case OneTimePasscodeActivateError.exceededAttempts = error {
+                if case OneTimePasscodeError.exceededAttempts = error {
                     errorCode = "OTP_ACTIVATION_EXCEEDED_ATTEMPTS"
                 }
                 reject(errorCode, "\(error)", nil)
@@ -152,7 +196,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let magicLinkId = try await PassageAuth.newRegisterMagicLink(identifier: identifer).id
+                let magicLinkId = try await passage.magicLink.register(identifier: identifer, language: nil).id
                 resolve(magicLinkId)
             } catch {
                 reject("MAGIC_LINK_ERROR", "\(error)", nil)
@@ -168,7 +212,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let magicLinkId = try await PassageAuth.newLoginMagicLink(identifier: identifer).id
+                let magicLinkId = try await passage.magicLink.login(identifier: identifer, language: nil).id
                 resolve(magicLinkId)
             } catch {
                 reject("MAGIC_LINK_ERROR", "\(error)", nil)
@@ -184,7 +228,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let authResult = try await passage.magicLinkActivate(userMagicLink: userMagicLink)
+                let authResult = try await passage.magicLink.activate(magicLink: userMagicLink)
                 resolve(authResult.toJsonString())
             } catch {
                 reject("MAGIC_LINK_ERROR", "\(error)", nil)
@@ -200,7 +244,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let authResult = try await passage.getMagicLinkStatus(id: magicLinkId)
+                let authResult = try await passage.magicLink.status(id: magicLinkId)
                 resolve(authResult.toJsonString())
             } catch {
                 reject("MAGIC_LINK_ERROR", "\(error)", nil)
@@ -222,11 +266,7 @@ class PassageReactNative: NSObject {
                     reject("SOCIAL_AUTH_ERROR", "Invalid connection.", nil)
                     return
                 }
-                guard let window = await UIApplication.shared.delegate?.window ?? nil else {
-                    reject("SOCIAL_AUTH_ERROR", "Could not access app window.", nil)
-                    return
-                }
-                let authResult = try await passage.authorize(with: safeConnection, in: window)
+                let authResult = try await passage.social.authorize(connection: safeConnection)
                 resolve(authResult.toJsonString())
             } catch {
                 reject("SOCIAL_AUTH_ERROR", "\(error)", nil)
@@ -241,8 +281,10 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        let token = passage.tokenStore.authToken
-        resolve(token)
+        Task {
+            let token = try? await passage.tokenStore.getValidAuthToken()
+            resolve(token)
+        }
     }
     
     @objc(isAuthTokenValid:withResolver:withRejecter:)
@@ -251,7 +293,7 @@ class PassageReactNative: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        let isValid = !PassageTokenUtils.isTokenExpired(token: authToken)
+        let isValid = passage.tokenStore.isAuthTokenValid()
         resolve(isValid)
     }
     
@@ -262,40 +304,11 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let authResult = try await passage.refresh()
+                let authResult = try await passage.tokenStore.refreshTokens()
                 resolve(authResult.authToken)
             } catch {
                 reject("TOKEN_ERROR", "\(error)", nil)
             }
-        }
-    }
-    
-    // MARK: - App Methods
-    
-    @objc(getAppInfo:withRejecter:)
-    func getAppInfo(
-        resolve: @escaping RCTPromiseResolveBlock,
-        reject: @escaping RCTPromiseRejectBlock
-    ) {
-        Task {
-            do {
-                let appInfo = try await passage.appInfo()
-                resolve(appInfo.toJsonString())
-            } catch {
-                reject("APP_INFO_ERROR", "\(error)", nil)
-            }
-        }
-    }
-    
-    @objc(identifierExists:withResolver:withRejecter:)
-    internal func identifierExists(
-        identifier: String,
-        resolve: @escaping RCTPromiseResolveBlock,
-        reject: @escaping RCTPromiseRejectBlock
-    ) {
-        Task {
-            let user = try? await PassageAuth.getUser(identifier: identifier)
-            resolve(user?.toJsonString())
         }
     }
     
@@ -308,7 +321,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let user = try await passage.getCurrentUser()
+                let user = try await passage.currentUser.userInfo()
                 resolve(user?.toJsonString())
             } catch {
                 resolve(nil)
@@ -316,19 +329,20 @@ class PassageReactNative: NSObject {
         }
     }
     
-    @objc(signOut:withRejecter:)
+    @objc(logOut:withRejecter:)
     func signOut(
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
-            try? await passage.signOut()
+            try? await passage.currentUser.logOut()
             resolve(nil)
         }
     }
     
-    @objc(addDevicePasskey:withRejecter:)
+    @objc(addPasskey:withResolver:withRejecter:)
     func addDevicePasskey(
+        optionsDictionary: NSDictionary?,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -338,23 +352,31 @@ class PassageReactNative: NSObject {
         }
         Task {
             do {
-                let device = try await passage.addDevice()
-                resolve(device.toJsonString())
+                var passkeyCreationOptions: PasskeyCreationOptions?
+                if let authenticatorAttachmentString = optionsDictionary?["authenticatorAttachment"] as? String,
+                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
+                {
+                    passkeyCreationOptions = PasskeyCreationOptions(
+                        authenticatorAttachment: authenticatorAttachment
+                    )
+                }
+                let passkey = try await passage.currentUser.addPasskey(options: passkeyCreationOptions)
+                resolve(passkey.toJsonString())
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
             }
         }
     }
     
-    @objc(deleteDevicePasskey:withResolver:withRejecter:)
-    func deleteDevicePasskey(
-        deviceId: String,
+    @objc(deletePasskey:withResolver:withRejecter:)
+    func deletePasskey(
+        passkeyId: String,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
             do {
-                try await passage.revokeDevice(deviceId: deviceId)
+              try await passage.currentUser.deletePasskey(passkeyId: passkeyId)
                 resolve(nil)
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
@@ -362,22 +384,20 @@ class PassageReactNative: NSObject {
         }
     }
     
-    @objc(editDevicePasskeyName:withNewDevicePasskeyName:withResolver:withRejecter:)
+    @objc(editDevicePasskeyName:withNewFriendlyName:withResolver:withRejecter:)
     func editDevicePasskeyName(
-        deviceId: String,
-        newDevicePasskeyName: String,
+        passkeyId: String,
+        newFriendlyName: String,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
             do {
-                guard let deviceInfo = try await passage
-                    .editDevice(deviceId: deviceId, friendlyName: newDevicePasskeyName)
-                else {
-                    reject("PASSKEY_ERROR", "Error editing passkey name.", nil)
-                    return
-                }
-                resolve(deviceInfo.toJsonString())
+                let passkey = try await passage.currentUser.editPasskey(
+                    passkeyId: passkeyId,
+                    newFriendlyName: newFriendlyName
+                )
+                resolve(passkey.toJsonString())
             } catch {
                 reject("PASSKEY_ERROR", "\(error)", nil)
             }
@@ -392,7 +412,7 @@ class PassageReactNative: NSObject {
     ) {
         Task {
             do {
-                let magicLink = try await passage.changeEmail(newEmail: newEmail)
+              let magicLink = try await passage.currentUser.changeEmail(newEmail: newEmail, language: <#T##String?#>)
                 resolve(magicLink?.id)
             } catch PassageAPIError.unauthorized(let unauthorizedError) {
                 reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
@@ -427,7 +447,7 @@ class PassageReactNative: NSObject {
     ) -> Void {
         Task {
             do {
-                let authResult = try await passage.hostedAuth()
+              let authResult = try await passage.hosted.authorize()
                 resolve(authResult.toJsonString())
             } catch {
                 let errorCode = "HOSTED_AUTH_ERROR"
@@ -436,17 +456,17 @@ class PassageReactNative: NSObject {
         }
     }
 
-    @objc(hostedLogout:withRejecter:)
-    func hostedLogout(
+    @objc(logOut:withRejecter:)
+    func logOut(
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         Task {
             do {
-                try await passage.hostedLogout()
+              try await passage.currentUser.logOut()
                 resolve(nil)
             } catch {
-                let errorCode = "LOGOUT_HOSTED_AUTH_ERROR"
+                let errorCode = "LOGOUT_ERROR"
                 reject(errorCode, "\(error)", nil)
             }
         }

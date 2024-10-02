@@ -6,6 +6,19 @@ RCT_EXTERN_METHOD(initWithAppId:(NSString *)appId
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+// MARK: - App Methods
+RCT_EXTERN_METHOD(appInfo:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(appUserExists:(NSString *)identifier
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(appCreateUser:(NSString *)identifier
+                  withUserMetadata:( nullable NSDictionary *)userMetaData
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 // MARK: - Passkey Methods
 RCT_EXTERN_METHOD(registerWithPasskey:(NSString *)identifier
                   withOptionsDictionary:( nullable NSDictionary *)optionsDictionary
@@ -67,31 +80,23 @@ RCT_EXTERN_METHOD(isAuthTokenValid:(NSString *)authToken
 RCT_EXTERN_METHOD(refreshAuthToken:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-// MARK: - App Methods
-RCT_EXTERN_METHOD(getAppInfo:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(identifierExists:(NSString *)identifier
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject);
-
 
 // MARK: - User Methods
 RCT_EXTERN_METHOD(getCurrentUser:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(signOut:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(logOut:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(addDevicePasskey:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(deleteDevicePasskey:(NSString *)deviceId
+RCT_EXTERN_METHOD(deletePasskey:(NSString *)passkeyId
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(editDevicePasskeyName:(NSString *)deviceId
-                  withNewDevicePasskeyName:(NSString *)newDevicePasskeyName
+RCT_EXTERN_METHOD(editPasskey:(NSString *)passkeyId
+                  withNewFriendlyName:(NSString *)newFriendlyName
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
@@ -103,11 +108,8 @@ RCT_EXTERN_METHOD(changePhone:(NSString *)newPhone
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+// MARK: - HOSTED Auth Methods
 RCT_EXTERN_METHOD(hostedAuth:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject);
-
-
-RCT_EXTERN_METHOD(hostedLogout:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 + (BOOL)requiresMainQueueSetup
