@@ -51,7 +51,7 @@ RCT_EXTERN_METHOD(magicLinkRegister:(NSString *)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(newLoginMagicLink:(NSString *)identifier
+RCT_EXTERN_METHOD(magicLinkLogin:(NSString *)identifier
                   withLanguage:(nullable NSString *)language
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
@@ -65,19 +65,26 @@ RCT_EXTERN_METHOD(magicLinkStatus:(NSString *)magicLinkId
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 // MARK: - Social Auth Methods
-RCT_EXTERN_METHOD(authorizeWith:(NSString *)connection
+RCT_EXTERN_METHOD(socialAuthorize:(NSString *)connection
                   withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+// MARK: - HOSTED Auth Methods
+RCT_EXTERN_METHOD(hostedAuthorize:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 // MARK: - Token Methods
-RCT_EXTERN_METHOD(getAuthToken:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(tokenStoreGetValidAuthToken:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(isAuthTokenValid:(NSString *)authToken
+RCT_EXTERN_METHOD(tokenStoreIsAuthTokenValid:(NSString *)authToken
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(refreshAuthToken:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(tokenStoreRefreshAuthToken:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(tokenStoreRevokeRefreshToken:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 
@@ -106,10 +113,6 @@ RCT_EXTERN_METHOD(changeEmail:(NSString *)newEmail
 
 RCT_EXTERN_METHOD(changePhone:(NSString *)newPhone
                   withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject);
-
-// MARK: - HOSTED Auth Methods
-RCT_EXTERN_METHOD(hostedAuth:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 + (BOOL)requiresMainQueueSetup

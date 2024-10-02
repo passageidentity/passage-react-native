@@ -273,8 +273,8 @@ class PassageReactNative: NSObject {
   
   // MARK: - Social Methods
   
-  @objc(authorizeWith:withResolver:withRejecter:)
-  func authorizeWith(
+  @objc(socialAuthorize:withResolver:withRejecter:)
+  func socialAuthorize(
     connection: String,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
@@ -293,10 +293,28 @@ class PassageReactNative: NSObject {
     }
   }
   
+  // MARK: - Hosted Methods
+  
+  @objc(hostedAuthorize:withRejecter:)
+  func hostedAuthorize(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) -> Void {
+    Task {
+      do {
+        let authResult = try await passage.hosted.authorize()
+        resolve(authResult.toJsonString())
+      } catch {
+        let errorCode = "HOSTED_AUTH_ERROR"
+        reject(errorCode, "\(error)", nil)
+      }
+    }
+  }
+  
   // MARK: - Token Methods
   
-  @objc(getAuthToken:withRejecter:)
-  func getAuthToken(
+  @objc(tokenStoreGetValidAuthToken:withRejecter:)
+  func tokenStoreGetValidAuthToken(
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) {
@@ -306,8 +324,8 @@ class PassageReactNative: NSObject {
     }
   }
   
-  @objc(isAuthTokenValid:withResolver:withRejecter:)
-  func isAuthTokenValid(
+  @objc(tokenStoreIsAuthTokenValid:withResolver:withRejecter:)
+  func tokenStoreIsAuthTokenValid(
     authToken: String,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
@@ -316,8 +334,8 @@ class PassageReactNative: NSObject {
     resolve(isValid)
   }
   
-  @objc(refreshAuthToken:withRejecter:)
-  func refreshAuthToken(
+  @objc(tokenStoreRefreshAuthToken:withRejecter:)
+  func tokenStoreRefreshAuthToken(
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) {
@@ -325,6 +343,21 @@ class PassageReactNative: NSObject {
       do {
         let authResult = try await passage.tokenStore.refreshTokens()
         resolve(authResult.authToken)
+      } catch {
+        reject("TOKEN_ERROR", "\(error)", nil)
+      }
+    }
+  }
+  
+  @objc(tokenStoreRevokeRefreshToken:withRejecter:)
+  func tokenStoreRevokeRefreshToken(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    Task {
+      do {
+        try await passage.tokenStore.revokeRefreshToken()
+        resolve(())
       } catch {
         reject("TOKEN_ERROR", "\(error)", nil)
       }
@@ -455,38 +488,6 @@ class PassageReactNative: NSObject {
         reject("USER_UNAUTHORIZED", "\(unauthorizedError)", nil)
       } catch {
         reject("CHANGE_PHONE_ERROR", "\(error)", nil)
-      }
-    }
-  }
-  
-  @objc(hostedAuth:withRejecter:)
-  func hostedAuth(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
-  ) -> Void {
-    Task {
-      do {
-        let authResult = try await passage.hosted.authorize()
-        resolve(authResult.toJsonString())
-      } catch {
-        let errorCode = "HOSTED_AUTH_ERROR"
-        reject(errorCode, "\(error)", nil)
-      }
-    }
-  }
-  
-  @objc(logOut:withRejecter:)
-  func logOut(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
-  ) {
-    Task {
-      do {
-        try await passage.currentUser.logOut()
-        resolve(nil)
-      } catch {
-        let errorCode = "LOGOUT_ERROR"
-        reject(errorCode, "\(error)", nil)
       }
     }
   }
