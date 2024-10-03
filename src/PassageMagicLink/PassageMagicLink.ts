@@ -1,5 +1,5 @@
-import { AuthResult, PassageError, PassageReactNative } from 'src/shared';
-import { MagicLink } from '.';
+import { PassageError, PassageReactNative } from '../../src/shared';
+import type { AuthResult, MagicLink } from '../';
 
 /**
  * PassageMagicLink class contains functions that use magic links for authentication, identitfy verification, and handling identifier changes.

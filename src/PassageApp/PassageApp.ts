@@ -1,6 +1,5 @@
-import { PassageError, PassageReactNative } from 'src/shared';
-import { PassageAppInfo, PublicUserInfo } from './';
-import { Metadata } from 'src/PassageCurrentUser';
+import { PassageError, PassageReactNative } from '../../src/shared';
+import type { Metadata, PassageAppInfo, PublicUserInfo } from '../';
 
 /**
  * PassageApp class contains functions that operate on the Passage app level.

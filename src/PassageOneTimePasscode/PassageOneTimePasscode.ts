@@ -1,5 +1,5 @@
 import { PassageError, AuthResult, PassageReactNative } from '../shared';
-import { OneTimePasscode } from './OneTimePasscode';
+import type { OneTimePasscode } from '../';
 
 /**
  * PassageOneTimePasscode class contains functions that use one-time passcodes for authentication.

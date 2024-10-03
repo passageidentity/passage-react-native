@@ -1,4 +1,9 @@
-import { Passkey, UserSocialConnections, UserStatus, WebAuthnType } from './';
+import type {
+  Passkey,
+  UserSocialConnections,
+  UserStatus,
+  WebAuthnType,
+} from '../';
 
 export type CurrentUser = {
   /**

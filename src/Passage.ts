@@ -59,7 +59,7 @@ export class Passage {
    * Constructor configuring the Passage class' attributes
    * @param {string} appId the App's corresponding AppId
    */
-  constructor(private appId: string) {
+  constructor(appId: string) {
     PassageReactNative.initWithAppId(appId);
     this.app = new PassageApp();
     this.passkey = new PassagePasskey();

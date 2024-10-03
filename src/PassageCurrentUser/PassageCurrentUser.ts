@@ -1,13 +1,13 @@
-import { MagicLink } from '../PassageMagicLink';
-import { PasskeyCreationOptions } from '../PassagePasskey';
 import { PassageError, PassageReactNative } from '../shared';
-import {
+import type {
   CurrentUser,
+  MagicLink,
   Metadata,
   Passkey,
+  PasskeyCreationOptions,
   UserSocialConnectionType,
   UserSocialConnections,
-} from './';
+} from '../';
 
 /**
  * The PassageCurrentUser class contains functions to get information about the currently authenticated user.
@@ -133,13 +133,12 @@ export class PassageCurrentUser {
   }
 
   /**
-   * listSocialConnections is used to list the current user's social connections.
+   * socialConnections is used to list the current user's social connections.
    * @return {Promise<UserSocialConnection> } the current social connections and their properties.
    */
-  async listSocialConnections(): Promise<UserSocialConnections> {
+  async socialConnections(): Promise<UserSocialConnections> {
     try {
-      const result =
-        await PassageReactNative.currentUserListSocialConnections();
+      const result = await PassageReactNative.currentUserSocialConnections();
       const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {
@@ -192,6 +191,14 @@ export class PassageCurrentUser {
       );
       const parsedResult = JSON.parse(result);
       return parsedResult;
+    } catch (error: any) {
+      throw new PassageError(error.code, error.message);
+    }
+  }
+
+  async logout() {
+    try {
+      await PassageReactNative.currentUserLogOut();
     } catch (error: any) {
       throw new PassageError(error.code, error.message);
     }

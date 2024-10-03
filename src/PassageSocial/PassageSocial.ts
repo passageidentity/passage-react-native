@@ -1,11 +1,10 @@
 import { Platform } from 'react-native';
 import {
-  AuthResult,
   PassageError,
   PassageReactNative,
   waitForDeepLinkQueryValues,
 } from '../shared';
-import { SocialConnection } from '.';
+import type { AuthResult, SocialConnection } from '../';
 
 /**
  * PassageSocial class contains functions that use social providers for authentication.

@@ -1,4 +1,4 @@
-import { UserSocialConnections } from 'src/PassageCurrentUser';
+import type { UserSocialConnections } from '../';
 
 export enum DisplayUnit {
   Seconds = 's',

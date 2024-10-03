@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
-import { AuthResult, PassageError, PassageReactNative } from '../shared';
-import { PasskeyCreationOptions } from './PasskeyCreationOptions';
+import { PassageError, PassageReactNative } from '../shared';
+import type { AuthResult, PasskeyCreationOptions } from '../';
 
 /**
  * PassagePasskey class contains functions that use passkeys for authentication.

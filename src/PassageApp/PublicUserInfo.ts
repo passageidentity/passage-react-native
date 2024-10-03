@@ -1,4 +1,4 @@
-import { UserStatus, WebAuthnType } from 'src/PassageCurrentUser';
+import type { UserStatus, WebAuthnType } from '../';
 
 export type PublicUserInfo = {
   email: string;
