@@ -77,8 +77,7 @@ RCT_EXTERN_METHOD(hostedAuthorize:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(tokenStoreGetValidAuthToken:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(tokenStoreIsAuthTokenValid:(NSString *)authToken
-                  withResolver:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(tokenStoreIsAuthTokenValid:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(tokenStoreRefreshAuthToken:(RCTPromiseResolveBlock)resolve

@@ -325,9 +325,8 @@ class PassageReactNative: NSObject {
     }
   }
   
-  @objc(tokenStoreIsAuthTokenValid:withResolver:withRejecter:)
+  @objc(tokenStoreIsAuthTokenValid:withRejecter:)
   func tokenStoreIsAuthTokenValid(
-    authToken: String,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) {
@@ -377,7 +376,7 @@ class PassageReactNative: NSObject {
         let user = try await passage.currentUser.userInfo()
         resolve(codableToJSONString(user))
       } catch {
-        resolve(nil)
+        reject("USER_ERROR", "\(error)", nil)
       }
     }
   }
@@ -475,7 +474,7 @@ class PassageReactNative: NSObject {
     Task {
       do {
         try await passage.currentUser.deletePasskey(passkeyId: passkeyId)
-        resolve(nil)
+        resolve(true)
       } catch {
         reject("PASSKEY_ERROR", "\(error)", nil)
       }

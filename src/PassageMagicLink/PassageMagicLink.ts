@@ -71,7 +71,7 @@ export class PassageMagicLink {
    */
   async status(id: string): Promise<AuthResult> {
     try {
-      const result = await PassageReactNative.getMagicLinkStatus(id);
+      const result = await PassageReactNative.magicLinkStatus(id);
       const parsedResult = JSON.parse(result);
       return parsedResult;
     } catch (error: any) {
