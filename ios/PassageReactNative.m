@@ -89,31 +89,52 @@ RCT_EXTERN_METHOD(tokenStoreRevokeRefreshToken:(RCTPromiseResolveBlock)resolve
 
 
 // MARK: - User Methods
-RCT_EXTERN_METHOD(getCurrentUser:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(currentUserUserInfo:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(logOut:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(addDevicePasskey:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(deletePasskey:(NSString *)passkeyId
+RCT_EXTERN_METHOD(currentUserChangeEmail:(NSString *)newEmail
+                  withLanguage:(nullable NSString *)language
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(editPasskey:(NSString *)passkeyId
+RCT_EXTERN_METHOD(currentUserChangePhone:(NSString *)newPhone
+                  withLanguage:(nullable NSString *)language
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserPasskeys:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserEditPasskey:(NSString *)passkeyId
                   withNewFriendlyName:(NSString *)newFriendlyName
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(changeEmail:(NSString *)newEmail
+RCT_EXTERN_METHOD(currentUserAddPasskey:(nullable NSDictionary *)options
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(changePhone:(NSString *)newPhone
+RCT_EXTERN_METHOD(currentUserDeletePasskey:(NSString *)passkeyId
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserSocialConnections:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserDeleteSocialConnection:(NSString *)connection
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserMetadata:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserUpdateMetadata:(NSDictionary *)metadata
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(currentUserLogOut:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 
 + (BOOL)requiresMainQueueSetup
  {

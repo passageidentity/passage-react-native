@@ -1,140 +1,4 @@
 import AnyCodable
-import Passage
-
-internal func dictToJsonString(_ dict: [String: Any?]) -> String {
-    let jsonData = try! JSONSerialization.data(withJSONObject: dict, options: [])
-    let jsonString = String(data: jsonData, encoding: .utf8)!
-    return jsonString
-}
-
-internal extension AuthResult {
-    
-     func toDictionary() -> [String: Any?] {
-         var authResultDict: [String : Any?] = [
-             "authToken": authToken,
-             "refreshToken": refreshToken,
-             "refreshTokenExpiration": refreshTokenExpiration
-         ]
-         return authResultDict
-     }
-    
-    func toJsonString() -> String {
-        return dictToJsonString(toDictionary())
-    }
-    
- }
-
-internal extension Passkey {
-    
-    func toDictionary() -> [String: Any] {
-        var authResultDict: [String : Any] = [
-            "createdAt": createdAt,
-            "credId": credId,
-            "friendlyName": friendlyName,
-            "id": id,
-            "lastLoginAt": lastLoginAt,
-            "updatedAt": updatedAt,
-            "usageCount": usageCount,
-            "userId": userId
-        ]
-        return authResultDict
-    }
-   
-    func toJsonString() -> String {
-        return dictToJsonString(toDictionary())
-    }
-    
-}
-
-internal extension CurrentUser {
-    
-     func toDictionary() -> [String: Any?] {
-         var userDict: [String : Any?] = [
-            "createdAt": createdAt,
-            "email": email,
-            "emailVerified": emailVerified,
-            "id": id,
-            "lastLoginAt": lastLoginAt,
-            "loginCount": loginCount,
-            "phone": phone,
-            "phoneVerified": phoneVerified,
-            "status": status,
-            "updatedAt": updatedAt,
-            "userMetadata": userMetadata,
-            "webauthn": webauthn,
-            "webauthnDevices": webauthnDevices.map { $0.toDictionary() },
-            "webauthnTypes": webauthnTypes
-         ]
-         return userDict
-     }
-    
-    func toJsonString() -> String {
-        return dictToJsonString(toDictionary())
-    }
-    
- }
-
-internal extension PublicUserInfo {
-  
-  func toDictionary() -> [String: Any?] {
-    var userDict: [String : Any?] = [
-      "email": email,
-      "emailVerified": emailVerified,
-      "id": id,
-      "phone": phone,
-      "phoneVerified": phoneVerified,
-      "status": status,
-      "userMetadata": userMetadata,
-      "webauthn": webauthn,
-      "webauthnTypes": webauthnTypes
-    ]
-    return userDict
-  }
-  
-  func toJsonString() -> String {
-    return dictToJsonString(toDictionary())
-  }
-  
-}
-
-internal extension PassageAppInfo {
-    
-    func toDictionary() -> [String: Any] {
-        var appInfoDict: [String : Any] = [
-            "allowedIdentifier": allowedIdentifier,
-            "authOrigin": authOrigin,
-            "id": id,
-            "name": name,
-            "publicSignup": publicSignup,
-            "requiredIdentifier": requiredIdentifier,
-            "requireEmailVerification": requireEmailVerification,
-            "requireIdentifierVerification": requireIdentifierVerification,
-            "sessionTimeoutLength": sessionTimeoutLength
-        ]
-        return appInfoDict
-    }
-    
-    func toJsonString() -> String {
-        return dictToJsonString(toDictionary())
-    }
-    
-}
-
-
-internal extension AuthMethods {
-    func toDictionary() -> [String: Any] {
-        var dict: [String : Any] = [
-            "passkeys": passkeys == nil ? nil : [:] as [String: String],
-            "otp": otp == nil ? nil : ["ttl": otp?.ttl, "ttlDisplayUnit": otp?.ttlDisplayUnit?.rawValue],
-            "magicLink": magicLink == nil ? nil : ["ttl": magicLink?.ttl, "ttlDisplayUnit": magicLink?.ttlDisplayUnit?.rawValue],
-        ]
-        return dict
-    }
-   
-    func toJsonString() -> String {
-        return dictToJsonString(toDictionary())
-    }
-}
 
 func convertNSDictionaryToAnyCodable(_ nsDictionary: NSDictionary?) -> AnyCodable? {
   guard let dictionary = nsDictionary as? [String: Any] else {
@@ -154,19 +18,55 @@ func convertNSDictionaryToAnyCodable(_ nsDictionary: NSDictionary?) -> AnyCodabl
   return AnyCodable(anyCodableDictionary)
 }
 
-extension AnyCodable {
-  func toJSONString(prettyPrinted: Bool = false) -> String? {
-    let encoder = JSONEncoder()
-    if prettyPrinted {
-      encoder.outputFormatting = .prettyPrinted
+internal func codableToJSONString<T: Codable>(_ value: T) -> String {
+  let encoder = JSONEncoder()
+  encoder.keyEncodingStrategy = .convertFromSnakeCaseToCamelCase
+  do {
+    let jsonData = try encoder.encode(value)
+    return String(data: jsonData, encoding: .utf8) ?? ""
+  } catch {
+    print("Error encoding object: \(error)")
+    return ""
+  }
+}
+
+extension JSONEncoder.KeyEncodingStrategy {
+  static var convertFromSnakeCaseToCamelCase: JSONEncoder.KeyEncodingStrategy {
+    return .custom { codingPath in
+      var key = codingPath.last!.stringValue
+      if let firstIndex = key.firstIndex(of: "_") {
+        // Convert to camelCase by capitalizing the first character after each underscore
+        var newKey = ""
+        var makeUppercase = false
+        for character in key {
+          if character == "_" {
+            makeUppercase = true
+          } else if makeUppercase {
+            newKey.append(character.uppercased())
+            makeUppercase = false
+          } else {
+            newKey.append(character)
+          }
+        }
+        key = newKey
+      }
+      return AnyKey(stringValue: key)!
     }
-    
-    do {
-      let jsonData = try encoder.encode(self)
-      return String(data: jsonData, encoding: .utf8)
-    } catch {
-      print("Failed to encode AnyCodable to JSON string: \(error)")
-      return nil
-    }
+  }
+}
+
+// A custom key class to use in the key encoding strategy
+struct AnyKey: CodingKey {
+  var stringValue: String
+  var intValue: Int?
+  
+  init?(intValue: Int) {
+    self.intValue = intValue
+    self.stringValue = "\(intValue)"
+  }
+  
+  init?(stringValue: String) {
+    self.stringValue = stringValue
+    self.intValue = nil
   }
 }
