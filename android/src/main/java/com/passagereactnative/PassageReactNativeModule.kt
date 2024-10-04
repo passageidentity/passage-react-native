@@ -324,8 +324,8 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
     CoroutineScope((Dispatchers.IO)).launch {
       try {
         val refreshToken = passage.tokenStore.refreshToken ?: ""
-        val newToken = passage.tokenStore.refreshAuthToken(refreshToken)
-        promise.resolve(newToken)
+        val authResult = passage.tokenStore.refreshAuthToken(refreshToken)
+        promise.resolve(authResult)
       } catch (e: Exception) {
         promise.reject("TOKEN_ERROR", e.message, e)
       }
