@@ -27,7 +27,7 @@ export class PassageSocial {
           // Wait for a redirect back into the app with the auth code.
           const authCodeObj = await waitForDeepLinkQueryValues(['code']);
           const authCode = authCodeObj.code;
-          authResultJson = await PassageReactNative.socialAuthorizeFinish(
+          authResultJson = await PassageReactNative.socialFinish(
             authCode
           );
         }

@@ -23,13 +23,17 @@ export class PassageApp {
   /**
    * Look-up a user and return the user properties if the user exists
    * @param {string} identifier email address / phone for user
-   * @return {Promise<PublicUserInfo>}
+   * @return {Promise<PublicUserInfo | null>}
    */
-  public async userExists(identifier: string): Promise<PublicUserInfo> {
+  public async userExists(identifier: string): Promise<PublicUserInfo | null> {
     try {
       const result = await PassageReactNative.appUserExists(identifier);
-      const parsedResult = JSON.parse(result);
-      return parsedResult;
+      if (result) {
+        const parsedResult = JSON.parse(result);
+        return parsedResult;
+      } else {
+        return null;
+      }
     } catch (error: any) {
       throw new PassageError(error.code, error.message);
     }

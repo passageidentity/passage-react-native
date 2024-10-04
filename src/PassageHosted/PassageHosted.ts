@@ -29,7 +29,7 @@ export class PassageHosted {
           'code',
           'state',
         ]);
-        let result = await PassageReactNative.hostedAuthorizeFinish(
+        let result = await PassageReactNative.hostedFinish(
           authCode,
           state
         );
