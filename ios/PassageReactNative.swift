@@ -46,7 +46,11 @@ class PassageReactNative: NSObject {
     Task {
       do {
         let user = try await passage.app.userExists(identifier: identifier)
-        resolve(codableToJSONString(user))
+        if user == nil {
+          resolve(nil)
+        } else {
+          resolve(codableToJSONString(user))
+        }
       } catch {
         reject("APP_ERROR", "\(error)", nil)
       }
