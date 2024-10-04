@@ -29,10 +29,7 @@ export class PassageHosted {
           'code',
           'state',
         ]);
-        let result = await PassageReactNative.hostedFinish(
-          authCode,
-          state
-        );
+        let result = await PassageReactNative.hostedFinish(authCode, state);
         return JSON.parse(result);
       }
     } catch (error: any) {
