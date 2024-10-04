@@ -73,7 +73,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun appCreateUser(identifier: String, userMetadata: Any?, promise: Promise) {
+  fun appCreateUser(identifier: String, userMetadata: ReadableMap?, promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
         val user = passage.app.createUser(identifier, userMetadata)
@@ -542,7 +542,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun currentUserUpdateMetadata(metaDataMap: Any, promise: Promise) {
+  fun currentUserUpdateMetadata(metaDataMap: ReadableMap, promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
         val metaData = Metadata(userMetadata = metaDataMap)

@@ -52,7 +52,7 @@ export class PassageApp {
     try {
       const result = await PassageReactNative.appCreateUser(
         identifier,
-        userMetadata
+        userMetadata || null
       );
       const parsedResult = JSON.parse(result);
       return parsedResult;
