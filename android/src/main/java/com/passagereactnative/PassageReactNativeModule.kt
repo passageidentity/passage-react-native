@@ -333,7 +333,6 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
     }
   }
 
-
   @ReactMethod
   fun tokenStoreRevokeRefreshToken(promise: Promise) {
     CoroutineScope((Dispatchers.IO)).launch {
