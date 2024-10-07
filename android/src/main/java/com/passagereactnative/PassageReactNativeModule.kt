@@ -325,12 +325,14 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
       try {
         val refreshToken = passage.tokenStore.refreshToken ?: ""
         val authResult = passage.tokenStore.refreshAuthToken(refreshToken)
-        promise.resolve(authResult)
+        val jsonString = Gson().toJson(authResult)
+        promise.resolve(jsonString)
       } catch (e: Exception) {
         promise.reject("TOKEN_ERROR", e.message, e)
       }
     }
   }
+
 
   @ReactMethod
   fun tokenStoreRevokeRefreshToken(promise: Promise) {
