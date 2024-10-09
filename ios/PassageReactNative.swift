@@ -537,7 +537,7 @@ class PassageReactNative: NSObject {
         )
         resolve(())
       } catch {
-        reject("USER_ERROR", "\(error)", nil)
+        reject("DELETE_SOCIAL_CONNECTION_ERROR", "\(error)", nil)
       }
     }
   }
@@ -552,7 +552,7 @@ class PassageReactNative: NSObject {
         let metadata = try await passage.currentUser.metadata()
         resolve(codableToJSONString(metadata))
       } catch {
-        reject("USER_ERROR", "\(error)", nil)
+        reject("GET_METADATA_ERROR", "\(error)", nil)
       }
     }
   }
@@ -573,7 +573,7 @@ class PassageReactNative: NSObject {
         let userInfo = try await passage.currentUser.updateMetadata(newMetaData: newMetaData)
         resolve(codableToJSONString(userInfo))
       } catch {
-        reject("USER_ERROR", "\(error)", nil)
+        reject("UPDATE_METADATA_ERROR", "\(error)", nil)
       }
     }
   }

@@ -80,7 +80,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         val jsonString = Gson().toJson(user)
         promise.resolve(jsonString)
       } catch (e: Exception) {
-        promise.reject("IDENTIFIER_EXISTS_ERROR", e.message, e)
+        promise.reject("CREATE_USER_ERROR", e.message, e)
       }
     }
   }
@@ -512,7 +512,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         passage.currentUser.deleteSocialConnection(socialConnectionType)
         promise.resolve(true)
       } catch (e: Exception) {
-        var errorCode = "SOCIAL_CONNECTIONS_ERROR"
+        var errorCode = "DELETE_SOCIAL_CONNECTION_ERROR"
         when (e) {
           is PassageUserUnauthorizedException -> {
             errorCode = "USER_UNAUTHORIZED"
@@ -531,7 +531,7 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
         val jsonString = Gson().toJson(metaData)
         promise.resolve(jsonString)
       } catch (e: Exception) {
-        var errorCode = "SOCIAL_CONNECTIONS_ERROR"
+        var errorCode = "GET_METADATA_ERROR"
         when (e) {
           is PassageUserUnauthorizedException -> {
             errorCode = "USER_UNAUTHORIZED"
@@ -546,12 +546,13 @@ class PassageReactNativeModule(reactContext: ReactApplicationContext) :
   fun currentUserUpdateMetadata(metaDataMap: ReadableMap, promise: Promise) {
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val metaData = Metadata(userMetadata = metaDataMap)
+        val convertedMap = metaDataMap.toHashMap() as Map<String, Any>
+        val metaData = Metadata(userMetadata = convertedMap)
         val user = passage.currentUser.updateMetadata(metaData)
         val jsonString = Gson().toJson(user)
         promise.resolve(jsonString)
       } catch (e: Exception) {
-        var errorCode = "SOCIAL_CONNECTIONS_ERROR"
+        var errorCode = "UPDATE_METADATA_ERROR"
         when (e) {
           is PassageUserUnauthorizedException -> {
             errorCode = "USER_UNAUTHORIZED"
