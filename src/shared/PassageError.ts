@@ -14,6 +14,10 @@ export enum PassageErrorCode {
   StartHostedAuthError = 'START_HOSTED_AUTH_ERROR',
   FinisHostedAuthError = 'FINISH_HOSTED_AUTH_ERROR',
   LogoutHostedAuthError = 'LOGOUT_HOSTED_AUTH_ERROR',
+  UpdateMetadataError = 'UPDATE_METADATA_ERROR',
+  GetMetadataError = 'GET_METADATA_ERROR',
+  DeleteSocialConnectionError = 'DELETE_SOCIAL_CONNECTION_ERROR',
+  CreateUserError = 'CREATE_USER_ERROR',
 }
 
 export class PassageError extends Error {
