@@ -186,6 +186,9 @@ jobs:
           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.tmp.json && mv package.tmp.json package.json
           echo "Updated to version $new_version"
 
+      - name: Install dependencies and update package-lock.json
+        run: npm install
+
       - name: Prepend to CHANGELOG.md - major release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
