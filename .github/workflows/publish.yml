@@ -1,34 +1,37 @@
-name: Publish
+name: Publish Release
 
-on: workflow_dispatch
-
-env:
-  NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+on:
+  repository_dispatch:
+    types: [publish]
 
 jobs:
   publish:
-    name: Publish to NPM
+    name: Publish to npm
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      - name: Run Lint
-        run: npm run lint
-
-      - name: Run Unit Tests
+      - name: Run Tests
         run: npm test
 
+      - name: Beachball Check
+        run: npm run beachball:check
+
+      - name: Beachball Bump
+        run: npm run beachball:bump
+
       - name: Publish to npm
-        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
