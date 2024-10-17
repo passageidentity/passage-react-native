@@ -141,6 +141,12 @@ jobs:
           git commit -m "chore: add changefile for patch release"
           git push origin ${{ needs.determine-next-versions.outputs.branch-patch }}
 
+      - name: Beachball Check
+        run: npm run beachball:check
+
+      - name: Beachball Bump
+        run: npm run beachball:bump
+
   bump-version:
     name: Bump the Version
     runs-on: ubuntu-latest

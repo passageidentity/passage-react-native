@@ -1,4 +1,4 @@
-name: Publish Release
+name: Publish React Native Package
 
 on:
   repository_dispatch:
@@ -13,21 +13,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          ref: ${{ github.event.client_payload.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-
-      - name: Run Tests
-        run: npm test
-
-      - name: Beachball Check
-        run: npm run beachball:check
-
-      - name: Beachball Bump
-        run: npm run beachball:bump
 
       - name: Publish to npm
         env:
