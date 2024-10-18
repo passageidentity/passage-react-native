@@ -24,7 +24,8 @@ Use passage-react-native to implement Passkey Complete into your React Native ap
 | --- | --- |
 | ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex** | ✖️ For Passkey Flex, check out [passage-flex-react-native](https://github.com/passageidentity/passage-flex-react-native)
 | ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✅
-| ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready** | ✖️ For Passkey Ready, check out [Authentikit](https://www.npmjs.com/package/@passageidentity/authentikit)
+| ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✖️ For Passkey Ready, check out [Authentikit for Android](https://github.com/passageidentity/passage-android/tree/main/authentikit) and [Authentikit for iOS](https://github.com/passageidentity/passage-authentikit-ios) |
+
 
 <br />
 
