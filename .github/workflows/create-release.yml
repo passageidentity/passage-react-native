@@ -85,20 +85,20 @@ jobs:
 
     steps:
       - name: Check out code - major release
-        if: ${{ github.event.inputs.release-type == 'major' }}
         uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'major' }}
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Check out code - minor release
-        if: ${{ github.event.inputs.release-type == 'minor' }}
         uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'minor' }}
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Check out code - patch release
-        if: ${{ github.event.inputs.release-type == 'patch' }}
         uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'patch' }}
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
