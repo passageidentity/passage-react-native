@@ -98,16 +98,19 @@ jobs:
       - name: Switch to Release Branch (Major)
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
+          git fetch origin ${{ needs.determine-next-versions.outputs.branch-major }}
           git checkout ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Switch to Release Branch (Minor)
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
+          git fetch origin ${{ needs.determine-next-versions.outputs.branch-minor }}
           git checkout ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Switch to Release Branch (Patch)
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
+          git fetch origin ${{ needs.determine-next-versions.outputs.branch-patch }}
           git checkout ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Generate Change File for Major Release
@@ -115,10 +118,11 @@ jobs:
         run: |
           mkdir -p change
           echo '{
-            "packageName": "@passageidentity/passage-react-native",
             "type": "major",
-            "dependentChangeType": "none",   # Add this field to avoid errors
-            "comment": "Automated major version bump"
+            "comment": "Automated major version bump",
+            "packageName": "@passageidentity/passage-react-native",
+            "email": "github-actions@users.noreply.github.com"",
+            "dependentChangeType": "major"
           }' > change/@passageidentity-passage-react-native-$(uuidgen).json
 
       - name: Generate Change File for Minor Release
@@ -126,10 +130,11 @@ jobs:
         run: |
           mkdir -p change
           echo '{
-            "packageName": "@passageidentity/passage-react-native",
             "type": "minor",
-            "dependentChangeType": "none",   # Add this field to avoid errors
-            "comment": "Automated minor version bump"
+            "comment": "Automated minor version bump",
+            "packageName": "@passageidentity/passage-react-native",
+            "email": "github-actions@users.noreply.github.com"",
+            "dependentChangeType": "minor"
           }' > change/@passageidentity-passage-react-native-$(uuidgen).json
 
       - name: Generate Change File for Patch Release
@@ -137,10 +142,11 @@ jobs:
         run: |
           mkdir -p change
           echo '{
-            "packageName": "@passageidentity/passage-react-native",
             "type": "patch",
-            "dependentChangeType": "none",   # Add this field to avoid errors
-            "comment": "Automated patch version bump"
+            "comment": "Automated patch version bump",
+            "packageName": "@passageidentity/passage-react-native",
+            "email": "github-actions@users.noreply.github.com",
+            "dependentChangeType": "patch"
           }' > change/@passageidentity-passage-react-native-$(uuidgen).json
 
       - name: Configure Git
