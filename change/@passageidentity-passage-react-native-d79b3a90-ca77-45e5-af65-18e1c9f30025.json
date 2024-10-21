@@ -1,0 +1,6 @@
+{
+  "packageName": "@passageidentity/passage-react-native",
+  "type": "major",
+  "dependentChangeType": "none",   # Add this field to avoid errors
+  "comment": "Automated major version bump"
+}
