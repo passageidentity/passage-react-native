@@ -95,6 +95,21 @@ jobs:
             git fetch --unshallow
           fi
 
+      - name: Switch to Release Branch (Major)
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        run: |
+          git checkout ${{ needs.determine-next-versions.outputs.branch-major }}
+
+      - name: Switch to Release Branch (Minor)
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          git checkout ${{ needs.determine-next-versions.outputs.branch-minor }}
+
+      - name: Switch to Release Branch (Patch)
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          git checkout ${{ needs.determine-next-versions.outputs.branch-patch }}
+
       - name: Generate Change File for Major Release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
@@ -102,8 +117,9 @@ jobs:
           echo '{
             "packageName": "@passageidentity/passage-react-native",
             "type": "major",
+            "dependentChangeType": "none",   # Add this field to avoid errors
             "comment": "Automated major version bump"
-          }' > change/$(uuidgen).json
+          }' > change/@passageidentity-passage-react-native-$(uuidgen).json
 
       - name: Generate Change File for Minor Release
         if: ${{ github.event.inputs.release-type == 'minor' }}
@@ -112,8 +128,9 @@ jobs:
           echo '{
             "packageName": "@passageidentity/passage-react-native",
             "type": "minor",
+            "dependentChangeType": "none",   # Add this field to avoid errors
             "comment": "Automated minor version bump"
-          }' > change/$(uuidgen).json
+          }' > change/@passageidentity-passage-react-native-$(uuidgen).json
 
       - name: Generate Change File for Patch Release
         if: ${{ github.event.inputs.release-type == 'patch' }}
@@ -122,8 +139,9 @@ jobs:
           echo '{
             "packageName": "@passageidentity/passage-react-native",
             "type": "patch",
+            "dependentChangeType": "none",   # Add this field to avoid errors
             "comment": "Automated patch version bump"
-          }' > change/$(uuidgen).json
+          }' > change/@passageidentity-passage-react-native-$(uuidgen).json
 
       - name: Configure Git
         run: |
@@ -152,7 +170,7 @@ jobs:
           git push origin ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Beachball Check
-        run: npm run beachball:check 
+        run: npm run beachball:check
 
       - name: Beachball Bump
         run: npm run beachball:bump
