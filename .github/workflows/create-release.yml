@@ -85,20 +85,20 @@ jobs:
 
     steps:
       - name: Check out code - major release
-        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'major' }}
+        uses: actions/checkout@v3
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Check out code - minor release
-        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'minor' }}
+        uses: actions/checkout@v3
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Check out code - patch release
-        uses: actions/checkout@v3
         if: ${{ github.event.inputs.release-type == 'patch' }}
+        uses: actions/checkout@v3
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
@@ -196,6 +196,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
+
+      - name: Verify Current Branch
+        run: git branch --show-current
 
       - name: Update major version in package.json
         if: ${{ github.event.inputs.release-type == 'major' }}
