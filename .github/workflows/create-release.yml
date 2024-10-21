@@ -87,7 +87,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch full history to ensure proper branch switching
+          fetch-depth: 0 
 
       - name: Fetch full history if shallow
         run: |
@@ -102,19 +102,16 @@ jobs:
       - name: Switch to Release Branch (Major)
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          git fetch origin ${{ needs.determine-next-versions.outputs.branch-major }}
           git checkout ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Switch to Release Branch (Minor)
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
-          git fetch origin ${{ needs.determine-next-versions.outputs.branch-minor }}
           git checkout ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Switch to Release Branch (Patch)
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
-          git fetch origin ${{ needs.determine-next-versions.outputs.branch-patch }}
           git checkout ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Verify Current Branch
