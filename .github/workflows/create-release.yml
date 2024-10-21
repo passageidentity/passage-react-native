@@ -129,8 +129,6 @@ jobs:
           git add .changes/
           git commit -m "chore: add changefile for major release"
           git push origin ${{ needs.determine-next-versions.outputs.branch-major }}
-        commit_user_name: "Your GitHub Actions Bot"
-        commit_user_email: "github-actions@users.noreply.github.com"
 
       - name: Commit Change File for Minor Release
         if: ${{ github.event.inputs.release-type == 'minor' }}
