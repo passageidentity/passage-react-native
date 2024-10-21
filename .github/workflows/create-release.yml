@@ -84,35 +84,23 @@ jobs:
     needs: create-release-branch
 
     steps:
-      - name: Check out code
+      - name: Check out code - major release
+        if: ${{ github.event.inputs.release-type == 'major' }}
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  
+          ref: ${{ needs.determine-next-versions.outputs.branch-major }}
 
-      - name: Fetch full history if shallow
-        run: |
-          if [ -f .git/shallow ]; then
-            git fetch --unshallow
-          fi
-
-      - name: Clean working tree
-        run: |
-          git reset --hard HEAD
-
-      - name: Fetch and Checkout Release Branch (Major)
-        if: ${{ github.event.inputs.release-type == 'major' }}
-        run: |
-          git checkout ${{ needs.determine-next-versions.outputs.branch-major }}
-
-      - name: Fetch and Checkout Release Branch (Minor)
+      - name: Check out code - minor release
         if: ${{ github.event.inputs.release-type == 'minor' }}
-        run: |
-          git checkout ${{ needs.determine-next-versions.outputs.branch-minor }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
 
-      - name: Fetch and Checkout Release Branch (Patch)
+      - name: Check out code - patch release
         if: ${{ github.event.inputs.release-type == 'patch' }}
-        run: |
-          git checkout ${{ needs.determine-next-versions.outputs.branch-patch }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Verify Current Branch
         run: git branch --show-current
