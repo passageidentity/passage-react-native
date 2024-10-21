@@ -87,7 +87,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 
+          fetch-depth: 0  
 
       - name: Fetch full history if shallow
         run: |
@@ -99,35 +99,20 @@ jobs:
         run: |
           git reset --hard HEAD
 
-      - name: Force fetch the target branch (Major)
+      - name: Fetch and Checkout Release Branch (Major)
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          git fetch origin ${{ needs.determine-next-versions.outputs.branch-major }}:refs/remotes/origin/${{ needs.determine-next-versions.outputs.branch-major }}
+          git checkout ${{ needs.determine-next-versions.outputs.branch-major }}
 
-      - name: Force fetch the target branch (Minor)
+      - name: Fetch and Checkout Release Branch (Minor)
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
-          git fetch origin ${{ needs.determine-next-versions.outputs.branch-minor }}:refs/remotes/origin/${{ needs.determine-next-versions.outputs.branch-minor }}
+          git checkout ${{ needs.determine-next-versions.outputs.branch-minor }}
 
-      - name: Force fetch the target branch (Patch)
+      - name: Fetch and Checkout Release Branch (Patch)
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
-          git fetch origin ${{ needs.determine-next-versions.outputs.branch-patch }}:refs/remotes/origin/${{ needs.determine-next-versions.outputs.branch-patch }}
-
-      - name: Switch to Release Branch (Major)
-        if: ${{ github.event.inputs.release-type == 'major' }}
-        run: |
-          git checkout -b ${{ needs.determine-next-versions.outputs.branch-major }} --track origin/${{ needs.determine-next-versions.outputs.branch-major }}
-
-      - name: Switch to Release Branch (Minor)
-        if: ${{ github.event.inputs.release-type == 'minor' }}
-        run: |
-          git checkout -b ${{ needs.determine-next-versions.outputs.branch-minor }} --track origin/${{ needs.determine-next-versions.outputs.branch-minor }}
-
-      - name: Switch to Release Branch (Patch)
-        if: ${{ github.event.inputs.release-type == 'patch' }}
-        run: |
-          git checkout -b ${{ needs.determine-next-versions.outputs.branch-patch }} --track origin/${{ needs.determine-next-versions.outputs.branch-patch }}
+          git checkout ${{ needs.determine-next-versions.outputs.branch-patch }}
 
       - name: Verify Current Branch
         run: git branch --show-current
