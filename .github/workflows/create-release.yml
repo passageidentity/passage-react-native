@@ -77,7 +77,7 @@ jobs:
         run: |
           git checkout -b ${{ needs.determine-next-versions.outputs.branch-patch }}
           git push origin ${{ needs.determine-next-versions.outputs.branch-patch }}
-          
+
   create-change-file:
     name: Generate Change File
     runs-on: ubuntu-latest
@@ -89,8 +89,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch full history for Beachball
-        run: git fetch --unshallow
+      - name: Fetch full history if shallow
+        run: |
+          if [ -f .git/shallow ]; then
+            git fetch --unshallow
+          fi
 
       - name: Generate Change File for Major Release
         if: ${{ github.event.inputs.release-type == 'major' }}
