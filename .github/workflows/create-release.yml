@@ -84,6 +84,10 @@ jobs:
     needs: create-release-branch
 
     steps:
+      - name: Wait for 10 seconds
+        run: sleep 20
+      - name: Fetch all remote branches
+        run: git fetch --all
       - name: Check out code - major release
         if: ${{ github.event.inputs.release-type == 'major' }}
         uses: actions/checkout@v3
