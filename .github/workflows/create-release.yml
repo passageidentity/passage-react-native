@@ -89,13 +89,15 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-
+        with:
+          fetch-depth: 0  
+          
       - name: Generate Change File for Major Release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           mkdir -p .changes
           echo '{
-            "packageName": "@your-package/react-native",
+            "packageName": "@passageidentity/passage-react-native",
             "type": "major",
             "comment": "Automated major version bump"
           }' > .changes/$(uuidgen).json
@@ -105,7 +107,7 @@ jobs:
         run: |
           mkdir -p .changes
           echo '{
-            "packageName": "@your-package/react-native",
+            "packageName": "@passageidentity/passage-react-native",
             "type": "minor",
             "comment": "Automated minor version bump"
           }' > .changes/$(uuidgen).json
@@ -115,14 +117,16 @@ jobs:
         run: |
           mkdir -p .changes
           echo '{
-            "packageName": "@your-package/react-native",
+            "packageName": "@passageidentity/passage-react-native",
             "type": "patch",
             "comment": "Automated patch version bump"
           }' > .changes/$(uuidgen).json
+
       - name: Configure Git
         run: |
           git config --global user.name "Your GitHub Actions Bot"
           git config --global user.email "github-actions@users.noreply.github.com"
+
       - name: Commit Change File for Major Release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
