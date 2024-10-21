@@ -64,39 +64,39 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          
+
       - name: Fetch full history for Beachball
         run: git fetch --unshallow
 
       - name: Generate Change File for Major Release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          mkdir -p .changes
+          mkdir -p .change
           echo '{
             "packageName": "@passageidentity/passage-react-native",
             "type": "major",
             "comment": "Automated major version bump"
-          }' > .changes/$(uuidgen).json
+          }' > .change/$(uuidgen).json
 
       - name: Generate Change File for Minor Release
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
-          mkdir -p .changes
+          mkdir -p .change
           echo '{
             "packageName": "@passageidentity/passage-react-native",
             "type": "minor",
             "comment": "Automated minor version bump"
-          }' > .changes/$(uuidgen).json
+          }' > .change/$(uuidgen).json
 
       - name: Generate Change File for Patch Release
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
-          mkdir -p .changes
+          mkdir -p .change
           echo '{
             "packageName": "@passageidentity/passage-react-native",
             "type": "patch",
             "comment": "Automated patch version bump"
-          }' > .changes/$(uuidgen).json
+          }' > .change/$(uuidgen).json
 
       - name: Configure Git
         run: |
@@ -106,21 +106,21 @@ jobs:
       - name: Commit Change File for Major Release
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          git add .changes/
+          git add .change/
           git commit -m "chore: add changefile for major release"
           git push origin ${{ needs.determine-next-versions.outputs.branch-major }}
 
       - name: Commit Change File for Minor Release
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
-          git add .changes/
+          git add .change/
           git commit -m "chore: add changefile for minor release"
           git push origin ${{ needs.determine-next-versions.outputs.branch-minor }}
 
       - name: Commit Change File for Patch Release
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
-          git add .changes/
+          git add .change/
           git commit -m "chore: add changefile for patch release"
           git push origin ${{ needs.determine-next-versions.outputs.branch-patch }}
 
