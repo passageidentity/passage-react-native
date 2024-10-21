@@ -263,6 +263,11 @@ jobs:
     needs: [determine-next-versions, create-release-branch, bump-version]
 
     steps:
+      - name: Configure Git
+        run: |
+          git config --global user.name "Your GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          
       - name: Create Release - major
         if: ${{ github.event.inputs.release-type == 'major' }}
         uses: ncipollo/release-action@v1
