@@ -231,6 +231,11 @@ jobs:
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "Your GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
       - name: Commit major version change
         if: ${{ github.event.inputs.release-type == 'major' }}
         uses: stefanzweifel/git-auto-commit-action@v4
