@@ -1,7 +1,0 @@
-{
-  "type": "major",
-  "comment": "Automated major version bump",
-  "packageName": "@passageidentity/passage-react-native",
-  "email": "github-actions@users.noreply.github.com"",
-  "dependentChangeType": "major"
-}
