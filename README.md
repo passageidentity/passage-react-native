@@ -18,7 +18,7 @@ Use [Passkey Ready](https://docs.passage.id/passkey-ready) to determine if your 
 
 ### In passage-react-native
 
-Use passage-react-native to implement Passkey Complete into your React Native app to authenticate requests and manage users.
+Use passage-react-native to implement Passkey Complete into your React Native application to authenticate requests and manage users.
 
 | Product | Compatible |
 | --- | --- |
