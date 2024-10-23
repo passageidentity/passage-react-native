@@ -16,7 +16,7 @@ const completeIosVersion = '1.0.1';
 const podDependency = `pod 'PassageSwift', '${completeIosVersion}'`;
 
 // iOS: Add Passage Swift CocoaPod
-function withIosPodfile(configuration) {
+function modifyIOSPodfile(configuration) {
   return withDangerousMod(configuration, [
     'ios',
     (config) => {
@@ -42,7 +42,7 @@ function withIosPodfile(configuration) {
 }
 
 // iOS: Add Associated Domains Capability
-function withIosAssociatedDomain(configuration) {
+function modifyIOSEntitlementsPlist(configuration) {
   const associatedDomain = process.env.ASSOCIATED_DOMAIN;
   if (!associatedDomain) {
     return configuration;
@@ -66,7 +66,7 @@ function withIosAssociatedDomain(configuration) {
 }
 
 // Android: Add Passage Android Gradle Dependency
-function withAndroidGradleDependency(configuration) {
+function modifyAndroidGradleDependency(configuration) {
   return withDangerousMod(configuration, [
     'android',
     (config) => {
@@ -95,8 +95,8 @@ function withAndroidGradleDependency(configuration) {
   ]);
 }
 
-// Android: Modify AndroidManifest.xml for asset_statements
-function withAndroidAssociatedDomain(configuration) {
+// Android: Modify AndroidManifest.xml
+function modifyAndroidManifest(configuration) {
   const associatedDomain = process.env.ASSOCIATED_DOMAIN;
   if (!associatedDomain) {
     return configuration;
@@ -127,26 +127,35 @@ function withAndroidAssociatedDomain(configuration) {
 
     const newIntentFilter = getIntentFilter(packageName);
 
-    // Check if a similar intent filter already exists.
-    let intentFilters = application['intent-filter'] || [];
+    // Find the MainActivity within the manifest
+    const mainActivity = config.modResults.manifest.application[0].activity.find(
+      (activity) => activity.$['android:name'] === '.MainActivity'
+    );
 
-    const isDuplicate = intentFilters.some((filter) => {
-      const hasMatchingData = filter.data?.some(
-        (data) =>
-          data.$['android:pathPrefix'] === `/android/${packageName}`
-      );
-      return hasMatchingData;
-    });
-
-    if (!isDuplicate) {
-      // Add the new intent filter if not already present.
-      intentFilters.push(newIntentFilter);
-    } else {
-      console.log('Intent filter already exists; skipping addition.');
+    if (!mainActivity) {
+      throw new Error('MainActivity not found in AndroidManifest.xml');
     }
 
-    // Assign the updated intent filters back to the manifest
-    application['intent-filter'] = intentFilters;
+    // Initialize the 'intent-filter' array if it doesn't exist
+    if (!mainActivity['intent-filter']) {
+      mainActivity['intent-filter'] = [];
+    }
+
+    // Check if a matching intent filter already exists
+    const existingFilterIndex = mainActivity['intent-filter'].findIndex((filter) => {
+      const pathPrefixData = filter.data?.find(
+        (data) => data.$['android:pathPrefix'] === `/android/${packageName}`
+      );
+      return pathPrefixData;
+    });
+
+    if (existingFilterIndex === -1) {
+      // Add the new intent filter if it doesn't exist
+      mainActivity['intent-filter'].push(newIntentFilter);
+    } else {
+      // Update the existing intent filter
+      mainActivity['intent-filter'][existingFilterIndex] = newIntentFilter;
+    }
 
     return config;
   });
@@ -204,10 +213,10 @@ function getIntentFilter(packageName) {
 // Combine all plugins into a single config plugin
 const passageCompletePlugin = (configuration) => {
   return withPlugins(configuration, [
-    withIosPodfile,
-    withIosAssociatedDomain,
-    withAndroidGradleDependency,
-    withAndroidAssociatedDomain,
+    modifyIOSPodfile,
+    modifyIOSEntitlementsPlist,
+    modifyAndroidGradleDependency,
+    modifyAndroidManifest,
   ]);
 };
 
