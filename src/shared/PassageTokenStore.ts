@@ -1,4 +1,4 @@
-import { AuthResult, PassageError, PassageReactNative } from '../../src/shared';
+import { type AuthResult, PassageError, PassageReactNative } from '../../src/shared';
 
 export class PassageTokenStore {
   /**

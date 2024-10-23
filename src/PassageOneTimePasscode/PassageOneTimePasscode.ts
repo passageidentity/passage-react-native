@@ -1,4 +1,4 @@
-import { PassageError, AuthResult, PassageReactNative } from '../shared';
+import { PassageError, type AuthResult, PassageReactNative } from '../shared';
 import type { OneTimePasscode } from '../';
 
 /**

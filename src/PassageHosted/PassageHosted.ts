@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import {
-  AuthResult,
+  type AuthResult,
   PassageError,
   PassageReactNative,
   waitForDeepLinkQueryValues,

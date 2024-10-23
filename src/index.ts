@@ -7,8 +7,8 @@ export * from './PassageOneTimePasscode';
 export * from './PassagePasskey';
 export * from './PassageSocial';
 export {
-  AuthResult,
   PassageError,
   PassageErrorCode,
-  PassageTokenStore,
+  PassageTokenStore
 } from './shared';
+export type { AuthResult } from './shared';
