@@ -124,6 +124,30 @@ function withAndroidAssociatedDomain(configuration) {
         },
       });
     }
+
+    const newIntentFilter = getIntentFilter(packageName);
+
+    // Check if a similar intent filter already exists.
+    let intentFilters = application['intent-filter'] || [];
+
+    const isDuplicate = intentFilters.some((filter) => {
+      const hasMatchingData = filter.data?.some(
+        (data) =>
+          data.$['android:pathPrefix'] === `/android/${packageName}`
+      );
+      return hasMatchingData;
+    });
+
+    if (!isDuplicate) {
+      // Add the new intent filter if not already present.
+      intentFilters.push(newIntentFilter);
+    } else {
+      console.log('Intent filter already exists; skipping addition.');
+    }
+
+    // Assign the updated intent filters back to the manifest
+    application['intent-filter'] = intentFilters;
+
     return config;
   });
 
@@ -148,12 +172,33 @@ function withAndroidAssociatedDomain(configuration) {
           '</resources>',
           `${newStrings}\n</resources>`
         );
-        fs.writeFileSync(stringsXmlPath, stringsXmlContent);
+      } else {
+        const regex = /<string name="passage_auth_origin">.*?<\/string>/;
+        const newDomainString = `<string name="passage_auth_origin">${associatedDomain}</string>`;
+        stringsXmlContent = stringsXmlContent.replace(regex, newDomainString);
       }
+      fs.writeFileSync(stringsXmlPath, stringsXmlContent);
       return config;
     },
   ]);
   return configuration;
+}
+
+function getIntentFilter(packageName) {
+  return {
+    $: { 'android:autoVerify': 'true' },
+    action: [{ $: { 'android:name': 'android.intent.action.VIEW' } }],
+    category: [
+      { $: { 'android:name': 'android.intent.category.DEFAULT' } },
+      { $: { 'android:name': 'android.intent.category.BROWSABLE' } },
+    ],
+    data: [
+      { $: { 'android:scheme': 'http' } },
+      { $: { 'android:scheme': 'https' } },
+      { $: { 'android:host': '@string/passage_auth_origin' } },
+      { $: { 'android:pathPrefix': `/android/${packageName}` } },
+    ],
+  };
 }
 
 // Combine all plugins into a single config plugin
