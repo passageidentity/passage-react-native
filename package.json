@@ -6,8 +6,8 @@
   "description": "Passkey Complete for React Native - Go completely passwordless with a standalone auth solution in your React Native app with Passage by 1Password",
   "homepage": "https://docs.passage.id/complete",
   "bugs": {
-      "url": "https://github.com/passageidentity/.github/blob/main/SUPPORT.md",
-      "email": "support@passage.id"
+    "url": "https://github.com/passageidentity/.github/blob/main/SUPPORT.md",
+    "email": "support@passage.id"
   },
   "keywords": [
     "react-native",
@@ -94,6 +94,8 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
+    "@expo/config-plugins": "^8.0.10",
+    "@expo/config-types": "^51.0.3",
     "@evilmartians/lefthook": "^1.2.2",
     "@react-native-community/eslint-config": "^3.0.2",
     "@release-it/conventional-changelog": "^5.0.0",
@@ -178,14 +180,20 @@
         "commonjs",
         {
           "esm": true,
-          "exclude": ["src/plugins/**/*", "lib/plugin/**/*"]
+          "exclude": [
+            "src/plugins/**/*",
+            "lib/plugin/**/*"
+          ]
         }
       ],
       [
         "module",
         {
           "esm": true,
-          "exclude": ["src/plugins/**/*", "lib/plugin/**/*"]
+          "exclude": [
+            "src/plugins/**/*",
+            "lib/plugin/**/*"
+          ]
         }
       ],
       [
@@ -193,7 +201,10 @@
         {
           "project": "tsconfig.build.json",
           "esm": true,
-          "exclude": ["src/plugins/**/*", "lib/plugin/**/*"]
+          "exclude": [
+            "src/plugins/**/*",
+            "lib/plugin/**/*"
+          ]
         }
       ]
     ]
@@ -201,8 +212,5 @@
   "overrides": {
     "ip": "2.0.1",
     "ws": "^6.2.3"
-  },
-  "dependencies": {
-    "@expo/config-plugins": "^8.0.10"
   }
 }
