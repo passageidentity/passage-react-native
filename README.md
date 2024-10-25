@@ -43,6 +43,11 @@ Use passage-react-native to implement Passkey Complete into your React Native ap
 npm i @passageidentity/passage-react-native
 ```
 
+If you're using an Expo Bare Workflow, run:
+```shell
+npx expo prebuild
+```
+
 ### Import
 ```js
 import Passage from '@passageidentity/passage-react-native';
