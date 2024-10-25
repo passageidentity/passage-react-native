@@ -1,24 +1,19 @@
-import {
-  type ConfigPlugin,
-  AndroidConfig,
-  withDangerousMod,
-} from '@expo/config-plugins';
+import { type ConfigPlugin, withDangerousMod } from '@expo/config-plugins';
 import * as fs from 'fs';
 import * as path from 'path';
 import 'dotenv/config';
 
 const modifyAndroidStringsXML: ConfigPlugin = (configuration) => {
+  console.log(
+    'Passage: Checking Android strings.xml for required asset statement.'
+  );
   const associatedDomain = process.env.ASSOCIATED_DOMAIN;
   if (!associatedDomain) {
-    console.warn('Passage: ASSOCIATED_DOMAIN is not defined. Skipping manifest modification.');
+    console.error(
+      'Passage: ASSOCIATED_DOMAIN is not defined in your .env. This is required for Passage.'
+    );
     return configuration;
   }
-  const packageName = AndroidConfig.Package.getPackage(configuration);
-  if (!packageName) {
-    console.warn('Passage: Could not retrieve the package name from build.gradle. Skipping manifest modification');
-    return configuration;
-  }
-  console.log('Passage: Modifying app/src/main/res/values/strings.xml...');
   return withDangerousMod(configuration, [
     'android',
     (config) => {
@@ -27,12 +22,14 @@ const modifyAndroidStringsXML: ConfigPlugin = (configuration) => {
         'app/src/main/res/values/strings.xml'
       );
       if (!fs.existsSync(stringsXmlPath)) {
-        console.warn(`Passage: strings.xml not found at ${stringsXmlPath}. Skipping modification.`);
+        console.warn(
+          `Passage: strings.xml not found at ${stringsXmlPath}. Skipping modification.`
+        );
         return config;
       }
       let stringsXmlContent = fs.readFileSync(stringsXmlPath, 'utf-8');
       if (!stringsXmlContent.includes('<string name="asset_statements">')) {
-        console.log('Adding new asset_statements string...');
+        console.log('Passage: Adding required asset_statements string.');
         const newStrings = `<string name="passage_auth_origin">${associatedDomain}</string>
         <string name="asset_statements">[{"include": "https://@string/passage_auth_origin/.well-known/assetlinks.json"}]</string>`;
         stringsXmlContent = stringsXmlContent.replace(
@@ -40,13 +37,13 @@ const modifyAndroidStringsXML: ConfigPlugin = (configuration) => {
           `${newStrings}\n</resources>`
         );
       } else {
-        console.log('Updating passage_auth_origin string...');
+        console.log('Passage: Updating required asset_statements string.');
         const regex = /<string name="passage_auth_origin">.*?<\/string>/;
         const newDomainString = `<string name="passage_auth_origin">${associatedDomain}</string>`;
         stringsXmlContent = stringsXmlContent.replace(regex, newDomainString);
       }
       fs.writeFileSync(stringsXmlPath, stringsXmlContent);
-      console.log('strings.xml modified successfully.');
+      console.log('Passage: strings.xml check complete.');
       return config;
     },
   ]);

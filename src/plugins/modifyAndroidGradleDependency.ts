@@ -68,6 +68,7 @@ const modifyAndroidGradleDependency: ConfigPlugin = (configuration) => {
           );
         }
       }
+      console.log('Passage: Android build.gradle check complete.');
       return config;
     },
   ]);
