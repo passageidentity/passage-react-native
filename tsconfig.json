@@ -23,6 +23,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "typeRoots": ["./node_modules/@types", "./node_modules/@expo"]
   }
 }
