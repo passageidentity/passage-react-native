@@ -39,13 +39,14 @@
     "!**/.*"
   ],
   "expo": {
-    "plugin": "./src/app.plugin.js"
+    "plugin": "./app.plugin.js"
   },
   "scripts": {
+    "plugin:build": "tsc --project tsconfig.plugin.json --outDir lib/",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepack": "bob build",
+    "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
+    "prepack": "npm run plugin:build && bob build",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
@@ -89,6 +90,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^8.0.0",
     "jest": "^28.1.1",
+    "metro-react-native-babel-preset": "^0.77.0",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
     "react": "18.3.1",
@@ -157,20 +159,23 @@
       [
         "commonjs",
         {
-          "esm": true
+          "esm": true,
+          "exclude": ["src/plugins/**/*", "lib/plugin/**/*"]
         }
       ],
       [
         "module",
         {
-          "esm": true
+          "esm": true,
+          "exclude": ["src/plugins/**/*", "lib/plugin/**/*"]
         }
       ],
       [
         "typescript",
         {
           "project": "tsconfig.build.json",
-          "esm": true
+          "esm": true,
+          "exclude": ["src/plugins/**/*", "lib/plugin/**/*"]
         }
       ]
     ]
