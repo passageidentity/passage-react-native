@@ -43,7 +43,12 @@ Use passage-react-native to implement Passkey Complete into your React Native ap
 npm i @passageidentity/passage-react-native
 ```
 
-If you're using an Expo Bare Workflow, run:
+**Expo Installation**
+Add your associate domain to your `.env`:
+```shell
+ASSOCIATED_DOMAIN=example.com
+```
+Run expo prebuild:
 ```shell
 npx expo prebuild
 ```
