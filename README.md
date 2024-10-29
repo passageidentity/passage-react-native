@@ -1,6 +1,6 @@
 ![passage-react-native](https://storage.googleapis.com/passage-docs/github-md-assets/passage-react-native.png)
 
-[![npm version](https://badge.fury.io/js/@passageidentity%2Fpassage-react-native.svg)](https://badge.fury.io/js/@passageidentity%2Fpassage-react-native) [![React Native](https://img.shields.io/badge/React_Native-%2320232a.svg?logo=react&logoColor=%2361DAFB)](#) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-react-native)
+[![npm version](https://badge.fury.io/js/@passageidentity%2Fpassage-react-native.svg)](https://badge.fury.io/js/@passageidentity%2Fpassage-react-native) [![React Native](https://img.shields.io/badge/React_Native-%2320232a.svg?logo=react&logoColor=%2361DAFB)](#) [![Expo](https://img.shields.io/badge/Expo-%2320232a.svg?logo=expo&logoColor=%2361DAFB)](#) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-react-native)
  ![Static Badge](https://img.shields.io/badge/Built_by_1Password-grey?logo=1password)
 
 
