@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
 import {
-  type AuthResult,
   PassageError,
   PassageReactNative,
   waitForDeepLinkQueryValues,
 } from '../shared';
+import type { AuthResult } from '../';
 
 /**
  * PassageHosted class contains functions that use Hosted Login for authentication.
