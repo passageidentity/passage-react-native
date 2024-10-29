@@ -44,9 +44,19 @@ npm i @passageidentity/passage-react-native
 ```
 
 **Expo Installation**
-Add your associate domain to your `.env`:
+Add your associated domain to your `.env`:
 ```shell
 ASSOCIATED_DOMAIN=example.com
+```
+Add the plugin in your app.json:
+```json
+{
+  "expo": {
+    "plugins": [
+      "@passageidentity/passage-react-native"
+    ]
+  }
+}
 ```
 Run expo prebuild:
 ```shell
