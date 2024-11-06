@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 
   s.dependency "React-Core"
 
-  s.dependency 'PassageSwift', '1.0.1'
+  s.dependency 'PassageSwift', '1.0.2'
   s.platform = :ios, '16.0'
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
