@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">PassageReactNativeExample</string>
     <!-- Required Passage app settings -->
-    <string name="passage_auth_origin">YOUR_AUTH_ORIGIN</string>
+    <string name="passage_auth_origin">smoggy-orchid-mule.withpassage-uat.com</string>
     <string name="asset_statements">
       [{
         \"include\": \"https://@string/passage_auth_origin/.well-known/assetlinks.json\"

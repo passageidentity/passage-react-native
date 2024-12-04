@@ -79,10 +79,10 @@ PODS:
   - hermes-engine/Pre-built (0.71.10)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - passage-react-native (0.7.1):
-    - PassageSwift (= 1.0.1)
+  - passage-react-native (1.1.1):
+    - PassageSwift (= 1.0.2)
     - React-Core
-  - PassageSwift (1.0.1):
+  - PassageSwift (1.0.2):
     - AnyCodable-FlightSchool (= 0.6.1)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -599,8 +599,8 @@ SPEC CHECKSUMS:
   hermes-engine: d27603b55a48402501ad1928c05411dae9cd6b85
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  passage-react-native: 480569f55c5a9e3ecd375f738098679d8d1c1d63
-  PassageSwift: 56391a2ef6d78cbaf55c2d2e39eeba1ce2b7fa87
+  passage-react-native: 3d8e0974984ce41eff7ff544d42c49d69fd5c42e
+  PassageSwift: 0874d7abdd8e57e92c1ae6ead0d59c6024f8867b
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 8ef706f91e2b643cd32c26a57700b5f24fab0585
   RCTTypeSafety: 5fbddd8eb9242b91ac0d901c01da3673f358b1b7
