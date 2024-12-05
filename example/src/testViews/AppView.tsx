@@ -20,8 +20,7 @@ export const AppView = () => {
   };
 
   const onPressUserExistsExistingUser = async () => {
-    const userEmail = EXISTING_USER_EMAIL;
-    const user = await passage.app.userExists(userEmail);
+    const user = await passage.app.userExists(EXISTING_USER_EMAIL);
     testAlert(user?.id || '');
   };
 
@@ -38,9 +37,8 @@ export const AppView = () => {
   };
 
   const onPressCreateUserExistingUser = async () => {
-    const userEmail = EXISTING_USER_EMAIL;
     try {
-      await passage.app.createUser(userEmail);
+      await passage.app.createUser(EXISTING_USER_EMAIL);
       testAlert(FAILURE);
     } catch {
       testAlert(ERROR);
