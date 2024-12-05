@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@passageidentity/passage-react-native": ["../lib/typescript/module/src"]
+    },
+    "jsx": "react-native",
+    "target": "esnext", // Ensures compatibility with modern JavaScript
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}
