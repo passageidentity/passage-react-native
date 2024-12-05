@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Passage } from '@passageidentity/passage-react-native';
-import { failTest, passTest, testAlert } from '../helpers';
+import { failTest, passTest, testAlert } from '../testUtils/helpers';
 import {
   ERROR,
   EXISTING_USER_EMAIL,
@@ -9,7 +9,7 @@ import {
   PASSAGE_TEST_APP_ID,
   AppTest,
 } from '../../constants';
-import MailosaurAPIClient from '../MailosaurClient';
+import MailosaurAPIClient from '../testUtils/MailosaurClient';
 
 export const AppView = () => {
 

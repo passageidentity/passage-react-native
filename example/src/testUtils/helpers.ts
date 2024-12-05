@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { CLOSE, FAILURE, SUCCESS, TEST_RESULT } from '../constants';
+import { CLOSE, FAILURE, SUCCESS, TEST_RESULT } from '../../constants';
 
 export const testAlert = (testValue: string) => {
   Alert.alert(
