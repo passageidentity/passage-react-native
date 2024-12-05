@@ -1,10 +1,5 @@
 import { dismissAlert, executeTest } from './helpers';
-import {
-  ERROR,
-  EXISTING_USER_ID,
-  PASSAGE_TEST_APP_ID,
-  SUCCESS,
-} from '../constants';
+import { AppTest } from '../constants';
 
 describe('App tests', () => {
 
@@ -16,24 +11,24 @@ describe('App tests', () => {
     await dismissAlert();
   });
 
-  it('passage.app.info returns app info', async () => {
-    await executeTest('passage.app.info', PASSAGE_TEST_APP_ID);
+  it('can get app info', async () => {
+    await executeTest(AppTest.GetAppInfo);
   });
 
-  it('passage.app.userExists returns existing user', async () => {
-    await executeTest('passage.app.userExists existing_user', EXISTING_USER_ID);
+  it('can get existing user', async () => {
+    await executeTest(AppTest.UserExists);
   });
 
-  it('passage.app.userExists returns null if no user', async () => {
-    await executeTest('passage.app.userExists no_user', SUCCESS);
+  it('cannot get non-existing user', async () => {
+    await executeTest(AppTest.UserDoesNotExist);
   });
 
-  it('passage.app.createUser returns user if did not exist', async () => {
-    await executeTest('passage.app.createUser no_user', SUCCESS);
+  it('can create user', async () => {
+    await executeTest(AppTest.CreateUser);
   });
 
-  it('passage.app.createUser throws error if already exists', async () => {
-    await executeTest('passage.app.createUser existing_user', ERROR);
+  it('cannot create user if user already exists', async () => {
+    await executeTest(AppTest.CreateUserExists);
   });
 
 });

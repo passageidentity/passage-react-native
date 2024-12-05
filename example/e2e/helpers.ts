@@ -1,6 +1,6 @@
-import { CLOSE, TEST_RESULT } from '../constants';
+import { CLOSE, SUCCESS, TEST_RESULT } from '../constants';
 
-export const executeTest = async (buttonName: string, expectedValue: string) => {
+export const executeTest = async (buttonName: string) => {
   // Find test button by button name
   await element(by.label(buttonName))
     .tap();
@@ -9,7 +9,7 @@ export const executeTest = async (buttonName: string, expectedValue: string) => 
     .toBeVisible()
     .withTimeout(5000);
   // Verify that the alert contains the expected value
-  await expect(element(by.text(expectedValue)))
+  await expect(element(by.text(SUCCESS)))
     .toBeVisible();
 };
 
