@@ -1,34 +1,12 @@
 import * as React from 'react';
+import { SafeAreaView } from 'react-native';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { Passage } from 'passage-react-native';
+import { AppView } from './testViews';
 
 export default function App() {
-  const passage = new Passage('APP_ID');
-  const [result, setResult] = React.useState<string | undefined>();
-
-  const onPress = async () => {
-    const authResult = await passage.passkey.login();
-    const { authToken } = authResult;
-    setResult(authToken);
-  };
-
   return (
-    <View style={styles.container}>
-      <Text onPress={onPress}>Result: {result}</Text>
-    </View>
+    <SafeAreaView>
+      <AppView />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});
