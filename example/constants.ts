@@ -1,6 +1,8 @@
 // Passage app info
 export const PASSAGE_TEST_APP_ID = 'bBqc7EnMTQgmJpplYHkDz65C';
 export const EXISTING_USER_EMAIL = 'authentigator+1733425047718@ncor7c1m.mailosaur.net';
+export const MAGIC_LINK_TEST_APP_ID = 'BIabIdNpWnlik2B7mSxUyViL';
+export const MAGIC_LINK_USER_EMAIL = 'authentigator+1733510352448@ncor7c1m.mailosaur.net';
 
 // Alert strings
 export const CLOSE = 'close';
@@ -20,7 +22,13 @@ export enum AppTest {
 
 // OTP test strings
 export enum OTPTest {
-  RegisterAndActivate = 'RegisterAndActivate',
-  LoginAndActivate = 'LoginAndActivate',
+  RegisterAndActivate = 'OTPRegisterAndActivate',
+  LoginAndActivate = 'OTPLoginAndActivate',
+}
+
+// Magic Link test strings
+export enum MagicLinkTest {
+  RegisterAndActivate = 'MLRegisterAndActivate',
+  LoginAndActivate = 'MLLoginAndActivate',
 }
 

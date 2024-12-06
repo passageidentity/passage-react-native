@@ -3,9 +3,7 @@ import { View, Text } from 'react-native';
 import { Passage } from '@passageidentity/passage-react-native';
 import { failTest, passTest, testAlert } from '../testUtils/helpers';
 import {
-  ERROR,
   EXISTING_USER_EMAIL,
-  FAILURE,
   PASSAGE_TEST_APP_ID,
   AppTest,
 } from '../../constants';

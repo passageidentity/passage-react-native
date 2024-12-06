@@ -1,7 +1,7 @@
 import { dismissAlert, executeTest } from './helpers';
 import { OTPTest } from '../constants';
 
-describe('App tests', () => {
+describe('OTP tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();

@@ -55,18 +55,28 @@ interface MessageCode {
 }
 
 class MailosaurAPIClient {
+
   getUniqueMailosaurEmailAddress(): string {
     const date = Date.now();
     const identifier = `authentigator+${date}@${mailosaurConfig.serverId}.mailosaur.net`;
     return identifier;
   }
 
+  async waitForMagicLink(retries: number = 5, delayMs: number = 3000): Promise<string | null> {
+    for (let i = 0; i < retries; i++) {
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      const magicLink = await this.getMostRecentMagicLink();
+      if (magicLink) {
+        return magicLink;
+      }
+    }
+    return null;
+  }
+
   async waitForOneTimePasscode(retries: number = 5, delayMs: number = 3000): Promise<string | null> {
     for (let i = 0; i < retries; i++) {
-      console.log('tries: ', i)
       await new Promise(resolve => setTimeout(resolve, delayMs));
       const oneTimePasscode = await this.getMostRecentOneTimePasscode();
-      console.log(oneTimePasscode)
       if (oneTimePasscode) {
         return oneTimePasscode;
       }
@@ -80,14 +90,27 @@ class MailosaurAPIClient {
       if (messages.length === 0) return null;
       const message = await this.getMessage(messages[0].id);
       if (message.html.links.length === 0) return null;
-      const incomingURL = new URL(message.html.links[0].href);
-      const magicLink = incomingURL.searchParams.get('psg_magic_link');
+      const incomingURL = message.html.links[0].href;
+      const magicLink = this.extractQueryParam(incomingURL, 'psg_magic_link')
       return magicLink;
     } catch (error) {
       console.error(error);
       return null;
     }
   }
+
+  private extractQueryParam (url: string, param: string) {
+    const queryString = url.split('?')[1];
+    if (!queryString) return null;
+    const queryParams = queryString.split('&');
+    for (let pair of queryParams) {
+      const [key, value] = pair.split('=');
+      if (key === param) {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  };
 
   private async getMostRecentOneTimePasscode(): Promise<string | null> {
     try {
