@@ -1,57 +1,91 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Passage } from '@passageidentity/passage-react-native';
-import { testAlert } from '../helpers';
+import { failTest, passTest, testAlert } from '../testUtils/helpers';
 import {
   ERROR,
   EXISTING_USER_EMAIL,
   FAILURE,
   PASSAGE_TEST_APP_ID,
-  SUCCESS,
+  AppTest,
 } from '../../constants';
+import MailosaurAPIClient from '../testUtils/MailosaurClient';
 
 export const AppView = () => {
 
   const passage = new Passage(PASSAGE_TEST_APP_ID);
 
-  const onPressInfo = async () => {
-    const appInfo = await passage.app.info();
-    testAlert(appInfo.id);
-  };
-
-  const onPressUserExistsExistingUser = async () => {
-    const user = await passage.app.userExists(EXISTING_USER_EMAIL);
-    testAlert(user?.id || '');
-  };
-
-  const onPressUserExistsNoUser = async () => {
-    const userEmail = 'fakeuser@passage.id';
-    const user = await passage.app.userExists(userEmail);
-    testAlert(user ? FAILURE : SUCCESS);
-  };
-
-  const onPressCreateUserNoUser = async () => {
-    const userEmail = `authentigator+${Date.now().toString()}@passage.id`;
-    const newUser = await passage.app.createUser(userEmail);
-    testAlert(newUser?.email === userEmail ? SUCCESS : FAILURE);
-  };
-
-  const onPressCreateUserExistingUser = async () => {
+  const getAppInfo = async () => {
     try {
-      await passage.app.createUser(EXISTING_USER_EMAIL);
-      testAlert(FAILURE);
+      const appInfo = await passage.app.info();
+      if (appInfo.id === PASSAGE_TEST_APP_ID) {
+        passTest();
+      } else {
+        failTest();
+      }
+    } catch(error) {
+      failTest(error);
+    }
+  };
+
+  const userExists = async () => {
+    try {
+      const user = await passage.app.userExists(EXISTING_USER_EMAIL);
+      if (user) {
+        passTest();
+      } else {
+        failTest();
+      }
+    } catch(error) {
+      failTest(error);
+    }
+  };
+
+  const userDoesNotExist = async () => {
+    try {
+      const userEmail = 'fakeuser@passage.id';
+      const user = await passage.app.userExists(userEmail);
+      if (user) {
+        failTest();
+      } else {
+        passTest();
+      }
+    } catch (error) {
+      failTest(error);
+    }
+  };
+
+  const createUser = async () => {
+    try {
+      const mailosaurClient = new MailosaurAPIClient();
+      const email = mailosaurClient.getUniqueMailosaurEmailAddress();
+      const newUser = await passage.app.createUser(email);
+      if (newUser) {
+        passTest();
+      } else {
+        failTest();
+      }
+    } catch (error) {
+      failTest(error);
+    }
+  };
+
+  const createUserExists = async () => {
+    try {
+      const newUser = await passage.app.createUser(EXISTING_USER_EMAIL);
+      failTest();
     } catch {
-      testAlert(ERROR);
+      passTest();
     }
   };
 
   return (
     <View>
-      <Text onPress={onPressInfo}>passage.app.info</Text>
-      <Text onPress={onPressUserExistsExistingUser}>passage.app.userExists existing_user</Text>
-      <Text onPress={onPressUserExistsNoUser}>passage.app.userExists no_user</Text>
-      <Text onPress={onPressCreateUserNoUser}>passage.app.createUser no_user</Text>
-      <Text onPress={onPressCreateUserExistingUser}>passage.app.createUser existing_user</Text>
+      <Text onPress={getAppInfo}>{AppTest.GetAppInfo}</Text>
+      <Text onPress={userExists}>{AppTest.UserExists}</Text>
+      <Text onPress={userDoesNotExist}>{AppTest.UserDoesNotExist}</Text>
+      <Text onPress={createUser}>{AppTest.CreateUser}</Text>
+      <Text onPress={createUserExists}>{AppTest.CreateUserExists}</Text>
     </View>
   );
   
