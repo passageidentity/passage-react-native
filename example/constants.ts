@@ -20,6 +20,10 @@ export enum AppTest {
   CreateUserExists = 'CreateUserExists',
 }
 
+export enum HostedTest {
+  AuthorizeStart = 'AuthorizeStart'
+}
+
 // OTP test strings
 export enum OTPTest {
   RegisterAndActivate = 'OTPRegisterAndActivate',
