@@ -32,7 +32,7 @@ export enum CurrentUserTest {
 }
 
 export enum HostedTest {
-  AuthorizeStart = 'AuthorizeStart'
+  AuthorizeStart = 'HostedAuthorizeStart'
 }
 
 // OTP test strings
@@ -45,5 +45,9 @@ export enum OTPTest {
 export enum MagicLinkTest {
   RegisterAndActivate = 'MLRegisterAndActivate',
   LoginAndActivate = 'MLLoginAndActivate',
+}
+
+export enum SocialTest {
+  AuthorizeStart = 'SocialAuthorizeStart'
 }
 
