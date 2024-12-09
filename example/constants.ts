@@ -1,6 +1,8 @@
 // Passage app info
 export const PASSAGE_TEST_APP_ID = 'bBqc7EnMTQgmJpplYHkDz65C';
 export const EXISTING_USER_EMAIL = 'authentigator+1733425047718@ncor7c1m.mailosaur.net';
+export const EXISTING_USER_ID = 'eqyrFt81EzFtBu7S5hodi0LM';
+export const EXISTING_USER_PASSKEY_ID = 'NmBrG0hBJJq9o5Pa4BDdkBrr';
 export const MAGIC_LINK_TEST_APP_ID = 'BIabIdNpWnlik2B7mSxUyViL';
 export const MAGIC_LINK_USER_EMAIL = 'authentigator+1733510352448@ncor7c1m.mailosaur.net';
 
@@ -18,6 +20,15 @@ export enum AppTest {
   UserDoesNotExist = 'UserDoesNotExist',
   CreateUser = 'CreateUser',
   CreateUserExists = 'CreateUserExists',
+}
+
+export enum CurrentUserTest {
+  UserInfo = 'UserInfo',
+  ChangeEmail = 'ChangeEmail',
+  ChangePhone = 'ChangePhone',
+  ListPasskeys = 'ListPasskeys',
+  EditPasskey = 'EditPasskey',
+  LogOut = 'LogOut',
 }
 
 export enum HostedTest {

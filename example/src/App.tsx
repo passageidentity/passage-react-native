@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native';
 
 import {
   AppView,
+  CurrentUserView,
   HostedView,
   MagicLinkView,
   OTPView,
@@ -13,6 +14,7 @@ export default function App() {
   return (
     <SafeAreaView>
       <AppView />
+      <CurrentUserView />
       <HostedView />
       <OTPView />
       <MagicLinkView />
