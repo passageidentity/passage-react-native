@@ -1,17 +1,17 @@
-import { HostedTest } from '../constants';
+import { SocialTest } from '../constants';
 import { element } from 'detox';
 
-describe('Hosted tests', () => {
+describe('Social tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
   });
 
-  it('can view hosted login web view', async () => {
+  it('can view social login web view', async () => {
     const platform = device.getPlatform();
     if (platform !== 'ios') return;
     // Find test button by button name
-    await element(by.label(HostedTest.AuthorizeStart))
+    await element(by.label(SocialTest.AuthorizeStart))
       .tap();
     // Wait for system prompt
     await waitFor(element(by.type('UIInputSetContainerView')))
