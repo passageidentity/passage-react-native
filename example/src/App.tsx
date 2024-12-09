@@ -6,6 +6,7 @@ import {
   HostedView,
   MagicLinkView,
   OTPView,
+  SocialView,
 } from './testViews';
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
       <HostedView />
       <OTPView />
       <MagicLinkView />
+      <SocialView />
     </SafeAreaView>
   );
 }
