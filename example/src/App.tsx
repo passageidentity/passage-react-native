@@ -8,6 +8,7 @@ import {
   MagicLinkView,
   OTPView,
   SocialView,
+  TokenStoreView,
 } from './testViews';
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
       <OTPView />
       <MagicLinkView />
       <SocialView />
+      <TokenStoreView />
     </SafeAreaView>
   );
 }

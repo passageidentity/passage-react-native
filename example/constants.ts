@@ -22,6 +22,7 @@ export enum AppTest {
   CreateUserExists = 'CreateUserExists',
 }
 
+// Current User test strings
 export enum CurrentUserTest {
   UserInfo = 'UserInfo',
   ChangeEmail = 'ChangeEmail',
@@ -31,8 +32,9 @@ export enum CurrentUserTest {
   LogOut = 'LogOut',
 }
 
+// Hosted test strings
 export enum HostedTest {
-  AuthorizeStart = 'HostedAuthorizeStart'
+  AuthorizeStart = 'HostedAuthorizeStart',
 }
 
 // OTP test strings
@@ -47,7 +49,13 @@ export enum MagicLinkTest {
   LoginAndActivate = 'MLLoginAndActivate',
 }
 
+// Social test strings
 export enum SocialTest {
-  AuthorizeStart = 'SocialAuthorizeStart'
+  AuthorizeStart = 'SocialAuthorizeStart',
 }
 
+// Social test strings
+export enum TokenStoreTest {
+  TokenIsValid = 'TokenIsValid',
+  TokenIsInvalid = 'TokenIsInvalid',
+}
