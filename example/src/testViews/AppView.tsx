@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Passage } from '@passageidentity/passage-react-native';
-import { failTest, passTest, testAlert } from '../testUtils/helpers';
+import { failTest, passTest } from '../testUtils/helpers';
 import {
   EXISTING_USER_EMAIL,
   PASSAGE_TEST_APP_ID,
@@ -70,7 +70,7 @@ export const AppView = () => {
 
   const createUserExists = async () => {
     try {
-      const newUser = await passage.app.createUser(EXISTING_USER_EMAIL);
+      await passage.app.createUser(EXISTING_USER_EMAIL);
       failTest();
     } catch {
       passTest();
