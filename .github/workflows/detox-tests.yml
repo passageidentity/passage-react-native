@@ -26,9 +26,9 @@ jobs:
         rm -rf ~/Library/Developer/Xcode/DerivedData
 
     - name: Install Dependencies
-      working-directory: example
       run: |
         npm install
+        cd example && npm install
         cd ios && pod cache clean --all && pod install && cd ..
 
     - name: Run Detox Tests
