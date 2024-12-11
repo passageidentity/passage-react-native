@@ -36,8 +36,8 @@ jobs:
     - name: Run Detox Tests
       working-directory: example
       run: |
-        npx detox build --configuration ios.sim.release
-        npx detox test --configuration ios.sim.release --cleanup
+        npx detox build --configuration ios.sim.debug
+        npx detox test --configuration ios.sim.debug --cleanup
       shell: bash
 
     - name: Upload Test Results
