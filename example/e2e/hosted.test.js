@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { element } from 'detox';
 
 import { HostedTest, ViewName } from '../constants';

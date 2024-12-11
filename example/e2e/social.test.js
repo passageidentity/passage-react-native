@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { element } from 'detox';
 
 import { SocialTest, ViewName } from '../constants';

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { CLOSE, SUCCESS, TEST_RESULT } from '../constants';
 
 export const showTestView = async(viewName: string) => {

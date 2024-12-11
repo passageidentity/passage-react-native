@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { dismissAlert, showTestView, executeTest } from './helpers';
 import { AppTest, ViewName } from '../constants';
 
