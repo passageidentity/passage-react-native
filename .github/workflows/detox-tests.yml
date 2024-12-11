@@ -25,7 +25,7 @@ jobs:
       working-directory: example
       run: |
         npm install
-        pod install
+        cd ios && pod install && cd ..
 
     - name: Start Metro Bundler
       working-directory: example
