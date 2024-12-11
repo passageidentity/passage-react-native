@@ -1,0 +1,48 @@
+name: Detox Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  detox-tests:
+    runs-on: macos-latest
+
+    env:
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Install Dependencies
+      working-directory: example
+      run: |
+        npm install
+        npx pod-install
+
+    - name: Start Metro Bundler
+      working-directory: example
+      run: |
+        npm run start -- --detox-server &
+      shell: bash
+
+    - name: Run Detox Tests
+      working-directory: example
+      run: |
+        npx detox build --configuration ios.sim.release
+        npx detox test --configuration ios.sim.release --cleanup
+      shell: bash
+
+    - name: Upload Test Results
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: detox-test-results
+        path: example/artifacts
