@@ -4,8 +4,8 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:try.passage.id</string>
-		<string>applinks:try.passage.id</string>
+		<string>webcredentials:smoggy-orchid-mule.withpassage-uat.com</string>
+		<string>applinks:smoggy-orchid-mule.withpassage-uat.com</string>
 	</array>
 </dict>
 </plist>
