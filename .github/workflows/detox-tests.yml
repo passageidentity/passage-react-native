@@ -21,15 +21,15 @@ jobs:
       with:
         node-version: 16
 
+    - name: Clean Derived Data
+      run: |
+        rm -rf ~/Library/Developer/Xcode/DerivedData
+
     - name: Install Dependencies
       working-directory: example
       run: |
         npm install
-        cd ios && pod install && cd ..
-    
-    - name: Clean Derived Data
-      run: |
-        rm -rf ~/Library/Developer/Xcode/DerivedData
+        cd ios && pod cache clean --all && pod install && cd ..
 
     - name: Run Detox Tests
       working-directory: example
