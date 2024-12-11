@@ -27,9 +27,10 @@ jobs:
 
     - name: Install Dependencies
       run: |
+        rm -rf node_modules
         npm install
         cd example && npm install
-        cd ios && pod cache clean --all && pod install && cd ..
+        cd ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
 
     - name: Run Detox Tests
       working-directory: example
