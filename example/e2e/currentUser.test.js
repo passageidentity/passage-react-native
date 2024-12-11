@@ -1,10 +1,11 @@
-import { dismissAlert, executeTest } from './helpers';
-import { CurrentUserTest } from '../constants';
+import { dismissAlert, showTestView, executeTest } from './helpers';
+import { CurrentUserTest, ViewName } from '../constants';
 
 describe('Current User tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.CurrentUserView);
   });
 
   afterEach(async () => {

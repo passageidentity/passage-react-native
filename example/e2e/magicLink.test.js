@@ -1,10 +1,11 @@
-import { dismissAlert, executeTest } from './helpers';
-import { MagicLinkTest } from '../constants';
+import { dismissAlert, showTestView, executeTest } from './helpers';
+import { MagicLinkTest, ViewName } from '../constants';
 
 describe('Magic Link tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.MagicLinkView);
   });
 
   afterEach(async () => {

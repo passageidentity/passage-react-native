@@ -1,10 +1,11 @@
-import { dismissAlert, executeTest } from './helpers';
-import { OTPTest } from '../constants';
+import { dismissAlert, showTestView, executeTest } from './helpers';
+import { OTPTest, ViewName } from '../constants';
 
 describe('OTP tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.OTPView);
   });
 
   afterEach(async () => {

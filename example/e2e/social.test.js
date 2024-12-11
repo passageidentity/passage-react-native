@@ -1,10 +1,13 @@
-import { SocialTest } from '../constants';
 import { element } from 'detox';
+
+import { SocialTest, ViewName } from '../constants';
+import { showTestView } from './helpers';
 
 describe('Social tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.SocialView);
   });
 
   it('can view social login web view', async () => {

@@ -1,10 +1,11 @@
-import { dismissAlert, executeTest } from './helpers';
-import { AppTest } from '../constants';
+import { dismissAlert, showTestView, executeTest } from './helpers';
+import { AppTest, ViewName } from '../constants';
 
 describe('App tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.AppView);
   });
 
   afterEach(async () => {

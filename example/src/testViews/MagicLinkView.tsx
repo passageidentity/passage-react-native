@@ -26,6 +26,8 @@ export const MagicLinkView = () => {
       passTest();
     } catch(error) {
       failTest(error);
+    } finally {
+      await passage.currentUser.logout();
     }
   };
 
@@ -40,6 +42,8 @@ export const MagicLinkView = () => {
       passTest();
     } catch(error) {
       failTest(error);
+    } finally {
+      await passage.currentUser.logout();
     }
   };
 
