@@ -26,12 +26,10 @@ jobs:
       run: |
         npm install
         cd ios && pod install && cd ..
-
-    - name: Start Metro Bundler
-      working-directory: example
+    
+    - name: Clean Derived Data
       run: |
-        npm run start -- --detox-server &
-      shell: bash
+        rm -rf ~/Library/Developer/Xcode/DerivedData
 
     - name: Run Detox Tests
       working-directory: example
