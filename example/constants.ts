@@ -13,6 +13,17 @@ export const FAILURE = 'failure';
 export const SUCCESS = 'success';
 export const TEST_RESULT = 'test_result';
 
+// App test view names
+export enum ViewName {
+  AppView = 'AppView',
+  CurrentUserView = 'CurrentUserView',
+  HostedView = 'HostedView',
+  MagicLinkView = 'MagicLinkView',
+  OTPView = 'OTPView',
+  SocialView = 'SocialView',
+  TokenStoreView = 'TokenStoreView',
+}
+
 // App test strings
 export enum AppTest {
   GetAppInfo = 'GetAppInfo',
@@ -34,24 +45,24 @@ export enum CurrentUserTest {
 
 // Hosted test strings
 export enum HostedTest {
-  AuthorizeStart = 'HostedAuthorizeStart',
+  AuthorizeStart = 'AuthorizeStart',
 }
 
 // OTP test strings
 export enum OTPTest {
-  RegisterAndActivate = 'OTPRegisterAndActivate',
-  LoginAndActivate = 'OTPLoginAndActivate',
+  RegisterAndActivate = 'RegisterAndActivate',
+  LoginAndActivate = 'LoginAndActivate',
 }
 
 // Magic Link test strings
 export enum MagicLinkTest {
-  RegisterAndActivate = 'MLRegisterAndActivate',
-  LoginAndActivate = 'MLLoginAndActivate',
+  RegisterAndActivate = 'RegisterAndActivate',
+  LoginAndActivate = 'LoginAndActivate',
 }
 
 // Social test strings
 export enum SocialTest {
-  AuthorizeStart = 'SocialAuthorizeStart',
+  AuthorizeStart = 'AuthorizeStart',
 }
 
 // Social test strings

@@ -1,10 +1,11 @@
-import { dismissAlert, executeTest } from './helpers';
-import { TokenStoreTest } from '../constants';
+import { dismissAlert, showTestView, executeTest } from './helpers';
+import { TokenStoreTest, ViewName } from '../constants';
 
 describe('Token Store tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.TokenStoreView);
   });
 
   afterEach(async () => {

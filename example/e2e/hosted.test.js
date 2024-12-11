@@ -1,10 +1,13 @@
-import { HostedTest } from '../constants';
 import { element } from 'detox';
+
+import { HostedTest, ViewName } from '../constants';
+import { showTestView } from './helpers';
 
 describe('Hosted tests', () => {
 
   beforeAll(async () => {
     await device.launchApp();
+    await showTestView(ViewName.HostedView);
   });
 
   it('can view hosted login web view', async () => {
