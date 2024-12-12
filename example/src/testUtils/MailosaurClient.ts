@@ -73,7 +73,7 @@ class MailosaurAPIClient {
     return null;
   }
 
-  async waitForOneTimePasscode(retries: number = 5, delayMs: number = 3000): Promise<string | null> {
+  async waitForOneTimePasscode(retries: number = 5, delayMs: number = 8000): Promise<string | null> {
     for (let i = 0; i < retries; i++) {
       await new Promise(resolve => setTimeout(resolve, delayMs));
       const oneTimePasscode = await this.getMostRecentOneTimePasscode();
