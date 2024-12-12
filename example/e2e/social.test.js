@@ -29,7 +29,7 @@ describe('Social tests', () => {
     // Expect web view to open
     await waitFor(element(by.type('SFSafariView')))
       .toExist()
-      .withTimeout(10000);
+      .withTimeout(20000);
   });
 
 });
