@@ -20,6 +20,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 16
+    
+    - name: Install applesimutils
+      run: |
+        brew tap wix/brew
+        brew install applesimutils
 
     - name: Clean Derived Data
       run: |
