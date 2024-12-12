@@ -1,4 +1,4 @@
-import { btoa } from 'react-native-quick-base64';
+import { Buffer } from 'buffer';
 import { MAILOSAUR_API_KEY } from '@env';
 
 const mailosaurConfig = {
@@ -131,7 +131,8 @@ class MailosaurAPIClient {
 
   private getAuthHeader(): string {
     const apiKey = `api:${mailosaurConfig.apiKey}`;
-    return `Basic ${btoa(apiKey)}`;
+    const base64Key = Buffer.from(apiKey, 'utf-8').toString('base64');
+    return `Basic ${base64Key}`;
   }
 
   private async getMessage(id: string): Promise<GetMessageResponse> {
