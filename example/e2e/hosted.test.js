@@ -23,6 +23,7 @@ describe('Hosted tests', () => {
       .toExist()
       .withTimeout(10000);
     await expect(system.element(by.system.label('Continue'))).toExist();
+    await new Promise(resolve => setTimeout(resolve, 10000));
     // Give permission to open web view
     system.element(by.system.label('Continue')).tap();
     // Expect web view to open
