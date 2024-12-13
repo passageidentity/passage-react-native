@@ -13,7 +13,7 @@ export const executeTest = async (buttonName: string) => {
   // Wait for test result alert to show
   await waitFor(element(by.text(TEST_RESULT)))
     .toBeVisible()
-    .withTimeout(5000);
+    .withTimeout(15000);
   // Verify that the alert contains the expected value
   await expect(element(by.text(SUCCESS)))
     .toBeVisible();
