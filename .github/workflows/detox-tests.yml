@@ -1,0 +1,89 @@
+name: Detox Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  ios-tests:
+    runs-on: macos-latest
+
+    env:
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    
+    - name: Install applesimutils
+      run: |
+        brew tap wix/brew
+        brew install applesimutils
+
+    - name: Clean Derived Data
+      run: |
+        rm -rf ~/Library/Developer/Xcode/DerivedData
+
+    - name: Install Dependencies
+      run: |
+        rm -rf node_modules && npm install
+        cd example && rm -rf node_modules && npm install
+        cd ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
+
+    - name: Run Detox iOS Tests
+      working-directory: example
+      run: |
+        npx detox build --configuration ios.sim.release
+        npx detox test --configuration ios.sim.release --cleanup
+      shell: bash
+  
+  android-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Set environment variables
+        run: |
+          echo "MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}" > example/.env
+
+      - name: Install Dependencies
+        run: |
+          rm -rf node_modules && npm install
+          cd example && rm -rf node_modules && npm install && cd ..
+
+      - name: Start emulator and run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: Nexus 6
+          working-directory: ./example
+          script: |
+            npx detox build --configuration android.emu.release
+            npx detox test --configuration android.emu.release --cleanup

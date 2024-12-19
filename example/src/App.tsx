@@ -1,34 +1,41 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { SafeAreaView, Text } from 'react-native';
+import {
+  AppView,
+  CurrentUserView,
+  HostedView,
+  MagicLinkView,
+  OTPView,
+  SocialView,
+  TokenStoreView,
+} from './testViews';
+import { ViewName } from '../constants';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { Passage } from 'passage-react-native';
+const views: Record<ViewName, React.FC> = {
+  AppView: AppView,
+  CurrentUserView: CurrentUserView,
+  HostedView: HostedView,
+  MagicLinkView: MagicLinkView,
+  OTPView: OTPView,
+  SocialView: SocialView,
+  TokenStoreView: TokenStoreView,
+};
 
-export default function App() {
-  const passage = new Passage('APP_ID');
-  const [result, setResult] = React.useState<string | undefined>();
-
-  const onPress = async () => {
-    const authResult = await passage.passkey.login();
-    const { authToken } = authResult;
-    setResult(authToken);
-  };
-
+const App = () => {
+  const [visibleView, setVisibleView] = useState<ViewName | null>(null);
   return (
-    <View style={styles.container}>
-      <Text onPress={onPress}>Result: {result}</Text>
-    </View>
+    <SafeAreaView>
+      {Object.keys(views).map(viewName => (
+        <Text
+          key={viewName}
+          onPress={() => setVisibleView(viewName as ViewName)}
+        >
+          {`Show ${viewName}`}
+        </Text>
+      ))}
+      {visibleView && React.createElement(views[visibleView])}
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});
+export default App;
