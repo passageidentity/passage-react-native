@@ -50,7 +50,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Nexus 6'
+        avdName: 'test'// Use something like 'Pixel_6_Pro_API_33' when testing locally
       }
     }
   },
