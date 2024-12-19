@@ -5,43 +5,43 @@ on:
     branches: [main]
 
 jobs:
-  # ios-tests:
-  #   runs-on: macos-latest
+  ios-tests:
+    runs-on: macos-latest
 
-  #   env:
-  #     NODE_OPTIONS: "--max-old-space-size=4096"
-  #     MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+    env:
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
-  #   steps:
-  #   - name: Checkout Code
-  #     uses: actions/checkout@v3
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-  #   - name: Set up Node.js
-  #     uses: actions/setup-node@v3
-  #     with:
-  #       node-version: 16
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
     
-  #   - name: Install applesimutils
-  #     run: |
-  #       brew tap wix/brew
-  #       brew install applesimutils
+    - name: Install applesimutils
+      run: |
+        brew tap wix/brew
+        brew install applesimutils
 
-  #   - name: Clean Derived Data
-  #     run: |
-  #       rm -rf ~/Library/Developer/Xcode/DerivedData
+    - name: Clean Derived Data
+      run: |
+        rm -rf ~/Library/Developer/Xcode/DerivedData
 
-  #   - name: Install Dependencies
-  #     run: |
-  #       rm -rf node_modules && npm install
-  #       cd example && rm -rf node_modules && npm install
-  #       cd ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
+    - name: Install Dependencies
+      run: |
+        rm -rf node_modules && npm install
+        cd example && rm -rf node_modules && npm install
+        cd ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
 
-  #   - name: Run Detox iOS Tests
-  #     working-directory: example
-  #     run: |
-  #       npx detox build --configuration ios.sim.release
-  #       npx detox test --configuration ios.sim.release --cleanup
-  #     shell: bash
+    - name: Run Detox iOS Tests
+      working-directory: example
+      run: |
+        npx detox build --configuration ios.sim.release
+        npx detox test --configuration ios.sim.release --cleanup
+      shell: bash
   
   android-tests:
     runs-on: ubuntu-latest
