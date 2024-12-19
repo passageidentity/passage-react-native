@@ -68,10 +68,8 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Set environment variables
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
         run: |
-          echo "export MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}" >> $GITHUB_ENV
+          echo "MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}" > example/.env
 
       - name: Install Dependencies
         run: |
