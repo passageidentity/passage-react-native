@@ -50,7 +50,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Nexus_5_Android_14'
+        avdName: 'Pixel_6_Pro_API_33'
       }
     }
   },
