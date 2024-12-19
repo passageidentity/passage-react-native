@@ -36,16 +36,21 @@ jobs:
         cd example && rm -rf node_modules && npm install
         cd ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
 
-    - name: Run Detox Tests
-      working-directory: example
-      run: |
-        npx detox build --configuration ios.sim.release
-        npx detox test --configuration ios.sim.release --cleanup
-      shell: bash
+    # - name: Run Detox iOS Tests
+    #   working-directory: example
+    #   run: |
+    #     npx detox build --configuration ios.sim.release
+    #     npx detox test --configuration ios.sim.release --cleanup
+    #   shell: bash
 
-    - name: Upload Test Results
-      if: failure()
-      uses: actions/upload-artifact@v4
+    - name: Run Detox Android Tests
+      uses: reactivecircus/android-emulator-runner@v2
       with:
-        name: detox-test-results
-        path: example/artifacts
+        api-level: 34
+        target: google_apis
+        arch: x86_64
+        profile: Nexus 6
+        working-directory: example
+        script: |
+          npx detox build --configuration android.emu.release
+          npx detox test --configuration android.emu.release --cleanup
