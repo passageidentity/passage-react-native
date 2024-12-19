@@ -54,7 +54,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -83,7 +83,6 @@ jobs:
         with:
           api-level: 34
           target: google_apis
-          build-tools: 34.0.0
           arch: x86_64
           profile: Nexus 6
           working-directory: ./example
