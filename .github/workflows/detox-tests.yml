@@ -26,9 +26,10 @@ jobs:
         brew tap wix/brew
         brew install applesimutils
 
-    - name: Clean Derived Data
+    - name: Clean Derived Data and CocoaPods cache
       run: |
         rm -rf ~/Library/Developer/Xcode/DerivedData
+        rm -rf ~/Library/Caches/CocoaPods
 
     - name: Install Dependencies
       run: |
