@@ -45,6 +45,7 @@ jobs:
       shell: bash
   
   android-tests:
+    needs: ios-tests
     runs-on: ubuntu-latest
 
     steps:
