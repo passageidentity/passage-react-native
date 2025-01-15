@@ -6,7 +6,7 @@ on:
 
 jobs:
   ios-tests:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     env:
       NODE_OPTIONS: "--max-old-space-size=4096"
@@ -26,15 +26,16 @@ jobs:
         brew tap wix/brew
         brew install applesimutils
 
-    - name: Clean Derived Data
+    - name: Clean Derived Data and CocoaPods cache
       run: |
         rm -rf ~/Library/Developer/Xcode/DerivedData
+        rm -rf ~/Library/Caches/CocoaPods
 
     - name: Install Dependencies
       run: |
         rm -rf node_modules && npm install
         cd example && rm -rf node_modules && npm install
-        cd ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
+        cd ios && rm -rf Pods && rm -rf Podfile.lock && pod cache clean --all && pod install && cd ..
 
     - name: Run Detox iOS Tests
       working-directory: example
@@ -44,6 +45,7 @@ jobs:
       shell: bash
   
   android-tests:
+    needs: ios-tests
     runs-on: ubuntu-latest
 
     steps:
