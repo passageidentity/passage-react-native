@@ -43,9 +43,6 @@ target 'PassageReactNativeExample' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Pin Boost to version 1.76.0
-  pod 'boost', '1.76.0'
-
   target 'PassageReactNativeExampleTests' do
     inherit! :complete
     # Pods for testing
