@@ -25,5 +25,14 @@
     "react-native-dotenv": "^3.4.11",
     "react-native-gradle-plugin": "0.71.19",
     "ts-jest": "^29.2.5"
+  },
+  "overrides": {
+    "braces": ">=3.0.3",
+    "cross-spawn": "7.0.6",
+    "ip": "2.0.1",
+    "json5": ">=1.0.2",
+    "micromatch": ">=4.0.8",
+    "react-devtools-core": ">=4.28.4",
+    "ws": "^6.2.3"
   }
 }
