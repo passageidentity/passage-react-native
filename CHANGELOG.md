@@ -1,3 +1,7 @@
+## 1.1.3
+
+* chore: add changefile for patch release
+
 ## 1.1.2
 
 * chore: add changefile for patch release
