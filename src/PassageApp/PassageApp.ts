@@ -1,4 +1,4 @@
-import { PassageError, PassageReactNative } from '../../src/shared';
+import { PassageError, PassageReactNative } from '../shared';
 import type { Metadata, PassageAppInfo, PublicUserInfo } from '../';
 
 /**
